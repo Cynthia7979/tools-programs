@@ -1,2 +1,5 @@
 # tools-programs
 Other programs I made that's not a game.
+
+**Note:** Many of those lack security check, 
+completion, document and/or correct usage of some modules. Please use at your own risk.
