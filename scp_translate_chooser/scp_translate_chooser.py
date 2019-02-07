@@ -60,6 +60,7 @@ def crawl_scp(minimum, maximum, maximumentries, precise):
 
 def try_crawl(url):
     try:
+        print("Connecting to "+url)
         return requests.get(url)
     except requests.exceptions.ConnectionError:
         print("Retrying "+url)
