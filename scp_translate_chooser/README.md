@@ -8,7 +8,7 @@ that haven't been translated into Chinese.
 
 I made the windows terminal command to work, you can now use the program with the following command (under Windows cmd):
 
-`python scp_translate_chooser.py minimum_scp_number maximum_scp_number total_etries_chosen [precise_mode]`
+`python scp_translate_chooser.py minimum_scp_number maximum_scp_number total_entries_chosen [precise_mode]`
 
 `minimum_scp_number`  -  The smallest SCP number you want to search, integer.
 
