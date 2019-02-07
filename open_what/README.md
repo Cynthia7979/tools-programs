@@ -1,10 +1,4 @@
-# File Sorter
-A useful program I made for my classmate. 
+# Open What
+A tool used to automatically open programs under some circumstances when starting computer.
 
-
-**Reminder:**
-- Non-customizable.
-
-- Will move every file. 
-
-- No responsibility for any file loss.
+No further description.

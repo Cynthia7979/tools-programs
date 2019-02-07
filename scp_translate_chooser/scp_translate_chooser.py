@@ -29,8 +29,8 @@ class SCPPage(object):
         return "* [{}]({})".format(self.title, self.url)
 
 
-def crawl_scp(minimum, maximum, maximumentries):
-    f1 = open('scp_translate_chooser/temp.md', 'w')
+def crawl_scp(minimum, maximum, maximumentries, precise):
+    f1 = open('temp.md', 'w')
     f1.write("# SCP Web Spider Results\n")
     result = []
     for number in ["scp-"+(str(num).zfill(3)) for num in range(minimum, maximum+1)]:
@@ -44,16 +44,17 @@ def crawl_scp(minimum, maximum, maximumentries):
             result.append(entry)
             f1.write(str(entry)+"\n")
         print(number+" processed")
-        if len(result) >= maximumentries:
+        if len(result) >= maximumentries and not precise:
             break
     result.sort()
+    result = result[:maximumentries]
     f1.close()
-    f2 = open('scp_translate_chooser/result.md', 'w')
+    f2 = open('result.md', 'w')
     f2.write("# SCP Web Spider Results\n")
     for r in result:
         f2.write(str(r) + "\n")
     f2.close()
-    os.remove('scp_translate_chooser/temp.md')
+    os.remove('temp.md')
     return result
 
 
@@ -73,10 +74,17 @@ def get_soup(url):
 
 
 def main():
-    result = crawl_scp(4200, 4210, 50)
+    arg = sys.argv
+    minimum, maximum, number_of_articles = [int(x) for x in arg[1:4]]
+    try:
+        precise_mode = bool(arg[4])
+    except IndexError:
+        precise_mode = False
+    print("Searching for {0} SCP entries in from {1} to {2}".format(number_of_articles, minimum, maximum))
+    result = crawl_scp(minimum, maximum, number_of_articles, precise_mode)
+    print("Result:\n"+';\n'.join([str(e) for e in result]))
 
 
 if __name__ == '__main__':
     main()
-
 

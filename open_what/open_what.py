@@ -1,4 +1,5 @@
 import psutil
+import threading
 from time import strftime
 import os, sys
 
@@ -14,17 +15,43 @@ TODO:
         - TIM
 """
 
-things_to_run = {'Huo Rong': "C:/Program Files (x86)/Huorong/Sysdiag/bin/HipsMain.exe",
-                 'Google Drive Sync': "C:\Program Files\Google\Drive\googledrivesync.exe",
-                 'Opera': }
-
-def run(path):
-    os.system('"%s"' % path)
+apps = {'Huo Rong': "C:/Program Files (x86)/Huorong/Sysdiag/bin/HipsMain.exe",
+                 'Google Drive Sync': "C:\Program Files/Google/Drive/googledrivesync.exe",
+                 'Opera': "C:/Users/Yirou Wang/AppData/Local/Programs/Opera/launcher.exe",
+                 'TIM': "C:/Program Files (x86)/Tencent/TIM/Bin/QQScLauncher.exe"}
 
 
-sys.stdout.write('Starting up...')
+class RunExeThread(threading.Thread):
+    def __init__(self, path, *args, **kwargs):
+        super().__init__()
+        self.path = path
 
-battery = psutil.sensors_battery()
-percentage = battery.percent
-current_time = int(strftime("%H"))
+    def run(self):
+        path = self.path
+        name = path[path.rfind('/')+1:]
+        print('Start running '+name)
+        os.system('"%s"' % path)
+        print('Ran '+name)
 
+
+def main():
+    print("Starting up...")
+
+    battery = psutil.sensors_battery()
+    percentage = battery.percent
+    current_time = int(strftime("%H"))
+    things_to_run = []
+    if percentage >= 80:
+        if percentage >= 90:
+            if 7 > current_time or 15 < current_time:
+                things_to_run.append(apps['TIM'])
+        things_to_run.append(apps['Huo Rong'])
+        things_to_run.append(apps['Google Drive Sync'])
+        things_to_run.append(apps['Opera'])
+    for app in things_to_run:
+        app_thread = RunExeThread(app)
+        app_thread.start()
+
+
+if __name__ == '__main__':
+    main()
