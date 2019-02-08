@@ -8,7 +8,9 @@ that haven't been translated into Chinese.
 
 I made the windows terminal command to work, you can now use the program with the following command (under Windows cmd):
 
-`python scp_translate_chooser.py minimum_scp_number maximum_scp_number total_entries_chosen [precise_mode]`
+```
+python scp_translate_chooser.py minimum_scp_number maximum_scp_number total_entries_chosen [precise_mode]
+```
 
 `minimum_scp_number`  -  The smallest SCP number you want to search, integer.
 
@@ -20,6 +22,6 @@ I made the windows terminal command to work, you can now use the program with th
 sorted by length. If you want the shortest entries within all articles, please check the `precise_mode`.
 
 `precise_mode`    -      Allows the program to go through every entry in range, 
-then choose the shortest ones indicated by the `total_entries_chosen` argument, bool value (True or False).
+then choose the shortest ones, bool value (True or False).
 
 Py2exe coming soon.
