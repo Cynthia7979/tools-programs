@@ -4,9 +4,9 @@ This is a simple web crawler done with request and BeautifulSoup
 that can help me to find those SCP entries on [SCP Main Site](http://scp-wiki.net)
 that haven't been translated into Chinese.
 
-----
+UPDATE:
 
-I made the windows terminal command to work, you can now use the program with the following command (under Windows cmd):
+I made the windows terminal command work, so you can now use the program with the following command (under Windows cmd):
 
 ```
 python scp_translate_chooser.py minimum_scp_number maximum_scp_number total_entries_chosen [precise_mode]
