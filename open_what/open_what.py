@@ -45,7 +45,8 @@ def main():
         if percentage >= 90:
             if 7 > current_time or 15 < current_time:
                 things_to_run.append(apps['TIM'])
-        things_to_run.append(apps['Huo Rong'])
+        if battery.power_plugged:
+            things_to_run.append(apps['Huo Rong'])
         things_to_run.append(apps['Google Drive Sync'])
         things_to_run.append(apps['Opera'])
     for app in things_to_run:
