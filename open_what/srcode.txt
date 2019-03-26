@@ -1,0 +1,1100 @@
+
+<!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Events</title>
+            <link rel="stylesheet" href="/apps/shared/main-pack.css" type="text/css">
+            <link rel="stylesheet" href="/apps/js/events/events-pack.css" type="text/css">
+            <script type="text/javascript" src="/apps/js/jquery/1.8.3/jquery-pack.js" charset="UTF-8"></script>
+            <script>
+            var jq18 = jQuery.noConflict();
+            </script>
+            <script type="text/javascript" src="/apps/js/jquery/jquery_fastclick-pack.js" charset="UTF-8"></script>
+            <script type="text/javascript" src="/apps/js/jquery/jquery_color-pack.js" charset="UTF-8"></script>
+            <script type="text/javascript" src="/apps/js/events/events-pack.js" charset="UTF-8"></script>
+            <!--[if lt IE 9]>
+                <script src="/apps/js/common/html5shiv-printshiv-pack.js"></script>
+            <![endif]-->
+            <link rel="alternate" type="application/rss+xml" title="DePaul Catholic High School: Master School Calendar" href="/apps/events/rss/?id=0">
+            <script type="text/javascript">
+                var schoolWindow;
+
+                function openLink(URL) {
+                    var host = document.location.host;
+                    host = host.replace(/./g, "");
+                    schoolWindow = open(URL, host + "Main");
+                    schoolWindow.focus();
+                }
+            </script>
+
+        </head>
+        <body id="view_calendar_wrapper" class="style-overwrite">
+
+<img src="//counter.edlio.com/count.jsp?rn=2307&i=DPCHS&s=/events/2019/03/calendar/?id=0" width="1" height="1" style="display: none;" alt="">
+
+
+            <header id="calendar_head" class="cf">
+                <nav>
+                    <a class="prev-month direction-button direction-left" href="/apps/events/2019/2/calendar/?id=0" title="Previous month">&#9668;</a>
+                    <a class="next-month direction-button direction-right direction-button-no-left-border" href="/apps/events/2019/4/calendar/?id=0" title="Next month">&#9658;</a>
+                </nav>
+
+<div class="date-heading" id="list_title_partial">
+	March 2019
+</div>
+
+                <ul id="calendar_top_options">
+                    <li class="last"><a id="print_calendar" href="/apps/events/2019/3/calendar/print/?id=0" target="_blank">Print</a></li>
+                </ul>
+            </header>
+
+<div id="events_list_partial">
+	<div id="view_calendar_grid">
+		<table>
+			<thead>
+				<tr style="height: 20px;">
+											<th class="day-name">Sunday</th>
+						<th class="day-name">Monday</th>
+						<th class="day-name">Tuesday</th>
+						<th class="day-name">Wednesday</th>
+						<th class="day-name">Thursday</th>
+						<th class="day-name">Friday</th>
+						<th class="day-name">Saturday</th>
+				</tr>
+			</thead>
+			<tbody>
+						<tr class="week">
+					<td class="cf day extra">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">24</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/2/24/5613265/?id=0');">Spirit Week</a>
+										<span class="event-data">
+												2/22/2019
+												<span class="ndash-range"> &ndash; </span>
+													3/1/2019,
+													11:59&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day extra">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">25</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/2/25/5938226/?id=0');">D DAY</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/2/25/5613265/?id=0');">Spirit Week</a>
+										<span class="event-data">
+												2/22/2019
+												<span class="ndash-range"> &ndash; </span>
+													3/1/2019,
+													11:59&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/2/25/6129111/?id=0');">Board of Trustees Meeting</a>
+										<span class="event-data">
+												8&nbsp;AM
+												<span class="ndash-range"> &ndash; </span>
+													10&nbsp;AM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day extra">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">26</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/2/26/5938228/?id=0');">E DAY</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/2/26/5613265/?id=0');">Spirit Week</a>
+										<span class="event-data">
+												2/22/2019
+												<span class="ndash-range"> &ndash; </span>
+													3/1/2019,
+													11:59&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day extra">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">27</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/2/27/5938231/?id=0');">A DAY</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/2/27/5613265/?id=0');">Spirit Week</a>
+										<span class="event-data">
+												2/22/2019
+												<span class="ndash-range"> &ndash; </span>
+													3/1/2019,
+													11:59&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day extra">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">28</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/2/28/5938234/?id=0');">B DAY</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/2/28/5613265/?id=0');">Spirit Week</a>
+										<span class="event-data">
+												2/22/2019
+												<span class="ndash-range"> &ndash; </span>
+													3/1/2019,
+													11:59&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">1</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/1/5938236/?id=0');">C DAY</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/1/5613265/?id=0');">Spirit Week</a>
+										<span class="event-data">
+												2/22/2019
+												<span class="ndash-range"> &ndash; </span>
+													3/1/2019,
+													11:59&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekend">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">2</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/2/5650169/?id=0');">Forensics Grand Tournament</a>
+										<span class="event-data">
+												<span class="event-location">(DePaul)</span>
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/2/5613273/?id=0');">Midnight Run</a>
+										<span class="event-data">
+												5&nbsp;PM
+												<span class="ndash-range"> &ndash; </span>
+													11:30&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+						</tr>
+						<tr class="week">
+					<td class="cf day weekend">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">3</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/3/5613274/?id=0');">Iowa Test</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">4</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/4/5938238/?id=0');">D DAY</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">5</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/5/5938239/?id=0');">E DAY</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/5/6219791/?id=0');">Alumni Association Mtg</a>
+										<span class="event-data">
+												7&nbsp;PM
+												<span class="ndash-range"> &ndash; </span>
+													9&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">6</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/6/5938346/?id=0');">A DAY</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/6/5613226/?id=0');">Ash Wednesday</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/6/5613270/?id=0');">Mass</a>
+										<span class="event-data">
+												9&nbsp;AM
+												<span class="ndash-range"> &ndash; </span>
+													10:30&nbsp;AM
+												<span class="event-location">(Ma)</span>
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">7</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/7/5938347/?id=0');">B DAY</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">8</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/8/5938350/?id=0');">C DAY</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/8/6288427/?id=0');">Stations of the Cross</a>
+										<span class="event-data">
+												2:40&nbsp;PM
+												<span class="ndash-range"> &ndash; </span>
+													3:10&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekend">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">9</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/9/5613276/?id=0');">SAT Exam</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+						</tr>
+						<tr class="week">
+					<td class="cf day weekend">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">10</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/10/5613277/?id=0');">Koenig Basketball Challenge</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/10/6122583/?id=0');">Double K Basketball Challenge</a>
+										<span class="event-data">
+												12:30&nbsp;PM
+												<span class="ndash-range"> &ndash; </span>
+													4&nbsp;PM
+												<span class="event-location">(DePaul HS)</span>
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">11</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/11/6129164/?id=0');">D DAY</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/11/5613307/?id=0');">Department Chairs Meeting</a>
+										<span class="event-data">
+												2:30&nbsp;PM
+												<span class="ndash-range"> &ndash; </span>
+													3:30&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">12</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/12/6129443/?id=0');">E DAY</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/12/5613379/?id=0');">Parents' Association Board Meeting</a>
+										<span class="event-data">
+												7&nbsp;PM
+												<span class="ndash-range"> &ndash; </span>
+													8&nbsp;PM
+												<span class="event-location">(Commons)</span>
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">13</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/13/5613393/?id=0');">NHS Bake Sale</a>
+										<span class="event-data">
+												2:30&nbsp;PM
+												<span class="ndash-range"> &ndash; </span>
+													3:30&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">14</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/14/5613271/?id=0');">PI Day</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/14/6091964/?id=0');">Pi Day Competition for 7th graders</a>
+										<span class="event-data">
+												3&nbsp;PM
+												<span class="ndash-range"> &ndash; </span>
+													5&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/14/6109012/?id=0');">Multicultural Night</a>
+										<span class="event-data">
+												6&nbsp;PM
+												<span class="ndash-range"> &ndash; </span>
+													8&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">15</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/15/5613272/?id=0');">Delayed Opening - 9:00 AM start of the school day</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekend">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">16</span>
+
+							</div>
+						</div>
+					</td>
+						</tr>
+						<tr class="week">
+					<td class="cf day weekend">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">17</span>
+
+							</div>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">18</span>
+
+							</div>
+						</div>
+					</td>
+					<td class="cf day today">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">19</span>
+								<span class="today-stamp">Today</span>
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/19/5613337/?id=0');">ST. VINCENT DE PAUL HONOR SOCIETY MTG</a>
+										<span class="event-data">
+												2:55&nbsp;PM
+												<span class="ndash-range"> &ndash; </span>
+													3:30&nbsp;PM
+												<span class="event-location">(Chapel)</span>
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">20</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/20/5613394/?id=0');">NHS Bake Sale</a>
+										<span class="event-data">
+												2:30&nbsp;PM
+												<span class="ndash-range"> &ndash; </span>
+													3:30&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">21</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/21/6175000/?id=0');">DePaul Gala and Alumni Award Ceremony </a>
+										<span class="event-data">
+												6&nbsp;PM
+												<span class="ndash-range"> &ndash; </span>
+													10&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">22</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/22/6288433/?id=0');">Stations of the Cross</a>
+										<span class="event-data">
+												2:40&nbsp;PM
+												<span class="ndash-range"> &ndash; </span>
+													3:10&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekend">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">23</span>
+
+							</div>
+						</div>
+					</td>
+						</tr>
+						<tr class="week">
+					<td class="cf day weekend">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">24</span>
+
+							</div>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">25</span>
+
+							</div>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">26</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/26/5613324/?id=0');">NHS Induction Ceremony </a>
+										<span class="event-data">
+												7&nbsp;PM
+												<span class="ndash-range"> &ndash; </span>
+													8:30&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">27</span>
+
+							</div>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">28</span>
+
+							</div>
+						</div>
+					</td>
+					<td class="cf day weekday">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">29</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/29/5613275/?id=0');">End of Quarter 3</a>
+										<span class="event-data">
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/3/29/6288436/?id=0');">Stations of the Cross</a>
+										<span class="event-data">
+												2:40&nbsp;PM
+												<span class="ndash-range"> &ndash; </span>
+													3:10&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day weekend">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">30</span>
+
+							</div>
+						</div>
+					</td>
+						</tr>
+						<tr class="week">
+					<td class="cf day weekend">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">31</span>
+
+							</div>
+						</div>
+					</td>
+					<td class="cf day extra">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">1</span>
+
+							</div>
+						</div>
+					</td>
+					<td class="cf day extra">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">2</span>
+
+							</div>
+						</div>
+					</td>
+					<td class="cf day extra">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">3</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/4/3/5613395/?id=0');">NHS Bake Sale</a>
+										<span class="event-data">
+												2:30&nbsp;PM
+												<span class="ndash-range"> &ndash; </span>
+													3:30&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/4/3/5700950/?id=0');">Science Challenge</a>
+										<span class="event-data">
+												3&nbsp;PM
+												<span class="ndash-range"> &ndash; </span>
+													4:30&nbsp;PM
+												<span class="event-location">(Cafeteria)</span>
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day extra">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">4</span>
+
+							</div>
+						</div>
+					</td>
+					<td class="cf day extra">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">5</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/4/5/6288439/?id=0');">Stations of the Cross</a>
+										<span class="event-data">
+												2:40&nbsp;PM
+												<span class="ndash-range"> &ndash; </span>
+													3:10&nbsp;PM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+					<td class="cf day extra">
+						<div class="day-inner">
+							<div class="day-of-month-box">
+								<span class="day-of-month">6</span>
+
+							</div>
+								<ul class="events">
+									<li class="event">
+											<a class="event-title" href="javascript:openLink('/apps/events/2019/4/6/6129165/?id=0');">Freshman Orientation</a>
+										<span class="event-data">
+												8&nbsp;AM
+												<span class="ndash-range"> &ndash; </span>
+													11&nbsp;AM
+											<ul class="event-tag-list">
+															<li class="event-tag event-color-1 checked">
+																<span class="">Master School Calendar</span>
+															</li>
+
+											</ul>
+										</span>
+									</li>
+								</ul>
+						</div>
+					</td>
+						</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+            <script type="text/javascript">
+                window.events_data = {};
+                events_data.current_month = 3;
+                events_data.current_year = 2019;
+                events_data.has_sidebar = false;
+                events_data.first_category = 'id=0';	// for special calendars
+                // feature-specific; added in smart_url to indicate that this page requires
+                // special URL-handling for its AJAX next month/previous month buttons
+                events_data.is_calendar_view = true;
+            </script>
+            <div id="calendar_loading_indicator">Loading...</div>
+        </body>
+    </html>

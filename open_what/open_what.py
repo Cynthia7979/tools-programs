@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import psutil
 import threading
-from time import strftime
+from time import strftime, sleep
 import os
 import sys
 
@@ -40,12 +40,22 @@ class RunExeThread(threading.Thread):
 
 
 def try_crawl(url):
+    result = None
     try:
         print("Connecting to "+url)
-        return requests.get(url)
+        result = requests.get(url)
+        success = True
     except requests.exceptions.ConnectionError:
+        success = False
+    while not success:
         print("Retrying "+url)
-        return try_crawl(url)
+        try:
+            result = requests.get(url)
+            success = True
+        except requests.exceptions.ConnectionError:
+            success = False
+        sleep(5)
+    return result
 
 
 def get_soup(url):
@@ -76,7 +86,9 @@ def fetch_class_data(testmode=False):
             for a in li.find_all('a'):
                 print(a)
                 title = a.text
-                link = a.href
+                link = a.get('href')
+                link = link.replace("javascript:openLink('", "https://www.depaulcatholic.org")
+                link = link.replace("')", '')
                 text = li.span.text
                 text = text.replace('\n\t', '')
                 text = text.replace('\t', '')
@@ -87,7 +99,7 @@ def fetch_class_data(testmode=False):
     if events:
         for event in events:
             events_to_write += """
-            <li><a href={link}>{title}</a></li><ul><li>{text}</li></ul>""".format(link=event['link'],
+            <li><a href="{link}">{title}</a></li><ul><li>{text}</li></ul>""".format(link=event['link'],
                                                                                   title=event['title'],
                                                                                   text=event['text'])
     else:
@@ -112,22 +124,30 @@ def fetch_class_data(testmode=False):
     os.startfile('C:/Users/Yirou Wang/Documents/Programmings/tools-programs/open_what/notification.html')
 
 
-def main():
-    print("Starting up...")
-    battery = psutil.sensors_battery()
-    percentage = battery.percent
-    current_time = int(strftime("%H"))
-    things_to_run = []
-    if percentage >= 80:
-        if percentage >= 90:
-            if 7 > current_time or 15 < current_time:
-                things_to_run.append(apps['TIM'])
-        if battery.power_plugged:
-            things_to_run.append(apps['Huo Rong'])
-        things_to_run.append(apps['Google Drive Sync'])
-    for app in things_to_run:
-        app_thread = RunExeThread(app)
-        app_thread.start()
+def main(real=True):
+    if real:
+        print("Starting up...")
+        battery = psutil.sensors_battery()
+        percentage = battery.percent
+        current_time = int(strftime("%H"))
+        things_to_run = []
+        if percentage >= 80:
+            if percentage >= 90:
+                if 7 > current_time or 15 < current_time:
+                    things_to_run.append(apps['TIM'])
+            if battery.power_plugged:
+                things_to_run.append(apps['Huo Rong'])
+            things_to_run.append(apps['Google Drive Sync'])
+        if things_to_run:
+            for app in things_to_run:
+                app_thread = RunExeThread(app)
+                app_thread.start()
+        else:
+            print("Nothing to run.")
+        print('Preparing for fetching...')
+        sleep(30)
+    else:
+        print("Warning: running in test mode.")
     fetch_class_data()
 
 
