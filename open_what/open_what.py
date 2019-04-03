@@ -25,6 +25,8 @@ apps = {'Huo Rong': "C:/Program Files (x86)/Huorong/Sysdiag/bin/HipsMain.exe",
         'TIM': "C:/Program Files (x86)/Tencent/TIM/Bin/QQScLauncher.exe",
         'ExpressVPN': "C:/Program Files (x86)/ExpressVPN/xvpn-ui/ExpressVPN.exe"}
 
+okay_value = 30
+
 
 class RunExeThread(threading.Thread):
     def __init__(self, path, *args, **kwargs):
@@ -130,20 +132,25 @@ def main(real=True):
         battery = psutil.sensors_battery()
         percentage = battery.percent
         current_time = int(strftime("%H"))
-        things_to_run = []
-        if percentage >= 80:
-            if percentage >= 90:
-                if 7 > current_time or 15 < current_time:
-                    things_to_run.append(apps['TIM'])
-            if battery.power_plugged:
-                things_to_run.append(apps['Huo Rong'])
-            things_to_run.append(apps['Google Drive Sync'])
-        if things_to_run:
-            for app in things_to_run:
-                app_thread = RunExeThread(app)
-                app_thread.start()
+        if percentage > okay_value:
+            things_to_run = []
+            if percentage >= 80:
+                if percentage >= 90:
+                    if 7 > current_time or 15 < current_time:
+                        things_to_run.append(apps['TIM'])
+                if battery.power_plugged:
+                    things_to_run.append(apps['Huo Rong'])
+                things_to_run.append(apps['Google Drive Sync'])
+            things_to_run.append(apps['ExpressVPN'])
+
+            if things_to_run:
+                for app in things_to_run:
+                    app_thread = RunExeThread(app)
+                    app_thread.start()
+            else:
+                print("Nothing to run.")
         else:
-            print("Nothing to run.")
+            print("Battery percentage is not in satisfying range. Alto-start canceled.")
         print('Preparing for fetching...')
         sleep(30)
     else:
