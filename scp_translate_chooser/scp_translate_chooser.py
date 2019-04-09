@@ -2,6 +2,8 @@
 from bs4 import BeautifulSoup
 import os
 import sys
+import threading
+import time
 
 
 class SCPPage(object):
@@ -30,20 +32,12 @@ class SCPPage(object):
 
 
 def crawl_scp(minimum, maximum, maximumentries, precise):
+    global result
     f1 = open('temp.md', 'w')
     f1.write("# SCP Web Spider Results\n")
     result = []
     for number in ["scp-"+(str(num).zfill(3)) for num in range(minimum, maximum+1)]:
-        interwiki_url = "http://scpnet.org/interwiki/scp-wiki/?lang=en&page="+number
-        wiki_url = "http://scp-wiki.net/"+number
-        interwiki_soup = get_soup(interwiki_url)
-        wiki_soup = get_soup(wiki_url)
-        if ("中文" not in [a.string for a in interwiki_soup.find_all('a')]) and \
-                (wiki_soup.title.string != "SCP Foundation"):
-            entry = SCPPage("http://scp-wiki.net/"+number, wiki_soup, title=number)
-            result.append(entry)
-            f1.write(str(entry)+"\n")
-        print(number+" processed")
+        CrawlThread(number).start()
         if len(result) >= maximumentries and not precise:
             break
     result.sort()
@@ -59,12 +53,26 @@ def crawl_scp(minimum, maximum, maximumentries, precise):
 
 
 def try_crawl(url):
+    result = None
+    retry = 0
     try:
-        print("Connecting to "+url)
-        return requests.get(url)
+        print("Connecting to " + url)
+        result = requests.get(url)
+        success = True
     except requests.exceptions.ConnectionError:
-        print("Retrying "+url)
-        return try_crawl(url)
+        success = False
+        retry += 1
+    while not success and retry < 50:
+        print("Retrying " + url)
+        try:
+            result = requests.get(url)
+            success = True
+            return result
+        except requests.exceptions.ConnectionError:
+            success = False
+            retry += 1
+    print("Failure connecting to "+url)
+    return
 
 
 def get_soup(url):
@@ -75,6 +83,7 @@ def get_soup(url):
 
 
 def main():
+    start_t = time.time()
     arg = sys.argv
     minimum, maximum, number_of_articles = [int(x) for x in arg[1:4]]
     try:
@@ -82,8 +91,26 @@ def main():
     except IndexError:
         precise_mode = False
     print("Searching for {0} SCP entries in from {1} to {2}".format(number_of_articles, minimum, maximum))
-    result = crawl_scp(minimum, maximum, number_of_articles, precise_mode)
-    print("Result:\n"+';\n'.join([str(e) for e in result]))
+    r = crawl_scp(minimum, maximum, number_of_articles, precise_mode)
+    end_t = time.time()
+    print("Finished searching {0} ({1}).".format(number_of_articles, start_t-end_t))
+
+
+class CrawlThread(threading.Thread):
+    def __init__(self, number, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setName(number)
+        self.number = number
+
+    def run(self):
+        interwiki_url = "http://interwiki.scpdb.org/?wiki=scp-wiki&lang=en&page=_default:" + self.number
+        wiki_url = "http://scp-wiki.net/" + self.number
+        interwiki_soup = get_soup(interwiki_url)
+        wiki_soup = get_soup(wiki_url)
+        if ("中文" not in [a.string for a in interwiki_soup.find_all('a')]) and \
+                (wiki_soup.title.string != "SCP Foundation"):
+            entry = SCPPage("http://scp-wiki.net/" + self.number, wiki_soup, title=self.number)
+            result.append(entry)
 
 
 if __name__ == '__main__':

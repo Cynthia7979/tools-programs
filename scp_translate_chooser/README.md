@@ -24,4 +24,6 @@ sorted by length. If you want the shortest entries within all articles, please c
 `precise_mode`    -      Allows the program to go through every entry in range, 
 then choose the shortest ones, bool value (True or False).
 
-Py2exe coming soon.
+UPDATE:
+
+I updated the mechanism. Now it can process about 50~100 pages a second, however has to retry multiple times.
