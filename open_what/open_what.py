@@ -86,7 +86,6 @@ def fetch_class_data(testmode=False):
     if today.ul:  # if there is an event
         for li in today.ul.find_all('li'):
             for a in li.find_all('a'):
-                print(a)
                 title = a.text
                 link = a.get('href')
                 link = link.replace("javascript:openLink('", "https://www.depaulcatholic.org")
@@ -155,9 +154,17 @@ def main(real=True):
         sleep(30)
     else:
         print("Warning: running in test mode.")
+    month = int(strftime('%m'))
+    day = int(strftime('%d'))
+    print(month, day)
+    if month == 5:
+        days = 18 + 31 - day
+    else:
+        days = 18 - day
+    print('{day} days until back to home!'.format(day=days))
     fetch_class_data()
 
 
 if __name__ == '__main__':
-    main()
+    main(False)
     sys.exit()
