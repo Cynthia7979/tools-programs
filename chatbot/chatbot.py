@@ -39,7 +39,7 @@ def add_message(message):
 
 def generate():
     result = []
-    while len(result) < 10 or len(result) > 20:
+    while len(result) < 10 or len(result) > 40:
         result = []
         s = random.choice(list(couple_words.keys()))
         result.extend(s)
@@ -50,5 +50,5 @@ def generate():
     return " ".join(result)
 
 if __name__ == "__main__":
-    load("chatbot/forum.txt")
+    load("chatbot/scp.txt")
     print(generate())
