@@ -30,9 +30,12 @@ def load(phrases):
 def add_message(message):
     message = re.sub(r'[^\w\s\']', '', message).lower().strip()
     words = message.split()
-    for i in range(2, len(words)):
-        couple_words[(words[i - 2], words[i - 1])].put(words[i])
-    couple_words[(words[-2], words[-1])].put("")
+    try:
+        for i in range(2, len(words)):
+            couple_words[(words[i - 2], words[i - 1])].put(words[i])
+        couple_words[(words[-2], words[-1])].put("")
+    except IndexError:
+        pass
 
 def generate():
     result = []
@@ -47,5 +50,5 @@ def generate():
     return " ".join(result)
 
 if __name__ == "__main__":
-    load("scp.txt")
+    load("chatbot/forum.txt")
     print(generate())
