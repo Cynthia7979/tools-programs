@@ -1,0 +1,80 @@
+﻿Item #: SCP-413
+Object Class: Safe
+Special Containment Procedures: All entrances to SCP-413 are to be sealed and put under armed guard. Under no circumstances are unauthorized persons allowed to enter SCP-413, with guards authorized to use lethal force. Any personnel entering SCP-413 for experiments are required to wear GPS trackers and safety lines at all times. Should containment be breached, or by O5 decree, Containment Protocol 413 must be immediately enacted by the highest ranking personnel present.
+Description: SCP-413 is a four-story parking garage located in [REDACTED]. Inside, SCP-413 has a variable environment that dynamically alters itself. In effect, SCP-413 is able to change its internal structure, such as moving ramps, adding floors, changing stair cases, and so on. However, when observed from the outside, there is no indication of any of these changes taking place. While accurate measurement of SCP-413's interior has proven impossible, it is well established that the interior is larger than the building's external dimensions, and that the interior dimensions are constantly changing.
+Another effect SCP-413 appears to have is to interfere with an individual's sense of direction. Analysis of recordings taken of the interior reveal that SCP-413 generates a low-frequency sound within its interior that shuts down or interferes with several key regions of the human brain controlling navigation, balance, and short-term memory. Extended exposure to this sound is known to cause several side effects, such as nausea, dizziness, vomiting, vertigo, anxiety, claustrophobia, and in some rare cases, [DATA EXPUNGED]. However, these effects will eventually wear off once the affected individual leaves SCP-413.
+Under no circumstances are personnel to enter SCP-413 without navigation aids and safety lines. Navigation within SCP-413 without the use of artificial aids such as GPS or safety lines is nearly impossible, as the combination of the constantly shifting interior as well as the disrupting sound frequency interfere too much with natural human navigation.
+SCP-413 was discovered when a security guard that worked at the site turned in security tapes of SCP-413 to the local police department, suspecting that they had been tampered with. The tapes were immediately confiscated and the entire site was bought out by the Foundation.
+Addendum 1: After several incursions, it has been discovered that SCP-413 is in fact sapient. Though not evident at first, SCP-413 is capable of independent thought and possesses human-level intelligence. Communication was initiated via the painted words and signs on SCP-413's walls, which it is able to manipulate to form individual words and sentences. Analysis of SCP-413's behavior suggests that it is highly mischievous and enjoys fooling around and playing pranks on the unsuspecting. However, it does take great offense to being wronged, and is shown to possess a vengeful and maybe even sadistic side (see Addendum 2).
+Interview Log
+Dr. ███████: Hello, SCP-413.
+SCP-413: HELLO DOCTOR
+Dr. ███████: Alright, let's get this interview started, shall we? How long have you been aware of your own existence?
+SCP-413: SINCE THE DAY I WAS BUILT
+Dr. ███████: And when was that?
+SCP-413: I DONT REMEMBER ITS SOMETHING I DONT THINK ABOUT
+Dr. ███████: Why are you constantly changing your interior?
+SCP-413: BECAUSE ITS BORING SITTING HERE ALL DAY
+Dr. ███████: So, you don't do it for any particular reason?
+SCP-413: I DO IT FOR FUN BUT THE OTHERS DONT APPROVE
+Dr. ███████: Others?
+SCP-413: THE BUILDINGS NEXT DOOR AND ACROSS THE STREET DONT BELIEVE IM A PRODUCTIVE MEMBER OF SOCIETY AND THAT I WILL GIVE AWAY THEIR PLANS
+Dr. ███████: What plans?
+SCP-413: THAT WE ATTACK TOMRROW
+Dr. ███████: (visibly pales)
+SCP-413: HA HA HA JUST KIDDING DID YOU SEE THE LOOK ON YOUR FACE ITS HILARIOUS
+Dr. ███████: I think we're done for today.
+SCP-413: YOURE NO FUN
+Video Logs: The following video logs were recorded by security cameras before SCP-413 was discovered and contained.
+Video Log 1
+Subject: Family of Six Tourists
+Description: SCP-413 proceeds to thwart any attempt for the subjects to find their vehicle. It continually changes signs and markers to mislead and confuse the subjects for the next twenty minutes.
+Video Log 2
+Subject: Neglectful Mother and her child
+Description: Subject is continually led around in circles, with every path she takes eventually leading her back to her car, where she was keeping her child locked in. The cycle continues for seven minutes before the subject finally gives up and leaves SCP-413 with her child.
+Video Log 3
+Subject: Businessman
+Description: By manipulating ramp and sign placement, SCP-413 leads the subject around in circles and forces him to drive through a complex and confusing path before letting him exit.
+Video Log 4
+Subject: Group of Five Teenage Vandals
+Description: Subjects enter SCP-413 and begin vandalizing vehicles and the interior of SCP-413. [DATA EXPUNGED].
+Addendum 2: The five teenage youths seen in Video Log 4 were found on ██/██/20██ by a Foundation exploration team. The teens were still alive, though exhausted, malnourished, and dehydrated, despite being declared missing for over three months. Before being administered Class A amnestics and returned to their families, the five teenagers revealed that they were locked in an inescapable labyrinth created by SCP-413, and were kept alive only by several water fountains and vending machines that would conveniently appear. They also stated that [DATA EXPUNGED]. The five teenagers were apparently inside SCP-413 for the entire exploration phase, somehow eluding our deep sensing equipment. Further exploration suspended pending further review.
+Containment Protocol 413: Due to the inability to plant demolition charges within SCP-413, contingency in the case of a major containment breach will instead be carried out via cruise missile or air strike. As such, either the USS ██████, SCPS Defender, or fighters from ████ ████████ Air Force Base or NASA ██████ must be kept on standby.
+Item #: SCP-346
+Object Class: Safe
+Special Containment Procedures: SCP-346 is to be kept in a store-bought birdcage at least 1m in height, and 1.5m in width either way. No locks or additional security measures are required, as SCP-346 is no stronger nor smarter than the average parakeet. SCP-346's cage is to contain at least two water dishes with standing perches, to be refilled daily, and fed a diet of five to six medium-sized live crickets daily. SCP-346's cage also contains one tree branch for perching, scratching, and climbing, one open-top nest (purchased at a commercial pet store) lined with moss, and a string with bright-colored bells on it for entertainment.
+The bottom of SCP-346's cage is covered with corncob-based, biodegradable bedding and is to be cleaned out and replaced every other week. During cleaning, SCP-346 may be either held by hand, allowed to fly around a room with a closed door, or placed in a paper bag with a book over the end to be held out of the way.
+SCP-346's cage is held in Dr. Rights' office, and may not be moved without her permission. Despite SCP-346's habit of nibbling fingertips and pulling strands of hair, SCP-346 poses no danger upon escape and may be recaptured, gently, with either a net or by hand.
+Description: SCP-346 is a small member of an unidentified family of pterodactyl- ancient flying reptiles. SCP-346 is approximately the size of a small bat, and has very lightweight bone structure. Although its head, wings, and legs are bare, its main body is covered with a soft coat of fur-like, dark colored down. The origin of SCP-346 is unknown, and was purchased by Agent ██████████ in a small pet shop in Brazil, being marketed under the name "Kongo-mato".
+The owner of the pet store claims not to know where SCP-346 came from, having purchased a set of eggs off the black market (of which only one, SCP-346, hatched) believing them to be from a rare species of parrot. Some theories suggest that there may be a large colony of creatures similar to SCP-346 somewhere in South America.
+Testing has revealed that SCP-346 is an adult, but appears to have had its growth somewhat stunted by malnutrition and being raised in a small, cramped cage. SCP-346 is also a male, and has been nicknamed by staff who find the little creature's appearance charming as "Pterry".
+SCP-346 behaves in a manner similar to birds and bats, being most active at dawn and dusk, and energetically flying in whatever space it's given, snapping up insects either out of the air or off the ground and branches. SCP-346 chirps and squeaks in a manner similar to birds and rodents, and is most vocal during the evening hours. Some describe this as endearing, others as annoying.
+Addendum 1: After the discovery of SCP-1265, some theories suggest that there may be a large colony of creatures similar to SCP-346 somewhere in South America. However, the existence of SCP-346 implies that these alleged colonies (should they exist) do not possess the same anomalous properties as SCP-1265.
+Addendum 2: It has been suggested that further investigation into the origins of SCP-346 be taken, in the hopes of finding a large colony of similar creatures, perhaps indicative of a surviving member of the pterodactyl lineage, or a rip in space and time.
+SCP-346 should be kept well away from SCP-529, as per request of Dr. Rights.
+Item #: SCP-300
+Object Class: Safe
+Special Containment Procedures: SCP-300 is stored in a locked and climate-controlled container at Site ██. Experimentation on SCP-300 may only be performed with prior written permission from at least one (1) Level 3 Senior Researcher, and any observations made must be recorded for later analysis.
+Description: SCP-300 consists of an antique glass perfume bottle (SCP-300-1) containing approximately 2.4 cc of an unidentified colorless liquid (SCP-300-2).
+When a single drop of SCP-300-2 is extracted from SCP-300-1 and the drop is viewed through a standard optical microscope, an animated scene becomes visible. While no two drops have shown precisely the same scene, these scenes generally take the form of pastoral or woodland scenes consistent with that of Victorian-Era England.
+So far, attempts to analyze the exact chemical components of SCP-300-2 have inexplicably failed, with spectrometers reporting wildly variant or false data, thus making attempts at replicating it impossible. SCP-300-2 also invariably evaporates within 2-8 hours of being drawn outside of SCP-300-1, despite all attempts at stabilizing the substance or controlling laboratory conditions.
+SCP-300 was first documented along with [REDACTED] after being recovered from the attic of a row home in [REDACTED], UK on ██/█/1863 following a raid by agents of the Royal Society for the Security, Containment, and Protection of Anomalous Artefacts. SCP-300 was transferred to SCP Foundation possession on █/██/19██.
+Addendum 300-1: Experiment Log (Abridged)
+Date: ██/██/19██
+Procedure: A single drop (approximately 0.07 cc) of SCP-300-2 transferred to microscope slide. Video recorded for approximately 3 hours before SCP-300-2 evaporated harmlessly.
+Details: Visible scene consists of a dirt road lined with trees of an unidentified species. Coloration of leaves suggested that the scene was taking place in autumn. A light breeze is blowing, causing some of the yellowed leaves to fall to the ground. At approximately 1:07:18, a horse-drawn carriage with a driver and two passengers passes through the scene. Clothing worn by the individuals seem to be consistent with that worn in Victorian-Era England. No other significant events are recorded.
+Date: ██/██/19██
+Procedure: A single drop (approximately 0.08 cc) of SCP-300-2 transferred to microscope slide. Video record lasts approximately 5 hours.
+Details: Visible scene consists of a rural farm. Size of wheat plants visible in scene indicate late summer time period. A family consisting of two adults and three children of varying age are periodically visible in various areas of the farm, performing chores. Clothing of family consistent with previously established time period.
+Date: █/█/19██
+Procedure: A single drop (approximately 0.07 cc) of SCP-300-2 transferred to microscope slide. Video record lasts approximately 2 hours.
+Details: Visible scene consists of the interior of a well-furnished residence. Within the visible area are a lit fireplace and several armchairs. Three well-dressed individuals, two men and one woman, are seen conversing while enjoying a bottle of what is presumably red wine. Lip-reading analysis of their conversation is incomplete, but fragments developed so far indicate a casual political discussion regarding issues appropriate for the year 18██, again in Victorian England.
+Date: █/██/19██
+Procedure: Two drops (approximately 0.15 cc) of SCP-300-2 transferred to microscope slide for experimentation. Video record lasts approximately 3 hours.
+Details: Video record is blurry and indecipherable. Although a few fragments of video have been analyzed, no useful information is gathered. Further experimentation is to be limited to a single drop of SCP-300-2.
+Addendum 300-2: Incident 300-012
+On ██/█/19██, Dr. █████ was found dead in Laboratory C, with cause of death being self-inflicted gunshot wound to the head. Laboratory video surveillance showed Dr. █████ obsessively viewing a recent recording from a SCP-300 experiment and becoming increasingly agitated until he pulled out his sidearm and took his own life.
+Upon investigation, the recording was identified and analyzed as a 3-hour long recording made during an experiment on ██/█/19██. The recording shows a young woman of approximately ██ years of age, sitting in an armchair and embroidering an article of clothing while singing to herself. Further investigation showed a startling resemblance between the woman and Dr. █████'s late wife, who died during [REDACTED], up to and including a birthmark visible on the left side of her neck. Experimentation on SCP-300 has been temporarily placed on hold pending research into possible telepathic or memory-affecting capabilities.
+Addendum 300-3: Inscription Located on Back of SCP-300
+A world in a bottle
+for my beloved Nora
