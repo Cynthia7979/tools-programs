@@ -166,5 +166,5 @@ def main(real=True):
 
 
 if __name__ == '__main__':
-    main(True)
+    main(False)
     sys.exit()

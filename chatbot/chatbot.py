@@ -1,6 +1,7 @@
 # https://www.codingame.com/playgrounds/41655/how-to-build-a-chatbot-in-less-than-50-lines-of-code
 # -*- coding: utf-8 -*-
 import random, re
+import sys, os
 from collections import defaultdict
 
 class LString:
@@ -20,12 +21,15 @@ class LString:
             else:
                 ran -= value
 
+
 couple_words = defaultdict(LString)
+
 
 def load(phrases):
     with open(phrases, 'r') as f:
         for line in f:
             add_message(line)
+
 
 def add_message(message):
     message = re.sub(r'[^\w\s\']', '', message).lower().strip()
@@ -37,18 +41,21 @@ def add_message(message):
     except IndexError:
         pass
 
+
 def generate():
     result = []
-    while len(result) < 10 or len(result) > 40:
+    while len(result) < 10 or len(result) > 20:
         result = []
         s = random.choice(list(couple_words.keys()))
         result.extend(s)
         while result[-1]:
             w = couple_words[(result[-2], result[-1])].get_random()
             result.append(w)
-
     return " ".join(result)
 
+
 if __name__ == "__main__":
-    load("chatbot/scp.txt")
+    if os.path.basename(os.getcwd()) != 'chatbot':
+        os.chdir('chatbot/')
+    load("scp_new.txt")
     print(generate())
