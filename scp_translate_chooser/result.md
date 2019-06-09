@@ -1,11 +1,1 @@
 # SCP Web Spider Results
-* [SCP 4134 - SCP Foundation](http://scp-wiki.net/scp-4134)
-* [SCP-4122 - SCP Foundation](http://scp-wiki.net/scp-4122)
-* [SCP-4137 - SCP Foundation](http://scp-wiki.net/scp-4137)
-* [SCP-4128 - SCP Foundation](http://scp-wiki.net/scp-4128)
-* [SCP-4235 - SCP Foundation](http://scp-wiki.net/scp-4235)
-* [SCP-4135 - SCP Foundation](http://scp-wiki.net/scp-4135)
-* [SCP-4216 - SCP Foundation](http://scp-wiki.net/scp-4216)
-* [SCP-4027 - SCP Foundation](http://scp-wiki.net/scp-4027)
-* [SCP-4071 - SCP Foundation](http://scp-wiki.net/scp-4071)
-* [SCP-4195 - SCP Foundation](http://scp-wiki.net/scp-4195)

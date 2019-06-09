@@ -32,7 +32,7 @@ tcolor -	A color editor.  Allows you to edit colors in several
 		using "send".
 
 rmt -		Allows you to "hook-up" remotely to any Tk application
-		on the display.  Select an application with the menu,
+		on the display.  Select an application with the main,
 		then just type commands:  they'll go to that application.
 
 timer -		Displays a seconds timer with start and stop buttons.

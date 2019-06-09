@@ -1,4 +1,4 @@
-import Tkinter
+import tkinter
 import os
 import shutil
 from os.path import join
@@ -13,13 +13,13 @@ def main():
 
 
 def window_pack():
-    root = Tkinter.Tk()
+    root = tkinter.Tk()
 
-    caution_label = Tkinter.Label(root, text='Warning: This program will move every file in the folder')
-    check_label = Tkinter.Label(root)
-    enter_path_label = Tkinter.Label(root, text='Please enter your file path:')
-    enter_path_entry = Tkinter.Entry(root)
-    enter_path_button = Tkinter.Button(root, text='Confirm', command=lambda: check_path(enter_path_entry, check_label))
+    caution_label = tkinter.Label(root, text='Warning: This program will move every file in the folder')
+    check_label = tkinter.Label(root)
+    enter_path_label = tkinter.Label(root, text='Please enter your file path:')
+    enter_path_entry = tkinter.Entry(root)
+    enter_path_button = tkinter.Button(root, text='Confirm', command=lambda: check_path(enter_path_entry, check_label))
 
     enter_path_label.pack()
     enter_path_entry.pack()
@@ -39,7 +39,7 @@ def check_path(path_entry, check_label):
         check_label.config(text='Finished! You can close this window now')
     else:
         check_label.config(text='This path is unavailable!')
-        path_entry.delete(0, Tkinter.END)
+        path_entry.delete(0, tkinter.END)
         #print 'unavailable'
 
 
@@ -72,7 +72,7 @@ def file_scanner(root_dir, d, others):
         for this_file in files:
             suffix = this_file[this_file.find('.') + 1:]
             this_path = join(path, this_file)
-            print suffix
+            print(suffix)
             if suffix in d.keys():
                 shutil.move(this_path, join(d[suffix], this_file))
                 #print 'moved!'
@@ -81,4 +81,5 @@ def file_scanner(root_dir, d, others):
                 #print 'moved others!'
 
 if __name__ == '__main__':
-    main()
+    #main()
+    pass

@@ -38,7 +38,7 @@ set paneList {
     label
     labelframe
     listbox
-    menu
+    main
     menubutton
     message
     panedwindow

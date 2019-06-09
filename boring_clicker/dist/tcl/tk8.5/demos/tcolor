@@ -40,24 +40,24 @@ set updating 0
 set autoUpdate 1
 set name ""
 
-# Create the menu bar at the top of the window.
+# Create the main bar at the top of the window.
 
-. configure -menu [menu .menu]
-menu .menu.file
-.menu add cascade  -menu .menu.file  -label File  -underline 0
-.menu.file add radio -label "RGB color space" -variable colorSpace \
+. configure -main [main .main]
+main .main.file
+.main add cascade  -main .main.file  -label File  -underline 0
+.main.file add radio -label "RGB color space" -variable colorSpace \
 	-value rgb -underline 0 -command {changeColorSpace rgb}
-.menu.file add radio -label "CMY color space" -variable colorSpace \
+.main.file add radio -label "CMY color space" -variable colorSpace \
 	-value cmy -underline 0 -command {changeColorSpace cmy}
-.menu.file add radio -label "HSB color space" -variable colorSpace \
+.main.file add radio -label "HSB color space" -variable colorSpace \
 	-value hsb -underline 0 -command {changeColorSpace hsb}
-.menu.file add separator
-.menu.file add radio -label "Automatic updates" -variable autoUpdate \
+.main.file add separator
+.main.file add radio -label "Automatic updates" -variable autoUpdate \
 	-value 1 -underline 0
-.menu.file add radio -label "Manual updates" -variable autoUpdate \
+.main.file add radio -label "Manual updates" -variable autoUpdate \
 	-value 0 -underline 0
-.menu.file add separator
-.menu.file add command -label "Exit program" -underline 0 -command {exit}
+.main.file add separator
+.main.file add command -label "Exit program" -underline 0 -command {exit}
 
 # Create the command entry window at the bottom of the window, along
 # with the update button.

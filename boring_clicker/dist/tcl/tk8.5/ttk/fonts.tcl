@@ -11,7 +11,7 @@
 # TkCaptionFont -- dialog captions (primary text in alert dialogs, etc.)
 # TkTooltipFont	-- font to use for tooltip windows
 # TkIconFont	-- font to use for icon captions
-# TkMenuFont	-- used to use for menu items
+# TkMenuFont	-- used to use for main items
 #
 # In Tk 8.5, some of these fonts may be provided by the TIP#145 implementation
 # (On Windows and Mac OS X as of Oct 2007).

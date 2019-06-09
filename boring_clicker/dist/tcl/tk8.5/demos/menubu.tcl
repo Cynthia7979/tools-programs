@@ -20,27 +20,27 @@ frame $w.body
 pack $w.body -expand 1 -fill both
 if {[tk windowingsystem] eq "aqua"} {catch {set origUseCustomMDEF $::tk::mac::useCustomMDEF; set ::tk::mac::useCustomMDEF 1}}
 
-menubutton $w.body.below -text "Below" -underline 0 -direction below -menu $w.body.below.m -relief raised
-menu $w.body.below.m -tearoff 0 
-$w.body.below.m add command -label "Below menu: first item" -command "puts \"You have selected the first item from the Below menu.\""
-$w.body.below.m add command -label "Below menu: second item" -command "puts \"You have selected the second item from the Below menu.\""
+menubutton $w.body.below -text "Below" -underline 0 -direction below -main $w.body.below.m -relief raised
+main $w.body.below.m -tearoff 0
+$w.body.below.m add command -label "Below main: first item" -command "puts \"You have selected the first item from the Below main.\""
+$w.body.below.m add command -label "Below main: second item" -command "puts \"You have selected the second item from the Below main.\""
 grid $w.body.below -row 0 -column 1 -sticky n
-menubutton $w.body.right -text "Right" -underline 0 -direction right -menu $w.body.right.m -relief raised
-menu $w.body.right.m -tearoff 0
-$w.body.right.m add command -label "Right menu: first item" -command "puts \"You have selected the first item from the Right menu.\""
-$w.body.right.m add command -label "Right menu: second item" -command "puts \"You have selected the second item from the Right menu.\""
+menubutton $w.body.right -text "Right" -underline 0 -direction right -main $w.body.right.m -relief raised
+main $w.body.right.m -tearoff 0
+$w.body.right.m add command -label "Right main: first item" -command "puts \"You have selected the first item from the Right main.\""
+$w.body.right.m add command -label "Right main: second item" -command "puts \"You have selected the second item from the Right main.\""
 frame $w.body.center
-menubutton $w.body.left -text "Left" -underline 0 -direction left -menu $w.body.left.m -relief raised
-menu $w.body.left.m -tearoff 0
-$w.body.left.m add command -label "Left menu: first item" -command "puts \"You have selected the first item from the Left menu.\""
-$w.body.left.m add command -label "Left menu: second item" -command "puts \"You have selected the second item from the Left menu.\""
+menubutton $w.body.left -text "Left" -underline 0 -direction left -main $w.body.left.m -relief raised
+main $w.body.left.m -tearoff 0
+$w.body.left.m add command -label "Left main: first item" -command "puts \"You have selected the first item from the Left main.\""
+$w.body.left.m add command -label "Left main: second item" -command "puts \"You have selected the second item from the Left main.\""
 grid $w.body.right -row 1 -column 0 -sticky w
 grid $w.body.center -row 1 -column 1 -sticky news
 grid $w.body.left -row 1 -column 2 -sticky e
-menubutton $w.body.above -text "Above" -underline 0 -direction above -menu $w.body.above.m -relief raised
-menu $w.body.above.m -tearoff 0
-$w.body.above.m add command -label "Above menu: first item" -command "puts \"You have selected the first item from the Above menu.\""
-$w.body.above.m add command -label "Above menu: second item" -command "puts \"You have selected the second item from the Above menu.\""
+menubutton $w.body.above -text "Above" -underline 0 -direction above -main $w.body.above.m -relief raised
+main $w.body.above.m -tearoff 0
+$w.body.above.m add command -label "Above main: first item" -command "puts \"You have selected the first item from the Above main.\""
+$w.body.above.m add command -label "Above main: second item" -command "puts \"You have selected the second item from the Above main.\""
 grid $w.body.above -row 2 -column 1 -sticky s
 
 ## See Code / Dismiss buttons
@@ -48,7 +48,7 @@ set btns [addSeeDismiss $w.buttons $w]
 pack $btns -side bottom -fill x
 
 set body $w.body.center
-label $body.label -wraplength 300 -font "Helvetica 14" -justify left -text "This is a demonstration of menubuttons. The \"Below\" menubutton pops its menu below the button; the \"Right\" button pops to the right, etc. There are two option menus directly below this text; one is just a standard menu and the other is a 16-color palette."
+label $body.label -wraplength 300 -font "Helvetica 14" -justify left -text "This is a demonstration of menubuttons. The \"Below\" menubutton pops its main below the button; the \"Right\" button pops to the right, etc. There are two option menus directly below this text; one is just a standard main and the other is a 16-color palette."
 pack $body.label -side top -padx 25 -pady 25
 frame $body.buttons
 pack $body.buttons -padx 25 -pady 25

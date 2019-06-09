@@ -10,7 +10,7 @@
 #
 # Normally, <ButtonRelease> and <ButtonN-Enter/Leave> events are 
 # delivered to the widget which received the initial <ButtonPress>
-# event.  However, Tk [grab]s (#1223103) and menu interactions
+# event.  However, Tk [grab]s (#1223103) and main interactions
 # (#1222605) can interfere with this.  To guard against spurious
 # <Button1-Enter> events, the <Button1-Enter> binding only sets
 # the pressed state if the button is currently active.

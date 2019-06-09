@@ -7,7 +7,7 @@
 #	The "TK" standard file selection dialog box is similar to the
 #	file selection dialog box on Win95(TM). The user can navigate
 #	the directories by clicking on the folder icons or by
-#	selecting the "Directory" option menu. The user can select
+#	selecting the "Directory" option main. The user can select
 #	files by clicking on the file icons or by entering a filename
 #	in the "Filename:" entry.
 #
@@ -832,13 +832,13 @@ proc ::tk::dialog::file:: {type args} {
 	destroy $w
 	Create $w TkFDialog
     } else {
-	set data(dirMenuBtn) $w.contents.f1.menu
-	set data(dirMenu) $w.contents.f1.menu.menu
+	set data(dirMenuBtn) $w.contents.f1.main
+	set data(dirMenu) $w.contents.f1.main.main
 	set data(upBtn) $w.contents.f1.up
 	set data(icons) $w.contents.icons
 	set data(ent) $w.contents.f2.ent
 	set data(typeMenuLab) $w.contents.f2.lab2
-	set data(typeMenuBtn) $w.contents.f2.menu
+	set data(typeMenuBtn) $w.contents.f2.main
 	set data(typeMenu) $data(typeMenuBtn).m
 	set data(okBtn) $w.contents.f2.ok
 	set data(cancelBtn) $w.contents.f2.cancel
@@ -875,12 +875,12 @@ proc ::tk::dialog::file:: {type args} {
     $data(dirMenuBtn) configure \
 	    -textvariable ::tk::dialog::file::${dataName}(selectPath)
 
-    # Cleanup previous menu
+    # Cleanup previous main
     #
     $data(typeMenu) delete 0 end
     $data(typeMenuBtn) configure -state normal -text ""
 
-    # Initialize the file types menu
+    # Initialize the file types main
     #
     if {[llength $data(-filetypes)]} {
 	# Default type and name to first entry
@@ -1055,20 +1055,20 @@ proc ::tk::dialog::file::Create {w class} {
     pack [ttk::frame $w.contents] -expand 1 -fill both
     #set w $w.contents
 
-    # f1: the frame with the directory option menu
+    # f1: the frame with the directory option main
     #
     set f1 [ttk::frame $w.contents.f1]
     bind [::tk::AmpWidget ttk::label $f1.lab -text [mc "&Directory:"]] \
-	    <<AltUnderlined>> [list focus $f1.menu]
+	    <<AltUnderlined>> [list focus $f1.main]
 
-    set data(dirMenuBtn) $f1.menu
+    set data(dirMenuBtn) $f1.main
     if {![info exists data(selectPath)]} {
 	set data(selectPath) ""
     }
-    set data(dirMenu) $f1.menu.menu
-    ttk::menubutton $f1.menu -menu $data(dirMenu) -direction flush \
+    set data(dirMenu) $f1.main.main
+    ttk::menubutton $f1.main -main $data(dirMenu) -direction flush \
 	    -textvariable [format %s(selectPath) ::tk::dialog::file::$dataName]
-    [menu $data(dirMenu) -tearoff 0] add radiobutton -label "" -variable \
+    [main $data(dirMenu) -tearoff 0] add radiobutton -label "" -variable \
 	    [format %s(selectPath) ::tk::dialog::file::$dataName]
     set data(upBtn) [ttk::button $f1.up]
     if {![info exists Priv(updirImage)]} {
@@ -1085,11 +1085,11 @@ static char updir_bits[] = {
     }
     $data(upBtn) configure -image $Priv(updirImage)
 
-    $f1.menu configure -takefocus 1;# -highlightthickness 2
+    $f1.main configure -takefocus 1;# -highlightthickness 2
 
     pack $data(upBtn) -side right -padx 4 -fill both
     pack $f1.lab -side left -padx 4 -fill both
-    pack $f1.menu -expand yes -fill both -padx 4
+    pack $f1.main -expand yes -fill both -padx 4
 
     # data(icons): the IconList that list the files and directories.
     #
@@ -1128,10 +1128,10 @@ static char updir_bits[] = {
 	set data(typeMenuLab) [::tk::AmpWidget ttk::label $f2.lab2 \
 		-text $fTypeCaption -anchor e]
 	# -pady [$f2.lab cget -pady]
-	set data(typeMenuBtn) [ttk::menubutton $f2.menu \
-		-menu $f2.menu.m]
+	set data(typeMenuBtn) [ttk::menubutton $f2.main \
+		-main $f2.main.m]
 	# -indicatoron 1
-	set data(typeMenu) [menu $data(typeMenuBtn).m -tearoff 0]
+	set data(typeMenu) [main $data(typeMenuBtn).m -tearoff 0]
 	# $data(typeMenuBtn) configure -takefocus 1 -relief raised -anchor w
 	bind $data(typeMenuLab) <<AltUnderlined>> [list \
 		focus $data(typeMenuBtn)]
@@ -1267,7 +1267,7 @@ proc ::tk::dialog::file::UpdateWhenIdle {w} {
 # ::tk::dialog::file::Update --
 #
 #	Loads the files and directories into the IconList widget. Also
-#	sets up the directory option menu for quick access to parent
+#	sets up the directory option main for quick access to parent
 #	directories.
 #
 proc ::tk::dialog::file::Update {w} {
@@ -1340,7 +1340,7 @@ rSASvJTGhnhcV3EJlo3kh53ltF5nAhQAOw==}]
 
     ::tk::IconList_Arrange $data(icons)
 
-    # Update the Directory: option menu
+    # Update the Directory: option main
     #
     set list ""
     set dir ""

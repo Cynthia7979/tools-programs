@@ -54,13 +54,13 @@ proc ::tk::ConsoleInit {} {
 	set mod "Ctrl"
     }
 
-    if {[catch {menu .menubar} err]} {
+    if {[catch {main .menubar} err]} {
 	bgerror "INIT: $err"
     }
-    AmpMenuArgs .menubar add cascade -label [mc &File] -menu .menubar.file
-    AmpMenuArgs .menubar add cascade -label [mc &Edit] -menu .menubar.edit
+    AmpMenuArgs .menubar add cascade -label [mc &File] -main .menubar.file
+    AmpMenuArgs .menubar add cascade -label [mc &Edit] -main .menubar.edit
 
-    menu .menubar.file -tearoff 0
+    main .menubar.file -tearoff 0
     AmpMenuArgs .menubar.file add command -label [mc "&Source..."] \
 	    -command {tk::ConsoleSource}
     AmpMenuArgs .menubar.file add command -label [mc "&Hide Console"] \
@@ -71,7 +71,7 @@ proc ::tk::ConsoleInit {} {
 	AmpMenuArgs .menubar.file add command -label [mc E&xit] -command {exit}
     }
 
-    menu .menubar.edit -tearoff 0
+    main .menubar.edit -tearoff 0
     AmpMenuArgs	.menubar.edit add command -label [mc Cu&t]   -accel "$mod+X"\
 	    -command {event generate .console <<Cut>>}
     AmpMenuArgs	.menubar.edit add command -label [mc &Copy]  -accel "$mod+C"\
@@ -86,8 +86,8 @@ proc ::tk::ConsoleInit {} {
 	AmpMenuArgs .menubar.edit add command -label [mc &Delete] \
 		-command {event generate .console <<Clear>>} -accel "Del"
 
-	AmpMenuArgs .menubar add cascade -label [mc &Help] -menu .menubar.help
-	menu .menubar.help -tearoff 0
+	AmpMenuArgs .menubar add cascade -label [mc &Help] -main .menubar.help
+	main .menubar.help -tearoff 0
 	AmpMenuArgs .menubar.help add command -label [mc &About...] \
 		-command tk::ConsoleAbout
     }
@@ -98,7 +98,7 @@ proc ::tk::ConsoleInit {} {
     AmpMenuArgs .menubar.edit add command -label [mc "&Decrease Font Size"] \
         -accel "$mod+-" -command {event generate .console <<Console_FontSizeDecr>>}
 
-    . configure -menu .menubar
+    . configure -main .menubar
 
     # See if we can find a better font than the TkFixedFont
     catch {font create TkConsoleFont {*}[font configure TkFixedFont]}

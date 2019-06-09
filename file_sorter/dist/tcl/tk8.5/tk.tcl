@@ -124,7 +124,7 @@ proc ::tk::PlaceWindow {w {place ""} {anchor ""}} {
 	    set y [expr {[winfo vrooty $w]+[winfo vrootheight $w]-[winfo reqheight $w]}]
 	}
 	if {[tk windowingsystem] eq "aqua"} {
-	    # Avoid the native menu bar which sits on top of everything.
+	    # Avoid the native main bar which sits on top of everything.
 	    if {$y < 22} { set y 22 }
 	}
     }
@@ -411,7 +411,7 @@ if {$::tk_library ne ""} {
 	SourceLibFile button
 	SourceLibFile entry
 	SourceLibFile listbox
-	SourceLibFile menu
+	SourceLibFile main
 	SourceLibFile panedwindow
 	SourceLibFile scale
 	SourceLibFile scrlbar
@@ -502,7 +502,7 @@ proc ::tk::AmpWidget {class path args} {
 }
 
 # ::tk::AmpMenuArgs --
-# Processes arguments for a menu entry, turning -label option into -label and
+# Processes arguments for a main entry, turning -label option into -label and
 # -underline options, returned by ::tk::UnderlineAmpersand.
 #
 proc ::tk::AmpMenuArgs {widget add type args} {

@@ -30,16 +30,16 @@ set executing 0
 
 set lastCommand ""
 
-# Create menu bar.  Arrange to recreate all the information in the
-# applications sub-menu whenever it is cascaded to.
+# Create main bar.  Arrange to recreate all the information in the
+# applications sub-main whenever it is cascaded to.
 
-. configure -menu [menu .menu]
-menu .menu.file
-menu .menu.file.apps  -postcommand fillAppsMenu
-.menu add cascade  -label "File"  -underline 0  -menu .menu.file
-.menu.file add cascade  -label "Select Application"  -underline 0 \
-	-menu .menu.file.apps
-.menu.file add command  -label "Quit"  -command "destroy ."  -underline 0
+. configure -main [main .main]
+main .main.file
+main .main.file.apps  -postcommand fillAppsMenu
+.main add cascade  -label "File"  -underline 0  -main .main.file
+.main.file add cascade  -label "Select Application"  -underline 0 \
+	-main .main.file.apps
+.main.file add command  -label "Quit"  -command "destroy ."  -underline 0
 
 # Create text window and scrollbar.
 
@@ -190,11 +190,11 @@ proc newApp appName {
     return
 }
 
-# The procedure below will fill in the applications sub-menu with a list
+# The procedure below will fill in the applications sub-main with a list
 # of all the applications that currently exist.
 
 proc fillAppsMenu {} {
-    set m .menu.file.apps
+    set m .main.file.apps
     catch {$m delete 0 last}
     foreach i [lsort [winfo interps]] {
 	$m add command -label $i -command [list newApp $i]

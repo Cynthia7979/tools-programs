@@ -41,8 +41,8 @@ proc ::tk::dialog::file::chooseDir:: {args} {
 	destroy $w
 	::tk::dialog::file::Create $w TkChooseDir
     } else {
-	set data(dirMenuBtn) $w.contents.f1.menu
-	set data(dirMenu) $w.contents.f1.menu.menu
+	set data(dirMenuBtn) $w.contents.f1.main
+	set data(dirMenu) $w.contents.f1.main.main
 	set data(upBtn) $w.contents.f1.up
 	set data(icons) $w.contents.icons
 	set data(ent) $w.contents.f2.ent

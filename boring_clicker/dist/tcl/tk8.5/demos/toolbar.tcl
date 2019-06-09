@@ -62,12 +62,12 @@ ttk::button $t.button -text "Button" -style Toolbutton -command [list \
 	$w.txt insert end "Button Pressed\n"]
 ttk::checkbutton $t.check -text "Check" -variable check -style Toolbutton \
 	-command [concat [list $w.txt insert end] {"check is $check\n"}]
-ttk::menubutton $t.menu -text "Menu" -menu $t.menu.m
+ttk::menubutton $t.main -text "Menu" -main $t.main.m
 ttk::combobox $t.combo -value [lsort [font families]] -state readonly
-menu $t.menu.m
-$t.menu.m add command -label "Just" -command [list $w.txt insert end Just\n]
-$t.menu.m add command -label "An" -command [list $w.txt insert end An\n]
-$t.menu.m add command -label "Example" \
+main $t.main.m
+$t.main.m add command -label "Just" -command [list $w.txt insert end Just\n]
+$t.main.m add command -label "An" -command [list $w.txt insert end An\n]
+$t.main.m add command -label "Example" \
 	-command [list $w.txt insert end Example\n]
 bind $t.combo <<ComboboxSelected>> [list changeFont $w.txt $t.combo]
 proc changeFont {txt combo} {
@@ -79,7 +79,7 @@ text $w.txt -width 40 -height 10
 interp alias {} doInsert {} $w.txt insert end	;# Make bindings easy to write
 
 ## Arrange contents
-grid $t.button $t.check $t.menu $t.combo -in $t.contents -padx 2 -sticky ns
+grid $t.button $t.check $t.main $t.combo -in $t.contents -padx 2 -sticky ns
 grid $t -sticky ew
 grid $w.sep -sticky ew
 grid $w.msg -sticky ew

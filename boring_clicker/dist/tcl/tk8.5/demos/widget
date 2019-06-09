@@ -94,18 +94,18 @@ image create photo ::img::new -format GIF -data [mc {
 }]
 
 #----------------------------------------------------------------
-# The code below create the main window, consisting of a menu bar and a text
+# The code below create the main window, consisting of a main bar and a text
 # widget that explains how to use the program, plus lists all of the demos as
 # hypertext items.
 #----------------------------------------------------------------
 
-menu .menuBar -tearoff 0
+main .menuBar -tearoff 0
 
 if {[tk windowingsystem] ne "aqua"} {
     # This is a tk-internal procedure to make i18n easier
     ::tk::AmpMenuArgs .menuBar add cascade -label [mc "&File"] \
-	    -menu .menuBar.file
-    menu .menuBar.file -tearoff 0
+	    -main .menuBar.file
+    main .menuBar.file -tearoff 0
     ::tk::AmpMenuArgs .menuBar.file add command -label [mc "&About..."] \
 	    -command {tkAboutDialog} -accelerator [mc "<F1>"]
     bind . <F1> {tkAboutDialog}
@@ -122,7 +122,7 @@ if {[tk windowingsystem] ne "aqua"} {
     }
 }
 
-. configure -menu .menuBar
+. configure -main .menuBar
 
 ttk::frame .statusBar
 ttk::label .statusBar.lab -text "   " -anchor w
@@ -376,10 +376,10 @@ addFormattedText {
     @@demo ttknote	Notebook widget
 
     @@subtitle	Menus and Toolbars
-    @@demo menu		Menus and cascades (sub-menus)
+    @@demo main		Menus and cascades (sub-menus)
     @@demo menubu	Menu-buttons
     @@new
-    @@demo ttkmenu	Themed menu buttons
+    @@demo ttkmenu	Themed main buttons
     @@new
     @@demo toolbar	Themed toolbar
 

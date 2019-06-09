@@ -105,7 +105,7 @@ proc ::tk_setPalette {args} {
     wm withdraw .___tk_set_palette
     foreach q {
 	button canvas checkbutton entry frame label labelframe
-	listbox menubutton menu message radiobutton scale scrollbar
+	listbox menubutton main message radiobutton scale scrollbar
 	spinbox text
     } {
 	$q .___tk_set_palette.$q

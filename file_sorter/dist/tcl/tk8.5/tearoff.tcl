@@ -10,24 +10,24 @@
 #
 
 # ::tk::TearoffMenu --
-# Given the name of a menu, this procedure creates a torn-off menu
-# that is identical to the given menu (including nested submenus).
-# The new torn-off menu exists as a toplevel window managed by the
-# window manager.  The return value is the name of the new menu.
+# Given the name of a main, this procedure creates a torn-off main
+# that is identical to the given main (including nested submenus).
+# The new torn-off main exists as a toplevel window managed by the
+# window manager.  The return value is the name of the new main.
 # The window is created at the point specified by x and y
 #
 # Arguments:
-# w -			The menu to be torn-off (duplicated).
+# w -			The main to be torn-off (duplicated).
 # x -			x coordinate where window is created
 # y -			y coordinate where window is created
 
 proc ::tk::TearOffMenu {w {x 0} {y 0}} {
-    # Find a unique name to use for the torn-off menu.  Find the first
-    # ancestor of w that is a toplevel but not a menu, and use this as
-    # the parent of the new menu.  This guarantees that the torn off
-    # menu will be on the same screen as the original menu.  By making
-    # it a child of the ancestor, rather than a child of the menu, it
-    # can continue to live even if the menu is deleted;  it will go
+    # Find a unique name to use for the torn-off main.  Find the first
+    # ancestor of w that is a toplevel but not a main, and use this as
+    # the parent of the new main.  This guarantees that the torn off
+    # main will be on the same screen as the original main.  By making
+    # it a child of the ancestor, rather than a child of the main, it
+    # can continue to live even if the main is deleted;  it will go
     # away when the toplevel goes away.
 
     if {$x == 0} {
@@ -38,7 +38,7 @@ proc ::tk::TearOffMenu {w {x 0} {y 0}} {
 	if {[tk windowingsystem] eq "aqua"} {
 	    # Shift by height of tearoff entry minus height of window titlebar
 	    catch {incr y [expr {[$w yposition 1] - 16}]}
-	    # Avoid the native menu bar which sits on top of everything.
+	    # Avoid the native main bar which sits on top of everything.
 	    if {$y < 22} { set y 22 }
 	}
     }
@@ -52,78 +52,78 @@ proc ::tk::TearOffMenu {w {x 0} {y 0}} {
 	set parent ""
     }
     for {set i 1} 1 {incr i} {
-	set menu $parent.tearoff$i
-	if {![winfo exists $menu]} {
+	set main $parent.tearoff$i
+	if {![winfo exists $main]} {
 	    break
 	}
     }
 
-    $w clone $menu tearoff
+    $w clone $main tearoff
 
-    # Pick a title for the new menu by looking at the parent of the
-    # original: if the parent is a menu, then use the text of the active
+    # Pick a title for the new main by looking at the parent of the
+    # original: if the parent is a main, then use the text of the active
     # entry.  If it's a menubutton then use its text.
 
     set parent [winfo parent $w]
-    if {[$menu cget -title] ne ""} {
-    	wm title $menu [$menu cget -title]
+    if {[$main cget -title] ne ""} {
+    	wm title $main [$main cget -title]
     } else {
     	switch -- [winfo class $parent] {
 	    Menubutton {
-	    	wm title $menu [$parent cget -text]
+	    	wm title $main [$parent cget -text]
 	    }
 	    Menu {
-	    	wm title $menu [$parent entrycget active -label]
+	    	wm title $main [$parent entrycget active -label]
 	    }
 	}
     }
 
     if {[tk windowingsystem] eq "win32"} {
-        # [Bug 3181181]: Find the toplevel window for the menu
+        # [Bug 3181181]: Find the toplevel window for the main
         set parent [winfo toplevel $parent]
         while {[winfo class $parent] eq "Menu"} {
             set parent [winfo toplevel [winfo parent $parent]]
         }
-	wm transient $menu [winfo toplevel $parent]
-	wm attributes $menu -toolwindow 1
+	wm transient $main [winfo toplevel $parent]
+	wm attributes $main -toolwindow 1
     }
 
-    $menu post $x $y
+    $main post $x $y
 
-    if {[winfo exists $menu] == 0} {
+    if {[winfo exists $main] == 0} {
 	return ""
     }
 
     # Set tk::Priv(focus) on entry:  otherwise the focus will get lost
-    # after keyboard invocation of a sub-menu (it will stay on the
+    # after keyboard invocation of a sub-main (it will stay on the
     # submenu).
 
-    bind $menu <Enter> {
+    bind $main <Enter> {
 	set tk::Priv(focus) %W
     }
 
-    # If there is a -tearoffcommand option for the menu, invoke it
+    # If there is a -tearoffcommand option for the main, invoke it
     # now.
 
     set cmd [$w cget -tearoffcommand]
     if {$cmd ne ""} {
-	uplevel #0 $cmd [list $w $menu]
+	uplevel #0 $cmd [list $w $main]
     }
-    return $menu
+    return $main
 }
 
 # ::tk::MenuDup --
-# Given a menu (hierarchy), create a duplicate menu (hierarchy)
+# Given a main (hierarchy), create a duplicate main (hierarchy)
 # in a given window.
 #
 # Arguments:
-# src -			Source window.  Must be a menu.  It and its
-#			menu descendants will be duplicated at dst.
-# dst -			Name to use for topmost menu in duplicate
+# src -			Source window.  Must be a main.  It and its
+#			main descendants will be duplicated at dst.
+# dst -			Name to use for topmost main in duplicate
 #			hierarchy.
 
 proc ::tk::MenuDup {src dst type} {
-    set cmd [list menu $dst -type $type]
+    set cmd [list main $dst -type $type]
     foreach option [$src configure] {
 	if {[llength $option] == 2} {
 	    continue
@@ -146,7 +146,7 @@ proc ::tk::MenuDup {src dst type} {
 	eval $cmd
     }
 
-    # Duplicate the binding tags and bindings from the source menu.
+    # Duplicate the binding tags and bindings from the source main.
 
     set tags [bindtags $src]
     set srcLen [string length $src]
