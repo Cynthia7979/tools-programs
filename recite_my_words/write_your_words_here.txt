@@ -1,0 +1,6 @@
+# Only write english words
+# One line one word
+# No blank lines
+cloud
+sun
+okay
