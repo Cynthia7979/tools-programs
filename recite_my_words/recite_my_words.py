@@ -10,6 +10,8 @@ from pygame.locals import *
 WHITE = (255,255,255)
 BLACK = (0  ,0  ,0  )
 WIDTH, HEIGHT = SIZE = (960, 640)
+CLOCK = pygame.time.Clock()
+FPS = 30
 
 
 def download_voice(word):
@@ -132,6 +134,7 @@ def main():
                     display_chinese = True
 
         pygame.display.flip()
+        CLOCK.tick(FPS)
 
 
 if __name__ == '__main__':
