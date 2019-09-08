@@ -21,12 +21,14 @@ def download_voice(word):
     r2 = requests.get(url2)
     with open(f'{word}_1.mp3', 'wb') as f:
         f.write(r1.content)
+        print(f'{word}_1.mp3')
     with open(f'{word}_2.mp3', 'wb') as f:
         f.write(r2.content)
+        print(f'{word}_2.mp3')
 
 
 def play_sound(word):
-    if not os.path.exists(f'{word}_1.mp3'):
+    if not os.path.exists(f'{word}_1.mp3') or not os.path.exists(f'{word}_2.mp3'):
         download_voice(word)
     pygame.mixer.music.load(f'{word}_{random.randint(1,2)}.mp3')
     pygame.mixer.music.play()
@@ -62,6 +64,7 @@ def main():
     pygame.mixer.init()
     WINDOW = pygame.display.set_mode(SIZE)
     words = []
+    not_recited_words = []
     with open('write_your_words_here.txt') as f:
         lns = f.readlines()
         for l in lns:
@@ -88,6 +91,10 @@ def main():
     chinese = pygame.transform.scale(chinese, (int(HEIGHT/10),)*2)
     chi_rect = chinese.get_rect()
     chi_rect.midleft = playrect.midright
+    wrong = pygame.image.load('wrong.png')
+    wrong = pygame.transform.scale(wrong, (int(HEIGHT/8),)*2)
+    wrong_rect = wrong.get_rect()
+    wrong_rect.midright = (arr_rect.left-30, arr_rect.centery)
     font = pygame.font.Font('ZCOOLXiaoWei-Regular.ttf', 36)
     small_font = pygame.font.Font('ZCOOLXiaoWei-Regular.ttf', 20)
     while True:
@@ -98,6 +105,7 @@ def main():
             WINDOW.blit(rarrow, arr_rect)
             WINDOW.blit(play, playrect)
             WINDOW.blit(chinese, chi_rect)
+            WINDOW.blit(wrong, wrong_rect)
             word_surf = font.render(words[current_word], True, BLACK)
             word_rect = word_surf.get_rect()
             word_rect.midtop = (WIDTH/2, HEIGHT*0.25)
@@ -119,19 +127,30 @@ def main():
                 sys.exit()
             elif e.type == MOUSEBUTTONUP:
                 pos = e.pos
-                if arr_rect.collidepoint(pos):
+                next_word = False
+                if playrect.collidepoint(pos):
+                    play_sound(words[current_word])
+                elif chi_rect.collidepoint(pos):
+                    display_chinese = True
+                elif wrong_rect.collidepoint(pos):
+                    not_recited_words.append(words[current_word])
+                    next_word = True
+                if arr_rect.collidepoint(pos) or next_word == True:
                     current_word += 1
-                    if current_word == len(words):
+                    if current_word >= len(words) and not_recited_words == []:
                         finished = True
+                        delmp3s()
+                    elif current_word >= len(words) and not_recited_words != []:
+                        current_word = 0
+                        words, not_recited_words = not_recited_words, []
+                        played = False
+                        chi_trans = None
+                        display_chinese = False
                     else:
                         played = False
                         chi_trans = None
                         display_chinese = False
-                        delmp3s()
-                elif playrect.collidepoint(pos):
-                    play_sound(words[current_word])
-                elif chi_rect.collidepoint(pos):
-                    display_chinese = True
+                    print(words, not_recited_words, current_word, len(words), not_recited_words == [])
 
         pygame.display.flip()
         CLOCK.tick(FPS)
