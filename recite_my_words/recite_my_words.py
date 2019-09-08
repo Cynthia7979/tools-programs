@@ -21,10 +21,8 @@ def download_voice(word):
     r2 = requests.get(url2)
     with open(f'{word}_1.mp3', 'wb') as f:
         f.write(r1.content)
-        print(f'{word}_1.mp3')
     with open(f'{word}_2.mp3', 'wb') as f:
         f.write(r2.content)
-        print(f'{word}_2.mp3')
 
 
 def play_sound(word):
@@ -150,7 +148,6 @@ def main():
                         played = False
                         chi_trans = None
                         display_chinese = False
-                    print(words, not_recited_words, current_word, len(words), not_recited_words == [])
 
         pygame.display.flip()
         CLOCK.tick(FPS)
