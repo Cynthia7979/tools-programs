@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import psutil
+#import psutil
 import threading
 from time import strftime, sleep
 import os
@@ -68,14 +68,14 @@ def get_soup(url):
 
 
 def fetch_class_data(testmode=False):
-    f = open("C:/Users/Yirou Wang/Documents/Programmings/tools-programs/open_what/notification.html", 'w')
+    f = open("./notification.html", 'w')
     today = None
     events = []
     year = strftime("%Y")
     month = strftime("%m")
     day = strftime("%d")
     if testmode:
-        soup = BeautifulSoup(open("./open_what/srcode.txt").read(), "html.parser")
+        soup = BeautifulSoup(open("./srcode.txt").read(), "html.parser")
     else:
         soup = get_soup("https://www.depaulcatholic.org/apps/events/{year}/{month}/calendar/?id=0".
                             format(year=year, month=month))
@@ -122,10 +122,10 @@ def fetch_class_data(testmode=False):
         </html>
     """.format(month=month, day=day, year=year, write_events=events_to_write))
     f.close()
-    os.startfile('C:/Users/Yirou Wang/Documents/Programmings/tools-programs/open_what/notification.html')
+    os.startfile('notification.html')
 
 
-def main(real=True):
+def main(real=True, test_fetch=False):
     if real:
         print("Starting up...")
         battery = psutil.sensors_battery()
@@ -162,9 +162,9 @@ def main(real=True):
     else:
         days = 18 - day
     print('{day} days until back to home!'.format(day=days))
-    fetch_class_data()
+    fetch_class_data(test_fetch)
 
 
 if __name__ == '__main__':
-    main()
+    main(False, True)
     sys.exit()

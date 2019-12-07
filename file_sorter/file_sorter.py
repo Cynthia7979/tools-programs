@@ -81,5 +81,5 @@ def file_scanner(root_dir, d, others):
                 #print 'moved others!'
 
 if __name__ == '__main__':
-    #main()
+    main()
     pass
