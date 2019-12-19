@@ -33,9 +33,9 @@ def main():
 def handle(subject):
     print(f'Selected {subject[NAME]}.')
     page_start = input('Enter page start, None for start at page 1: ')
-    page_start = subject[PAGE_START] if page_start in ('None','') else int(page_start)
+    page_start = subject[PAGE_START] if page_start in ('None','') else int(page_start)+subject[PAGE_START]
     page_end = input('Enter page end, None for end at last page: ')
-    page_end = subject[PAGE_END] if page_end in ('None', '') else int(page_end)
+    page_end = subject[PAGE_END] if page_end in ('None', '') else int(page_end)+subject[PAGE_START]
     try:
         os.mkdir(f'./Downloads/{subject[NAME]}/')
     except FileExistsError: print('file exists')
