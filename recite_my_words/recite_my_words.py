@@ -2,7 +2,6 @@ import pygame
 import sys, os
 import requests
 import random
-import tkinter as tk
 from bs4 import BeautifulSoup as bsoup
 from pygame.locals import *
 
@@ -63,7 +62,9 @@ def main():
     WINDOW = pygame.display.set_mode(SIZE)
     words = []
     not_recited_words = []
-    with open('write_your_words_here.txt') as f:
+    word_list = input('Enter word list path, "None" for default: ')
+    word_list = word_list if word_list != 'None' else 'write_your_words_here.txt'
+    with open(word_list) as f:
         lns = f.readlines()
         for l in lns:
             if not l.startswith('#'):
