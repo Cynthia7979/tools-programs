@@ -129,7 +129,8 @@ def main():
                 WINDOW.blit(trans_surf, trans_rect)
         for e in pygame.event.get():
             if e.type == QUIT:
-                with open(f'review-{word_list}.txt', 'w') as review_file:
+                with open(f'{os.path.dirname(word_list)}/review-'
+                          f'{os.path.basename(word_list).strip("review-")}.txt', 'w') as review_file:
                     review_file.write('\n'.join(all_not_recited_words))
                 delmp3s()
                 pygame.quit()

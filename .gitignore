@@ -5,5 +5,6 @@ scp_translate_chooser/temp.md
 notification.html
 dictvoice.mp3
 recite_my_words/write_your_words_here.txt
+recite_my_words/review-write_your_words_here.txt
 recite_my_words/*.mp3
 automatic_textbook_downloader/Downloads/
