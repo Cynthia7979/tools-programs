@@ -62,6 +62,7 @@ def main():
     WINDOW = pygame.display.set_mode(SIZE)
     words = []
     not_recited_words = []
+    all_not_recited_words = set()
     word_list = input('Enter word list path, "None" for default: ')
     word_list = word_list if word_list != 'None' else 'write_your_words_here.txt'
     with open(word_list) as f:
@@ -74,26 +75,32 @@ def main():
     played = False
     display_chinese = False
     chi_trans = None
+
     rarrow = pygame.image.load('rightarrow.png')
     rarrow = pygame.transform.scale(rarrow, (int(HEIGHT/3),)*2)
     arr_rect = rarrow.get_rect()
     arr_rect.midbottom = (WIDTH/2, HEIGHT*0.75)
+
     congrats = pygame.image.load('congratulations.jpg')
     congrats = pygame.transform.scale(congrats, SIZE)
     cong_rect = congrats.get_rect()
     cong_rect.topleft = (0, 0)
+
     play = pygame.image.load('play-button.png')
     play = pygame.transform.scale(play, (int(HEIGHT/10),)*2)
     playrect = play.get_rect()
     playrect.topleft = (WIDTH*0.75, HEIGHT*0.25)
+
     chinese = pygame.image.load('chinese.png')
     chinese = pygame.transform.scale(chinese, (int(HEIGHT/10),)*2)
     chi_rect = chinese.get_rect()
     chi_rect.midleft = playrect.midright
+
     wrong = pygame.image.load('wrong.png')
     wrong = pygame.transform.scale(wrong, (int(HEIGHT/8),)*2)
     wrong_rect = wrong.get_rect()
     wrong_rect.midright = (arr_rect.left-30, arr_rect.centery)
+
     font = pygame.font.Font('ZCOOLXiaoWei-Regular.ttf', 36)
     small_font = pygame.font.Font('ZCOOLXiaoWei-Regular.ttf', 20)
     while True:
@@ -105,6 +112,7 @@ def main():
             WINDOW.blit(play, playrect)
             WINDOW.blit(chinese, chi_rect)
             WINDOW.blit(wrong, wrong_rect)
+            # Displaying the Eng word
             word_surf = font.render(words[current_word], True, BLACK)
             word_rect = word_surf.get_rect()
             word_rect.midtop = (WIDTH/2, HEIGHT*0.25)
@@ -121,6 +129,8 @@ def main():
                 WINDOW.blit(trans_surf, trans_rect)
         for e in pygame.event.get():
             if e.type == QUIT:
+                with open(f'review-{word_list}.txt', 'w') as review_file:
+                    review_file.write('\n'.join(all_not_recited_words))
                 delmp3s()
                 pygame.quit()
                 sys.exit()
@@ -133,8 +143,9 @@ def main():
                     display_chinese = True
                 elif wrong_rect.collidepoint(pos):
                     not_recited_words.append(words[current_word])
+                    all_not_recited_words.add(words[current_word])
                     next_word = True
-                if arr_rect.collidepoint(pos) or next_word == True:
+                if arr_rect.collidepoint(pos) or next_word:
                     current_word += 1
                     if current_word >= len(words) and not_recited_words == []:
                         finished = True
@@ -149,9 +160,10 @@ def main():
                         played = False
                         chi_trans = None
                         display_chinese = False
-
         pygame.display.flip()
         CLOCK.tick(FPS)
+
+
 
 
 if __name__ == '__main__':
