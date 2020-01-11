@@ -4,6 +4,7 @@ import requests
 import random
 from bs4 import BeautifulSoup as bsoup
 from pygame.locals import *
+from tkinter.filedialog import askopenfilename, Tk
 
 
 WHITE = (255,255,255)
@@ -63,8 +64,10 @@ def main():
     words = []
     not_recited_words = []
     all_not_recited_words = set()
-    word_list = input('Enter word list path, "None" for default: ')
-    word_list = word_list if word_list != 'None' else 'write_your_words_here.txt'
+    root = Tk()
+    word_list = askopenfilename(filetypes=(('Text File', '.txt'),))
+    root.destroy()
+    word_list = word_list if word_list else 'write_your_words_here.txt'
     with open(word_list) as f:
         lns = f.readlines()
         for l in lns:
