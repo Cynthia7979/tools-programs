@@ -138,7 +138,7 @@ def main():
         for e in pygame.event.get():
             if e.type == QUIT:
                 with open(f'{os.path.dirname(word_list)}/review-'
-                          f'{os.path.basename(word_list)}.txt', 'w') as review_file:
+                          f'{os.path.basename(word_list)}', 'w') as review_file:
                     # for w, fq in all_not_recited_words.items():
                     review_file.write('\n'.join([f'{w} (x{fq})' for w, fq in all_not_recited_words.items()]))
                     # E.g. tree (x10)\n
@@ -179,8 +179,6 @@ def main():
                         display_chinese = False
         pygame.display.flip()
         CLOCK.tick(FPS)
-
-
 
 
 if __name__ == '__main__':
