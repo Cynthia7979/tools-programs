@@ -50,7 +50,10 @@ def get_chinese(word):
     html = requests.get(url).content
     soup = bsoup(html, 'html.parser', from_encoding='utf-8')
     result_box = soup.find('div', id='phrsListTab')
-    translations = result_box.find_all('li')
+    try:
+        translations = result_box.find_all('li')
+    except AttributeError:
+        return '无法获取释义'
     results = []
     for t in translations:
         results.append(t.get_text())
@@ -63,7 +66,13 @@ def main():
     WINDOW = pygame.display.set_mode(SIZE)
     words = []
     not_recited_words = []
-    all_not_recited_words = set()
+    all_not_recited_words = {}
+    current_word = 0
+    finished = False
+    played = False
+    display_chinese = False
+    chi_trans = None
+
     root = Tk()
     word_list = askopenfilename(filetypes=(('Text File', '.txt'),))
     root.destroy()
@@ -72,13 +81,9 @@ def main():
         lns = f.readlines()
         for l in lns:
             if not l.startswith('#'):
-                words.append(l.strip('\n'))
-    current_word = 0
-    finished = False
-    played = False
-    display_chinese = False
-    chi_trans = None
-
+                w = l.strip('\n')
+                w = w[:w.find('(')-1] if '(' in w else w
+                words.append(w)
     rarrow = pygame.image.load('rightarrow.png')
     rarrow = pygame.transform.scale(rarrow, (int(HEIGHT/3),)*2)
     arr_rect = rarrow.get_rect()
@@ -134,7 +139,11 @@ def main():
             if e.type == QUIT:
                 with open(f'{os.path.dirname(word_list)}/review-'
                           f'{os.path.basename(word_list).strip("review-")}.txt', 'w') as review_file:
-                    review_file.write('\n'.join(all_not_recited_words))
+                    # for w, fq in all_not_recited_words.items():
+                    review_file.write('\n'.join([f'{w} (x{fq})' for w, fq in all_not_recited_words.items()]))
+                    # E.g. tree (x10)\n
+                    # apple(x1)\n
+                    # sweet(x2)
                 delmp3s()
                 pygame.quit()
                 sys.exit()
@@ -146,8 +155,12 @@ def main():
                 elif chi_rect.collidepoint(pos):
                     display_chinese = True
                 elif wrong_rect.collidepoint(pos):
-                    not_recited_words.append(words[current_word])
-                    all_not_recited_words.add(words[current_word])
+                    w = words[current_word]
+                    not_recited_words.append(w)
+                    if w not in list(all_not_recited_words.keys()):
+                        all_not_recited_words[w] = 1
+                    else:
+                        all_not_recited_words[w] += 1
                     next_word = True
                 if arr_rect.collidepoint(pos) or next_word:
                     current_word += 1
