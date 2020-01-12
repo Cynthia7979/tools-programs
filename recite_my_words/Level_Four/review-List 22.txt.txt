@@ -1,0 +1,153 @@
+algebra (x2)
+
+cascade (x2)
+
+character (x2)
+
+chart (x2)
+
+circulation (x2)
+
+complement (x2)
+
+conductor (x2)
+
+congress (x2)
+
+couple (x2)
+
+coupon (x2)
+
+critique (x2)
+
+crown (x2)
+
+cue (x1)
+
+defect (x1)
+
+dehydrated (x1)
+
+difference (x1)
+
+disaster (x1)
+
+distinctive (x1)
+
+drawback (x1)
+
+drop (x1)
+
+evolve (x1)
+
+expel (x1)
+
+extract (x1)
+
+fancy (x1)
+
+fatal (x1)
+
+finalize (x1)
+
+flask (x1)
+
+fluctuate (x1)
+
+frugal (x1)
+
+genetics (x1)
+
+germinate (x1)
+
+glorify (x1)
+
+hawk (x1)
+
+humanity (x1)
+
+iceberg (x1)
+
+jot (x1)
+
+kid (x1)
+
+kingdom (x1)
+
+lasting (x1)
+
+license (x1)
+
+liquid (x1)
+
+litter (x1)
+
+machinery (x1)
+
+magnitude (x1)
+
+nightmare (x1)
+
+observer (x1)
+
+peritinent (x1)
+
+pin (x1)
+
+poineer (x1)
+
+plunge (x1)
+
+prime (x1)
+
+quit (x1)
+
+random (x1)
+
+reference (x1)
+
+repute (x1)
+
+ridge (x1)
+
+rodeo (x1)
+
+satellite (x1)
+
+satire (x1)
+
+scarf (x1)
+
+simplicity (x1)
+
+somewhat (x1)
+
+soothe (x1)
+
+sophisticated (x1)
+
+spin (x1)
+
+spinet (x1)
+
+spot (x1)
+
+station (x1)
+
+suite (x1)
+
+token (x1)
+
+trivial (x1)
+
+turnout (x1)
+
+turnpike (x1)
+
+unaided (x1)
+
+unsubstantiated (x1)
+
+version (x1)
+
+warp (x1)
