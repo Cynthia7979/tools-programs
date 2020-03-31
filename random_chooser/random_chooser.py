@@ -2,7 +2,7 @@ import requests
 import sys, os
 
 
-def main(file='source.txt'):
+def main(file='source.txt', debug=False):
     f = open(file, encoding='utf-8')
     lines = [s.strip('\n') for s in f.readlines()]
     # choices = {}
@@ -21,6 +21,7 @@ def main(file='source.txt'):
     number_of_choices = len(choices)-1
     final_result = get_random_number(0, number_of_choices)
     print(choices[final_result])
+    if debug: print(choices)
 
 
 def get_random_number(minimum, maximum, number_of_numbers=1, base=10):
@@ -29,4 +30,4 @@ def get_random_number(minimum, maximum, number_of_numbers=1, base=10):
 
 
 if __name__ == '__main__':
-    main()
+    main(debug=False)
