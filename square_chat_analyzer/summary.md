@@ -9,7 +9,7 @@
 
 可惜的是，我没发现本地一次只保存400多条消息，导致最后救回来的只有500条消息不到。不过对于入门来说已经够了！（大概）
 
-![截屏](https://raw.githubusercontent.com/Cynthia7979/images/master/square.jpg)   
+![图1](https://raw.githubusercontent.com/Cynthia7979/images/master/square.jpg)   
 广场乱象：哪怕显示了学校和真名，选手们还是在刷屏、刷烂梗。
 
 ## 第一步：处理文件
@@ -186,7 +186,7 @@ wordcloud = WordCloud(font_path="C:\Windows\Fonts\msyhl.ttc",
 大概就是把刚分好的词用一种易 于 阅 读的方式接回去，然后调试一下创建WordCloud对象并生成图像就可以了。
 
 那么，结果：
-![Square_Wordcloud](https://raw.githubusercontent.com/Cynthia7979/tools-programs/master/square_chat_analyzer/result.png)
+![图2](https://raw.githubusercontent.com/Cynthia7979/tools-programs/master/square_chat_analyzer/result.png)
 
 emm我也不知道这种发在公共空间的姓名应不应该打码……如果有影响请私信我或者开issue！
 
