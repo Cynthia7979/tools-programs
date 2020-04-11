@@ -188,4 +188,9 @@ wordcloud = WordCloud(font_path="C:\Windows\Fonts\msyhl.ttc",
 那么，结果：
 ![Square_Wordcloud](https://raw.githubusercontent.com/Cynthia7979/tools-programs/master/square_chat_analyzer/result.png)
 
-emm我也不知道这种发在公共空间的姓名应不应该打码……如果有影响请私信我或者开issue好吧（
+emm我也不知道这种发在公共空间的姓名应不应该打码……如果有影响请私信我或者开issue！
+
+## ……你是不是忘了什么？
+接下来要做的事：
+* 按学校统计发消息频率
+* ~~成功~~安装并学习`matplotlib`，制作学校和个人说话频率的饼图
