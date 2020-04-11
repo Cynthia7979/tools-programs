@@ -1,15 +1,11 @@
 兔子
-老鹰
-狮鹫
-猫头鹰
 基础列表 4
 平凡世界1 2
-Vice1 2
+Vice1
 月亮1 2
 月亮2 2
 月亮3 2
 Recidivate1 2
 金骑士1 2
 Mayhem
-Stoikalm
 Taskwoods 2
