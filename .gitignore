@@ -10,3 +10,4 @@ recite_my_words/*.mp3
 automatic_textbook_downloader/Downloads/
 review-*.txt
 random_chooser/source.txt
+~*.xlsx
