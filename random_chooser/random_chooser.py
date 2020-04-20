@@ -30,4 +30,4 @@ def get_random_number(minimum, maximum, number_of_numbers=1, base=10):
 
 
 if __name__ == '__main__':
-    main(debug=False)
+    main(debug=True)

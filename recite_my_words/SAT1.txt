@@ -1,0 +1,32 @@
+# Only write english words
+# One line one word
+# No blank lines
+vicarious
+expurgate
+snide
+dearth
+paucity
+audacious
+droll
+troll
+prattle
+recalcitrant
+presumptuous
+clandestine
+obdurate
+wry
+gregarious
+affable
+castigate
+upbraid
+impasse
+assuage
+morose
+propitious
+auspicious
+covet
+trite
+banal
+inscrutable
+gullible
+acquiesce

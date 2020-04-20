@@ -52,6 +52,7 @@ class Day(object):
         self.date = date
         self.emotions = list(emotions) if emotions else []
         self.emotions_with_no_value = 0
+        self.notations = {}
 
     @property
     def avg_emotion(self):
@@ -63,8 +64,15 @@ class Day(object):
         if emotion.value == 0:
             self.emotions_with_no_value += 1
 
+    def add_notation(self, *notation):
+        for n in notation:
+            if n in self.notations.keys():
+                self.notations[n] += 1
+            else:
+                self.notations[n] = 1
+
     def __repr__(self):
-        return f'Day {self.date} with average {self.avg_emotion}'
+        return f'Day {self.date} with average {self.avg_emotion} and notations {self.notations} '
 
 
 class Month(object):  # It's too similar with Day!
@@ -77,6 +85,17 @@ class Month(object):  # It's too similar with Day!
     def avg_emotion(self):
         return sum((day.avg_emotion for day in self.days)) / (len(self.days) - self.days_with_no_value)
 
+    @property
+    def notation_statistics(self):
+        all_notations = {}
+        for day in self.days:
+            for k, v in day.notations.items():
+                if k in all_notations.keys():
+                    all_notations[k] += v
+                else:
+                    all_notations[k] = v
+        return all_notations
+
     def add_day(self, day):
         assert isinstance(day, Day)
         self.days.append(day)
@@ -84,7 +103,7 @@ class Month(object):  # It's too similar with Day!
             self.days_with_no_value += 1
 
     def __repr__(self):
-        return f'Month {self.month} with days {tuple(self.days)} averaging {self.avg_emotion}'
+        return f'Month {self.month} with days {tuple(self.days)} \n\t averaging {self.avg_emotion}, notations {self.notation_statistics}\n'
 
 
 MATCH_COLOR = {"着色 3": Emotion("着色 3", "numb", -2), "20% - 着色 6": Emotion("20% - 着色 6", "chilling out", 1), "常规": Emotion("常规", '(none)', 0),
@@ -114,22 +133,29 @@ def main(test=True):
     current_month = Month(current_month_no)
     months = []
     LOGGER.debug('  '.join((str(x) for x in range(36))))
-    for i, row in enumerate(sheet.iter_rows(min_row=2, max_col=36)):
+    for i, row in enumerate(sheet.iter_rows(min_row=2, max_col=36)):  # All cells
         LOGGER.debug(str(i+2)+' '.join([c.style for c in row]))
         current_day = Day(current_date_no)
-        for cell in row[4:]:
-            current_day.add_emotion(MATCH_COLOR[cell.style])
+        for j, cell in enumerate(row[4:]):  # Cells in a day (row)
+            try:
+                current_day.add_emotion(MATCH_COLOR[cell.style])
+            except KeyError as e:
+                LOGGER.error(f'Unrecognized color at {(j, i)}: {cell.style}')
+                raise e
+            if cell.value:
+                current_day.add_notation(*tuple(cell.value))
+        current_date_no += 1
+        current_month.add_day(current_day)
         day_type = row[0].style
         if day_type == '好':  # Start of a month
             months.append(current_month)
             current_month_no += 1
+            current_date_no = 1
             current_month = Month(current_month_no)
         elif day_type == '适中':  # End of the record
-            current_month.add_day(current_day)
             months.append(current_month)
             break
-        current_month.add_day(current_day)
-        current_date_no += 1
+
     print(months)
 
 
