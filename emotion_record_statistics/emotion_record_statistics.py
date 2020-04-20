@@ -13,6 +13,8 @@ Notes on marks:
 """
 # import xlrd
 import openpyxl as xl
+import matplotlib
+import matplotlib.pyplot as plt
 import logging
 
 # workbook = xlrd.open_workbook(path)
@@ -117,7 +119,7 @@ def main(test=True):
     """
     :param test: Use the demo file
     """
-    global LOGGER
+    global LOGGER, months
 
     default_ch = logging.StreamHandler()
     default_ch.setLevel(LOGGING_LEVEL)
@@ -127,6 +129,8 @@ def main(test=True):
 
     workbook = xl.load_workbook(PATH) if test else xl.load_workbook(PATH_)
     sheet = workbook.active
+
+    # matplotlib.use('TkAgg')
 
     current_month_no = START_MONTH
     current_date_no = START_DATE
@@ -157,7 +161,15 @@ def main(test=True):
             break
 
     print(months)
+    notation_pie_chart(months[0].notation_statistics)
+
+
+def notation_pie_chart(notations):
+    notations = {f'{k} ({v})': v for k, v in sorted(notations.items())}
+    plt.pie(list(notations.values()), labels=(notations.keys()), autopct='%1.2f%%')
+    plt.show()
 
 
 if __name__ == '__main__':
     main(False)
+
