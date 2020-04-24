@@ -1,5 +1,5 @@
 """
-Notes on Emotion values:
+Notes on EmotionType values:
 
 Positive and negative moods correspond to negative and positive integers.
 The magnitude of the integer represents the "level of caution" AKA how bad it is.
@@ -39,7 +39,7 @@ START_DATE = 16
 LOGGING_LEVEL = logging.DEBUG
 
 
-class Emotion(object):
+class EmotionType(object):
     def __init__(self, style_name, color_name, value:int):
         self.style_name = style_name
         self.emotion_name = color_name
@@ -47,6 +47,19 @@ class Emotion(object):
 
     def __repr__(self):
         return self.emotion_name
+
+
+class Emotion(EmotionType):
+    def __init__(self, emotion_type: EmotionType, time:str):
+        """
+        :param emotion_type: EmotionType object
+        :param time: formatted string `hh:mm`
+        """
+        super().__init__(emotion_type.style_name, emotion_type.emotion_name, emotion_type.value)
+        self.time, self.hour, self.minute = [time]+time.split(':')
+
+    def __repr__(self):
+        return f"({self.time}-{self.emotion_name})"
 
 
 class Day(object):
@@ -60,10 +73,10 @@ class Day(object):
     def avg_emotion(self):
         return sum((e.value for e in self.emotions)) / (len(self.emotions)-self.emotions_with_no_value)
 
-    def add_emotion(self, emotion):
-        assert isinstance(emotion, Emotion)
-        self.emotions.append(emotion)
-        if emotion.value == 0:
+    def add_emotion(self, emotion_type, time:str):
+        assert isinstance(emotion_type, EmotionType)
+        self.emotions.append(Emotion(emotion_type, time))
+        if emotion_type.value == 0:
             self.emotions_with_no_value += 1
 
     def add_notation(self, *notation):
@@ -74,7 +87,7 @@ class Day(object):
                 self.notations[n] = 1
 
     def __repr__(self):
-        return f'Day {self.date} with average {self.avg_emotion} and notations {self.notations} '
+        return f'Day {self.date} with average {self.avg_emotion} {"and notations"+str(self.notations) if self.notations else ""} '
 
 
 class Month(object):  # It's too similar with Day!
@@ -108,11 +121,14 @@ class Month(object):  # It's too similar with Day!
         return f'Month {self.month} with days {tuple(self.days)} \n\t averaging {self.avg_emotion}, notations {self.notation_statistics}\n'
 
 
-MATCH_COLOR = {"着色 3": Emotion("着色 3", "numb", -2), "20% - 着色 6": Emotion("20% - 着色 6", "chilling out", 1), "常规": Emotion("常规", '(none)', 0),
-          "着色 4": Emotion("着色 4", "anxious", -10), "60% - 着色 4": Emotion("60% - 着色 4", "nervous", -5),
-          "着色 1": Emotion("着色 1", "depressed", -10), "60% - 着色 1": Emotion("60% - 着色 1", "frustrated", -5), "40% - 着色 1": Emotion("40% - 着色 1", "sad", -3),
-          "着色 6": Emotion("着色 6", 'Ecstasy', 10), "60% - 着色 6": Emotion("60% - 着色 6", 'excited', 5), "40% - 着色 6": Emotion("40% - 着色 6", 'happy', 3),
-          "着色 2": Emotion("着色 2", 'rage', 7), "60% - 着色 2": Emotion("60% - 着色 2", 'offended', 3)}
+MATCH_COLOR = {"着色 3": EmotionType("着色 3", "numb", -2), "20% - 着色 6": EmotionType("20% - 着色 6", "chilling out", 1), "常规": EmotionType("常规", '(none)', 0),
+          "着色 4": EmotionType("着色 4", "anxious", -10), "60% - 着色 4": EmotionType("60% - 着色 4", "nervous", -5),
+          "着色 1": EmotionType("着色 1", "depressed", -10), "60% - 着色 1": EmotionType("60% - 着色 1", "frustrated", -5), "40% - 着色 1": EmotionType("40% - 着色 1", "sad", -3),
+          "着色 6": EmotionType("着色 6", 'Ecstasy', 10), "60% - 着色 6": EmotionType("60% - 着色 6", 'excited', 5), "40% - 着色 6": EmotionType("40% - 着色 6", 'happy', 3),
+          "着色 2": EmotionType("着色 2", 'rage', 7), "60% - 着色 2": EmotionType("60% - 着色 2", 'offended', 3)}
+TIME_PERIODS = [f"{h}:{m}" for h,m in zip(sorted(list(range(7,23))*2), (00, 30)*16)]
+#                                       Every hour occurs twice        o'clocks and half hours
+print(TIME_PERIODS)
 
 
 def main(test=True):
@@ -142,12 +158,18 @@ def main(test=True):
         current_day = Day(current_date_no)
         for j, cell in enumerate(row[4:]):  # Cells in a day (row)
             try:
-                current_day.add_emotion(MATCH_COLOR[cell.style])
+                current_day.add_emotion(MATCH_COLOR[cell.style], TIME_PERIODS[j])
             except KeyError as e:
                 LOGGER.error(f'Unrecognized color at {(j, i)}: {cell.style}')
                 raise e
             if cell.value:
-                current_day.add_notation(*tuple(cell.value))
+                for v in cell.value:
+                    try:
+                        v = int(v)
+                        for i in range(v):
+                            current_day.add_emotion(MATCH_COLOR[cell.style], TIME_PERIODS[j])
+                    except ValueError:
+                        current_day.add_notation(v)
         current_date_no += 1
         current_month.add_day(current_day)
         day_type = row[0].style
