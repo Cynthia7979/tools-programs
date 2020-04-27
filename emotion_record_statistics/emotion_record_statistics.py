@@ -14,6 +14,7 @@ Notes on marks:
 # import xlrd
 import openpyxl as xl
 import matplotlib
+import numpy as np
 import matplotlib.pyplot as plt
 import logging
 
@@ -128,7 +129,8 @@ MATCH_COLOR = {"着色 3": EmotionType("着色 3", "numb", -2), "20% - 着色 6"
           "着色 2": EmotionType("着色 2", 'rage', 7), "60% - 着色 2": EmotionType("60% - 着色 2", 'offended', 3)}
 TIME_PERIODS = [f"{h}:{m}" for h,m in zip(sorted(list(range(7,23))*2), (00, 30)*16)]
 #                                       Every hour occurs twice        o'clocks and half hours
-print(TIME_PERIODS)
+MATCH_NOTATION = {'F': 'Fatigue', 'P': 'Procrast', 'I': 'Ill', 'S': 'Social', 'A': 'Academic',
+                  'E': 'Entertain', 'R': 'Fluct'}
 
 
 def main(test=True):
@@ -163,7 +165,7 @@ def main(test=True):
                 LOGGER.error(f'Unrecognized color at {(j, i)}: {cell.style}')
                 raise e
             if cell.value:
-                for v in cell.value:
+                for v in str(cell.value).split("|"):
                     try:
                         v = int(v)
                         for i in range(v):
@@ -183,7 +185,42 @@ def main(test=True):
             break
 
     print(months)
-    notation_pie_chart(months[0].notation_statistics)
+    # Notation bar graph
+    fig1, ax1 = plt.subplots()
+    fig1.canvas.set_window_title('Notation Statistics')
+    n_ = months[0].notation_statistics
+    x = list(range(len(n_)))
+    heights = n_.values()
+    keys = [MATCH_NOTATION[n] for n in n_.keys()]
+    ax1.bar(x, heights, tick_label=keys, align='center')
+
+    # Daily Avg Emotion curve
+    fig2, ax2 = plt.subplots()
+    fig2.canvas.set_window_title('Emotion Statistics')
+    all_days = []
+    all_days.extend(*(d for d in (m.days for m in months)))
+    x_dates = [d.date for d in all_days]
+    y_avgs = [d.avg_emotion for d in all_days]
+    # upper = 0.5
+    # lower = 0.5
+    # supper = np.ma.masked_where(y_avgs < upper, y_avgs)
+    # slower = np.ma.masked_where(y_avgs > lower, y_avgs)
+    # smiddle = np.ma.masked_where((y_avgs < lower) | (y_avgs > upper), y_avgs)
+    # ax2.plot(x_dates, smiddle, x_dates, slower, x_dates, supper)
+    ax2.plot(x_dates, y_avgs)
+    for xy in zip(x_dates, y_avgs):
+        ax2.annotate('(%s, %.2f)' % xy, xy=xy)
+    ax2.axhline(0, color="black", linewidth=1)
+
+    # Semi-hourly emotion curves
+    fig3, ax3 = plt.subplots()
+    fig2.canvas.set_window_title('Hourly Emotions')
+    for day in all_days:
+        e_ = day.emotions
+        y_emvalues = [e.value for e in e_][:len(TIME_PERIODS)]
+        ax3.plot(TIME_PERIODS, y_emvalues, label=day.date, color=np.random.rand(3,))
+    plt.legend()
+    plt.show()
 
 
 def notation_pie_chart(notations):
