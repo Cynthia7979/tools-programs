@@ -41,7 +41,7 @@ LOGGING_LEVEL = logging.DEBUG
 
 
 class EmotionType(object):
-    def __init__(self, style_name, color_name, value:int):
+    def __init__(self, style_name, color_name, value: int):
         self.style_name = style_name
         self.emotion_name = color_name
         self.value = value
@@ -49,22 +49,32 @@ class EmotionType(object):
     def __repr__(self):
         return self.emotion_name
 
+    def __hash__(self):
+        return hash(self.emotion_name)+hash(self.style_name)+hash(self.value)
+
 
 class Emotion(EmotionType):
-    def __init__(self, emotion_type: EmotionType, time:str):
+    def __init__(self, emotion_type: EmotionType, time: str):
         """
         :param emotion_type: EmotionType object
         :param time: formatted string `hh:mm`
         """
         super().__init__(emotion_type.style_name, emotion_type.emotion_name, emotion_type.value)
-        self.time, self.hour, self.minute = [time]+time.split(':')
+        self.time, self.hour, self.minute = [time] + time.split(':')
 
     def __repr__(self):
         return f"({self.time}-{self.emotion_name})"
 
+    def __eq__(self, other):
+        assert isinstance(other, Emotion) or isinstance(other, EmotionType)
+        return self.style_name==other.style_name and self.emotion_name==other.emotion_name and self.value==other.value
+
+    def __hash__(self):
+        return super().__hash__()
+
 
 class Day(object):
-    def __init__(self, date:int, *emotions):
+    def __init__(self, date: int, *emotions):
         self.date = date
         self.emotions = list(emotions) if emotions else []
         self.emotions_with_no_value = 0
@@ -72,9 +82,9 @@ class Day(object):
 
     @property
     def avg_emotion(self):
-        return sum((e.value for e in self.emotions)) / (len(self.emotions)-self.emotions_with_no_value)
+        return sum((e.value for e in self.emotions)) / (len(self.emotions) - self.emotions_with_no_value)
 
-    def add_emotion(self, emotion_type, time:str):
+    def add_emotion(self, emotion_type, time: str):
         assert isinstance(emotion_type, EmotionType)
         self.emotions.append(Emotion(emotion_type, time))
         if emotion_type.value == 0:
@@ -88,11 +98,11 @@ class Day(object):
                 self.notations[n] = 1
 
     def __repr__(self):
-        return f'Day {self.date} with average {self.avg_emotion} {"and notations"+str(self.notations) if self.notations else ""} '
+        return f'Day {self.date} with average {self.avg_emotion} {"and notations" + str(self.notations) if self.notations else ""} '
 
 
 class Month(object):  # It's too similar with Day!
-    def __init__(self, month:int, *days):
+    def __init__(self, month: int, *days):
         self.month = month
         self.days = list(days) if days else []
         self.days_with_no_value = 0
@@ -122,15 +132,44 @@ class Month(object):  # It's too similar with Day!
         return f'Month {self.month} with days {tuple(self.days)} \n\t averaging {self.avg_emotion}, notations {self.notation_statistics}\n'
 
 
-MATCH_COLOR = {"着色 3": EmotionType("着色 3", "numb", -2), "20% - 着色 6": EmotionType("20% - 着色 6", "chilling out", 1), "常规": EmotionType("常规", '(none)', 0),
-          "着色 4": EmotionType("着色 4", "anxious", -10), "60% - 着色 4": EmotionType("60% - 着色 4", "nervous", -5),
-          "着色 1": EmotionType("着色 1", "depressed", -10), "60% - 着色 1": EmotionType("60% - 着色 1", "frustrated", -5), "40% - 着色 1": EmotionType("40% - 着色 1", "sad", -3),
-          "着色 6": EmotionType("着色 6", 'Ecstasy', 10), "60% - 着色 6": EmotionType("60% - 着色 6", 'excited', 5), "40% - 着色 6": EmotionType("40% - 着色 6", 'happy', 3),
-          "着色 2": EmotionType("着色 2", 'rage', 7), "60% - 着色 2": EmotionType("60% - 着色 2", 'offended', 3)}
-TIME_PERIODS = [f"{h}:{m}" for h,m in zip(sorted(list(range(7,23))*2), (00, 30)*16)]
+# Emotions (Individually declared to reuse later)
+MISC_EMOTIONS = 'misc'
+NUMB = EmotionType("着色 3", "numb", -2)
+CHILLING_OUT = EmotionType("20% - 着色 6", "chilling out", 1)
+NONE = EmotionType("常规", '(none)', 0)
+
+ANXIETY_FEAR = 'Anxiety & Fear'
+ANXIOUS = EmotionType("着色 4", "anxious", -10)
+NERVOUS = EmotionType("60% - 着色 4", "nervous", -5)
+
+SADNESS = 'Sadness'
+DEPRESSED = EmotionType("着色 1", "depressed", -10)
+FRUSTRATED = EmotionType("60% - 着色 1", "frustrated", -5)
+SAD = EmotionType("40% - 着色 1", "sad", -3)
+
+HAPPINESS = 'Happiness'
+ECSTASY = EmotionType("着色 6", 'Ecstasy', 10)
+EXCITED = EmotionType("60% - 着色 6", 'excited', 5)
+HAPPY = EmotionType("40% - 着色 6", 'happy', 3)
+
+ANGER = 'Anger'
+RAGE = EmotionType("着色 2", 'rage', 7)
+OFFENDED = EmotionType("60% - 着色 2", 'offended', 3)
+
+MATCH_COLOR = {"着色 3": NUMB, "20% - 着色 6": CHILLING_OUT, "常规": NONE,
+               "着色 4": ANXIOUS, "60% - 着色 4": NERVOUS,
+               "着色 1": DEPRESSED, "60% - 着色 1": FRUSTRATED, "40% - 着色 1": SAD,
+               "着色 6": ECSTASY, "60% - 着色 6": EXCITED, "40% - 着色 6": HAPPY,
+               "着色 2": RAGE, "60% - 着色 2": OFFENDED}
+TIME_PERIODS = [f"{h}:{m}" for h, m in zip(sorted(list(range(7, 23)) * 2), (00, 30) * 16)]
 #                                       Every hour occurs twice        o'clocks and half hours
 MATCH_NOTATION = {'F': 'Fatigue', 'P': 'Procrast', 'I': 'Ill', 'S': 'Social', 'A': 'Academic',
                   'E': 'Entertain', 'R': 'Fluct'}
+CLASSIFY_EMOTIONS = {NUMB: MISC_EMOTIONS, CHILLING_OUT: MISC_EMOTIONS, NONE: MISC_EMOTIONS,
+                     ANXIOUS: ANXIETY_FEAR, NERVOUS: ANXIETY_FEAR,
+                     DEPRESSED: SADNESS, FRUSTRATED: SADNESS, SAD: SADNESS,
+                     ECSTASY: HAPPINESS, EXCITED: HAPPINESS, HAPPY: HAPPINESS,
+                     RAGE: ANGER, OFFENDED: ANGER}
 
 
 def main(test=True):
@@ -156,7 +195,7 @@ def main(test=True):
     months = []
     LOGGER.debug('  '.join((str(x) for x in range(36))))
     for i, row in enumerate(sheet.iter_rows(min_row=2, max_col=36)):  # All cells
-        LOGGER.debug(str(i+2)+' '.join([c.style for c in row]))
+        LOGGER.debug(str(i + 2) + ' '.join([c.style for c in row]))
         current_day = Day(current_date_no)
         for j, cell in enumerate(row[4:]):  # Cells in a day (row)
             try:
@@ -185,50 +224,74 @@ def main(test=True):
             break
 
     print(months)
-    # Notation bar graph
-    fig1, ax1 = plt.subplots()
-    fig1.canvas.set_window_title('Notation Statistics')
+    # 1. Notation bar graph
+    _, ax1 = new_plot('Notation Statistics')
     n_ = months[0].notation_statistics
     x = list(range(len(n_)))
     heights = n_.values()
     keys = [MATCH_NOTATION[n] for n in n_.keys()]
     ax1.bar(x, heights, tick_label=keys, align='center')
 
-    # Daily Avg Emotion curve
-    fig2, ax2 = plt.subplots()
-    fig2.canvas.set_window_title('Emotion Statistics')
+    # 2. Daily Avg Emotion curve
+    _, ax2 = new_plot('Average Daily Emotions')
     all_days = []
     all_days.extend(*(d for d in (m.days for m in months)))
     x_dates = [d.date for d in all_days]
     y_avgs = [d.avg_emotion for d in all_days]
-    # upper = 0.5
-    # lower = 0.5
-    # supper = np.ma.masked_where(y_avgs < upper, y_avgs)
-    # slower = np.ma.masked_where(y_avgs > lower, y_avgs)
-    # smiddle = np.ma.masked_where((y_avgs < lower) | (y_avgs > upper), y_avgs)
-    # ax2.plot(x_dates, smiddle, x_dates, slower, x_dates, supper)
     ax2.plot(x_dates, y_avgs)
     for xy in zip(x_dates, y_avgs):
-        ax2.annotate('(%s, %.2f)' % xy, xy=xy)
-    ax2.axhline(0, color="black", linewidth=1)
+        ax2.annotate('%.2f' % xy[1], xy=xy)
+    ax2.axhline(0, color="r", linewidth=1)
 
-    # Semi-hourly emotion curves
-    fig3, ax3 = plt.subplots()
-    fig2.canvas.set_window_title('Hourly Emotions')
+    # 3. Semi-hourly emotion curves
+    _, ax3 = new_plot('Hourly Emotions')
+    emo_v_shourly = [[] for i in range(len(TIME_PERIODS))]  # Pre-calculate for the next one
+    all_emo = [] # Pre-calculate for next ones
     for day in all_days:
         e_ = day.emotions
+        all_emo.extend(e_)
         y_emvalues = [e.value for e in e_][:len(TIME_PERIODS)]
-        ax3.plot(TIME_PERIODS, y_emvalues, label=day.date, color=np.random.rand(3,))
+        ax3.plot(TIME_PERIODS, y_emvalues, color=np.random.rand(3, ))
+        for i, e in enumerate(y_emvalues):  # Pre-calculate for the next one
+            emo_v_shourly[i].append(e)
+
+    # 4. Average Semi-hourly emotion curves
+    _, ax4 = new_plot('Average Hourly Emotions')
+    avg_emo_shourly = [sum(emo_v_shourly[i]) / len(emo_v_shourly[i]) for i in range(len(TIME_PERIODS))]
+    ax4.axhline(0, color="r", linewidth=1)
+    ax4.plot(TIME_PERIODS, avg_emo_shourly)
+
+    # 5. Emotion types
+    _, ax5 = new_plot('Emotion Types')
+    mis_, anx_, sad_, hap_, ang_ = [],[],[],[],[]
+    type_statistics = {MISC_EMOTIONS: mis_, ANXIETY_FEAR: anx_, SADNESS: sad_, HAPPINESS: hap_, ANGER: ang_}
+    for e in all_emo:
+        type_statistics[CLASSIFY_EMOTIONS[e]].append(e)
+    index = np.arange(5)
+    mis_, anx_, sad_, hap_, ang_ = np.array(mis_), np.array(anx_), np.array(sad_), np.array(hap_), np.array(ang_)
+    plt.bar(index, mis_, 0.3, color=np.random.rand(3,), label=MISC_EMOTIONS)
+    plt.bar(index, anx_, 0.3, bottom=mis_, color=np.random.rand(3,), label=ANXIETY_FEAR)
+    plt.bar(index, sad_, 0.3, bottom=(mis_+anx_), color=np.random.rand(3,), alpha=0.5, label=SADNESS)
+    plt.bar(index, hap_, 0.3, bottom=(mis_+anx_+sad_), color=np.random.rand(3, ), alpha=0.5, label=HAPPINESS)
+    plt.bar(index, ang_, 0.3, bottom=(mis_+anx_+sad_+hap_), color=np.random.rand(3, ), alpha=0.5, label=ANGER)
+
+    pcoef = np.corrcoef(np.array([time_to_int(i) for i in TIME_PERIODS]), np.array(avg_emo_shourly))
+    print(pcoef)
+
     plt.legend()
     plt.show()
 
 
-def notation_pie_chart(notations):
-    notations = {f'{k} ({v})': v for k, v in sorted(notations.items())}
-    plt.pie(list(notations.values()), labels=(notations.keys()), autopct='%1.2f%%')
-    plt.show()
+def new_plot(title):
+    fig, ax = plt.subplots()
+    fig.canvas.set_window_title(title)
+    ax.set_title(title)
+    return fig, ax
+
+
+def time_to_int(time):
+    return int(time.split(':')[0]) + {'30': 0.5, '0': 0, '00': 0}[time.split(':')[1]]
 
 
 if __name__ == '__main__':
     main(False)
-
