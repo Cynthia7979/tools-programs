@@ -135,7 +135,6 @@ class Month(object):  # It's too similar with Day!
 # Emotions (Individually declared to reuse later)
 MISC_EMOTIONS = 'misc'
 NUMB = EmotionType("着色 3", "numb", -2)
-CHILLING_OUT = EmotionType("20% - 着色 6", "chilling out", 1)
 NONE = EmotionType("常规", '(none)', 0)
 
 ANXIETY_FEAR = 'Anxiety & Fear'
@@ -151,6 +150,7 @@ HAPPINESS = 'Happiness'
 ECSTASY = EmotionType("着色 6", 'Ecstasy', 10)
 EXCITED = EmotionType("60% - 着色 6", 'excited', 5)
 HAPPY = EmotionType("40% - 着色 6", 'happy', 3)
+CHILLING_OUT = EmotionType("20% - 着色 6", "chilling out", 1)
 
 ANGER = 'Anger'
 RAGE = EmotionType("着色 2", 'rage', 7)
@@ -165,14 +165,14 @@ TIME_PERIODS = [f"{h}:{m}" for h, m in zip(sorted(list(range(7, 23)) * 2), (00, 
 #                                       Every hour occurs twice        o'clocks and half hours
 MATCH_NOTATION = {'F': 'Fatigue', 'P': 'Procrast', 'I': 'Ill', 'S': 'Social', 'A': 'Academic',
                   'E': 'Entertain', 'R': 'Fluct'}
-CLASSIFY_EMOTIONS = {NUMB: MISC_EMOTIONS, CHILLING_OUT: MISC_EMOTIONS, NONE: MISC_EMOTIONS,
+CLASSIFY_EMOTIONS = {NUMB: MISC_EMOTIONS, NONE: MISC_EMOTIONS,
                      ANXIOUS: ANXIETY_FEAR, NERVOUS: ANXIETY_FEAR,
                      DEPRESSED: SADNESS, FRUSTRATED: SADNESS, SAD: SADNESS,
-                     ECSTASY: HAPPINESS, EXCITED: HAPPINESS, HAPPY: HAPPINESS,
+                     ECSTASY: HAPPINESS, EXCITED: HAPPINESS, HAPPY: HAPPINESS, CHILLING_OUT: HAPPINESS,
                      RAGE: ANGER, OFFENDED: ANGER}
 
 
-def main(test=True):
+def main(test=True, show_misc=True):
     """
     :param test: Use the demo file
     """
@@ -224,6 +224,8 @@ def main(test=True):
             break
 
     print(months)
+
+    # -----------Start of Statistics-----------
     # 1. Notation bar graph
     _, ax1 = new_plot('Notation Statistics')
     n_ = months[0].notation_statistics
@@ -237,7 +239,13 @@ def main(test=True):
     all_days = []
     all_days.extend(*(d for d in (m.days for m in months)))
     x_dates = [d.date for d in all_days]
-    y_avgs = [d.avg_emotion for d in all_days]
+    y_avgs = np.array([d.avg_emotion for d in all_days])
+    # good_y = np.ma.masked_where(y_avgs>1,y_avgs)
+    # medium_y = np.ma.masked_where((y_avgs<1)|(y_avgs>0), y_avgs)
+    # bad_y = np.ma.masked_where(y_avgs<0, y_avgs)
+    # ax2.plot(x_dates, good_y, color='g')
+    # ax2.plot(x_dates, medium_y, color='y')
+    # ax2.plot(x_dates, bad_y, color='r')
     ax2.plot(x_dates, y_avgs)
     for xy in zip(x_dates, y_avgs):
         ax2.annotate('%.2f' % xy[1], xy=xy)
@@ -261,20 +269,35 @@ def main(test=True):
     ax4.axhline(0, color="r", linewidth=1)
     ax4.plot(TIME_PERIODS, avg_emo_shourly)
 
-    # 5. Emotion types
-    _, ax5 = new_plot('Emotion Types')
-    mis_, anx_, sad_, hap_, ang_ = [],[],[],[],[]
-    type_statistics = {MISC_EMOTIONS: mis_, ANXIETY_FEAR: anx_, SADNESS: sad_, HAPPINESS: hap_, ANGER: ang_}
-    for e in all_emo:
-        type_statistics[CLASSIFY_EMOTIONS[e]].append(e)
-    index = np.arange(5)
-    mis_, anx_, sad_, hap_, ang_ = np.array(mis_), np.array(anx_), np.array(sad_), np.array(hap_), np.array(ang_)
-    plt.bar(index, mis_, 0.3, color=np.random.rand(3,), label=MISC_EMOTIONS)
-    plt.bar(index, anx_, 0.3, bottom=mis_, color=np.random.rand(3,), label=ANXIETY_FEAR)
-    plt.bar(index, sad_, 0.3, bottom=(mis_+anx_), color=np.random.rand(3,), alpha=0.5, label=SADNESS)
-    plt.bar(index, hap_, 0.3, bottom=(mis_+anx_+sad_), color=np.random.rand(3, ), alpha=0.5, label=HAPPINESS)
-    plt.bar(index, ang_, 0.3, bottom=(mis_+anx_+sad_+hap_), color=np.random.rand(3, ), alpha=0.5, label=ANGER)
+    # 5. Emotion types stacked bar graph, per day
+    _, ax5 = new_plot('Emotion Types per Day')
+    emotion_colormap = ('#A5A5A5', '#FFC000', '#4472C4', '#70AD47', '#ED7D31') if show_misc else \
+                       ('#FFC000', '#4472C4', '#70AD47', '#ED7D31')
+    type_statistics_all = {MISC_EMOTIONS: 0, ANXIETY_FEAR: 0, SADNESS: 0, HAPPINESS: 0, ANGER: 0} if show_misc else \
+                        {ANXIETY_FEAR: 0, SADNESS: 0, HAPPINESS: 0, ANGER: 0}
+    # Per-day Statistics
+    for day_count, day in enumerate(all_days):
+        if show_misc:
+            type_statistics_day = {MISC_EMOTIONS: 0, ANXIETY_FEAR: 0, SADNESS: 0, HAPPINESS: 0, ANGER: 0}
+        else:
+            type_statistics_day = {ANXIETY_FEAR: 0, SADNESS: 0, HAPPINESS: 0, ANGER: 0}
+        current_btm = 0
+        for e in day.emotions:
+            if show_misc or (not CLASSIFY_EMOTIONS[e] == MISC_EMOTIONS):
+                type_statistics_day[CLASSIFY_EMOTIONS[e]] += 1
+                type_statistics_all[CLASSIFY_EMOTIONS[e]] += 1
+        for c, (k,v) in enumerate(type_statistics_day.items()):
+            ax5.bar(day_count+1, v, bottom=current_btm, color=emotion_colormap[c], label=k if c==0 else '')
+            current_btm += v
+            if v!=0: ax5.annotate(str(v), (day_count+1, current_btm-1))
 
+    # 6. Emotion types pie graph, in total
+    _, ax6 = new_plot('Emotion Types in Total')
+    ax6.pie(list(type_statistics_all.values()),
+            labels=[s for s in type_statistics_all.keys()],
+            colors=emotion_colormap,
+            explode=(0.1,) * len(list(type_statistics_all.values()))
+            )
     pcoef = np.corrcoef(np.array([time_to_int(i) for i in TIME_PERIODS]), np.array(avg_emo_shourly))
     print(pcoef)
 
@@ -282,7 +305,7 @@ def main(test=True):
     plt.show()
 
 
-def new_plot(title):
+def new_plot(title) -> (plt.Figure, plt.Axes):
     fig, ax = plt.subplots()
     fig.canvas.set_window_title(title)
     ax.set_title(title)
@@ -294,4 +317,4 @@ def time_to_int(time):
 
 
 if __name__ == '__main__':
-    main(False)
+    main(test=False, show_misc=False)
