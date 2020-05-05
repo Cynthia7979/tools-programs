@@ -175,6 +175,7 @@ CLASSIFY_EMOTIONS = {NUMB: MISC_EMOTIONS, NONE: MISC_EMOTIONS,
 def main(test=True, show_misc=True):
     """
     :param test: Use the demo file
+    :param show_misc: Show misc emotions
     """
     global LOGGER, months
 
@@ -183,6 +184,9 @@ def main(test=True, show_misc=True):
     LOGGER = logging.getLogger('Emotion_record')
     LOGGER.setLevel(logging.DEBUG)
     LOGGER.addHandler(default_ch)
+
+    plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
+    plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
     workbook = xl.load_workbook(PATH) if test else xl.load_workbook(PATH_)
     sheet = workbook.active
@@ -237,9 +241,11 @@ def main(test=True, show_misc=True):
     # 2. Daily Avg Emotion curve
     _, ax2 = new_plot('Average Daily Emotions')
     all_days = []
-    all_days.extend(*(d for d in (m.days for m in months)))
-    x_dates = [d.date for d in all_days]
-    y_avgs = np.array([d.avg_emotion for d in all_days])
+    for m in months:
+        all_days.extend(m.days)
+    x_dates = [i for i in range(len(all_days))]
+    y_avgs = [d.avg_emotion for d in all_days]
+    print(x_dates, y_avgs)
     # good_y = np.ma.masked_where(y_avgs>1,y_avgs)
     # medium_y = np.ma.masked_where((y_avgs<1)|(y_avgs>0), y_avgs)
     # bad_y = np.ma.masked_where(y_avgs<0, y_avgs)
@@ -249,7 +255,17 @@ def main(test=True, show_misc=True):
     ax2.plot(x_dates, y_avgs)
     for xy in zip(x_dates, y_avgs):
         ax2.annotate('%.2f' % xy[1], xy=xy)
+    x_labels = [all_days[0].date]
+    mth_offset = 1
+    for x, d in enumerate(all_days[1:]):
+        if d.date == 1:
+            x_labels.append(f'{START_MONTH + mth_offset}月{d.date}')
+            mth_offset += 1
+            ax2.axvline(x+1, linestyle='--', color='gray')
+        else:
+            x_labels.append(d.date)
     ax2.axhline(0, color="r", linewidth=1)
+    plt.xticks([i for i in range(x_dates[0], x_dates[0]+len(x_dates))], labels=x_labels)
 
     # 3. Semi-hourly emotion curves
     _, ax3 = new_plot('Hourly Emotions')
@@ -271,16 +287,15 @@ def main(test=True, show_misc=True):
 
     # 5. Emotion types stacked bar graph, per day
     _, ax5 = new_plot('Emotion Types per Day')
-    emotion_colormap = ('#A5A5A5', '#FFC000', '#4472C4', '#70AD47', '#ED7D31') if show_misc else \
-                       ('#FFC000', '#4472C4', '#70AD47', '#ED7D31')
-    type_statistics_all = {MISC_EMOTIONS: 0, ANXIETY_FEAR: 0, SADNESS: 0, HAPPINESS: 0, ANGER: 0} if show_misc else \
-                        {ANXIETY_FEAR: 0, SADNESS: 0, HAPPINESS: 0, ANGER: 0}
-    # Per-day Statistics
+    emotion_colormap = ('#A5A5A5', '#ED7D31', '#FFC000', '#4472C4', '#70AD47') if show_misc else \
+                       ('#ED7D31', '#FFC000', '#4472C4', '#70AD47')
+    type_statistics_all = {MISC_EMOTIONS: 0, ANGER: 0, ANXIETY_FEAR: 0, SADNESS: 0, HAPPINESS: 0} if show_misc else \
+                        {ANGER: 0, ANXIETY_FEAR: 0, SADNESS: 0, HAPPINESS: 0}
     for day_count, day in enumerate(all_days):
         if show_misc:
-            type_statistics_day = {MISC_EMOTIONS: 0, ANXIETY_FEAR: 0, SADNESS: 0, HAPPINESS: 0, ANGER: 0}
+            type_statistics_day = {MISC_EMOTIONS: 0, ANGER: 0, ANXIETY_FEAR: 0, SADNESS: 0, HAPPINESS: 0}
         else:
-            type_statistics_day = {ANXIETY_FEAR: 0, SADNESS: 0, HAPPINESS: 0, ANGER: 0}
+            type_statistics_day = {ANGER: 0, ANXIETY_FEAR: 0, SADNESS: 0, HAPPINESS: 0}
         current_btm = 0
         for e in day.emotions:
             if show_misc or (not CLASSIFY_EMOTIONS[e] == MISC_EMOTIONS):
@@ -290,6 +305,7 @@ def main(test=True, show_misc=True):
             ax5.bar(day_count+1, v, bottom=current_btm, color=emotion_colormap[c], label=k if c==0 else '')
             current_btm += v
             if v!=0: ax5.annotate(str(v), (day_count+1, current_btm-1))
+    plt.xticks([i for i in range(x_dates[0]+1, x_dates[0]+len(x_dates))], labels=x_labels)
 
     # 6. Emotion types pie graph, in total
     _, ax6 = new_plot('Emotion Types in Total')
