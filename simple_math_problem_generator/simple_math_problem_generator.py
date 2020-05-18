@@ -1,4 +1,6 @@
 import random
+from sympy import *
+
 
 PREC = 0
 FREQ_INTERVAL = 1
@@ -6,7 +8,7 @@ FREQ_INTERVAL = 1
 
 def main():
     while True:
-        problems_and_answers = sum_calculation_problems(PREC, interval=FREQ_INTERVAL)+\
+        problems_and_answers = sum_calculation_problems(PREC, interval=FREQ_INTERVAL) +\
                                four_problems(PREC, interval=FREQ_INTERVAL)
 
         random.shuffle(problems_and_answers)
@@ -14,12 +16,14 @@ def main():
             user_asw = input(p+' = ')
             if user_asw == str(a):
                 print('Correct.')
-                print('----------------')
             else:
                 print('Incorrect.')
                 print(f'Correct answer: {a}')
-                print('----------------')
+            print('----------------')
 
+
+def output():
+    problem_f = open('problems')
 
 
 def random_numbers(no_of_numbers, frequent_interval=4):
