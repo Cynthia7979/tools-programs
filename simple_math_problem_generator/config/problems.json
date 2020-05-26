@@ -1,6 +1,7 @@
 {
-  "simple_calculation":
+  "simple_computation":
   {
-    "interval": []
+    "interval": [0, 100],
+    "denominator_interval": [2, 20]
   }
 }
