@@ -1,5 +1,7 @@
 {
+  "about": "Global Configuration",
   "float_precision": 2,
   "maximum_terms": 5,
-  "interval": [0, 100]
+  "interval": [0, 100],
+  "pretty_output": true
 }
