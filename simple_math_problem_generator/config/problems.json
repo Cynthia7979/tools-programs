@@ -1,7 +1,13 @@
 {
   "simple_computation":
   {
+    "__about__": "'symbol' can be one of the following values: symbol represented by str (like 'x'), false, or 'random'",
     "interval": [0, 50],
-    "denominator_interval": [2, 5]
+    "denominator_interval": [2, 5],
+    "symbol": "random"
+  },
+  "perfect_square_trinomial":
+  {
+    "symbol": "x"
   }
 }

@@ -1,9 +1,9 @@
-import random
 import sys, os
 import json
 from sympy.abc import *
 from sympy import *
 from sympy.core.sympify import SympifyError
+from random import choice, choices, randint, uniform, gauss
 
 
 class Problem(object):
@@ -45,7 +45,7 @@ def main():
         f_answer = open(os.path.join(output_path, 'answers.txt'), 'w', encoding='utf-8')
 
         for i in range(num):
-            q_type = random.choices(QUESTION_TYPES, weights=type_weights)[0]  # Randomly choose a question type
+            q_type = choices(QUESTION_TYPES, weights=type_weights)[0]  # Randomly choose a question type
             problem = q_type()  # Call the question type function
             if global_config['pretty_output']:
                 f_problem.write(problem_output_format.format(content=pretty(problem.question), no=i+1))
@@ -55,7 +55,10 @@ def main():
                 f_answer.write(answer_output_format.format(content=str(problem.answer), no=i+1))
     else:  # Interactive (shell) mode
         while True:
-            q_type = random.choices(QUESTION_TYPES, weights=type_weights)[0]  # Randomly choose a question type
+            try:
+                q_type = choices(QUESTION_TYPES, weights=type_weights)[0]  # Randomly choose a question type
+            except ValueError:  # If the number of weights does not match the population
+                raise ValueError('The number of weights does not match the population. Please check config/weights.json')
             problem = q_type()  # Call the question type function
             pprint(problem.question)  # "Ask" the question
             users_answer = input('Write your answer here, "quit" to quit: ')
@@ -75,6 +78,21 @@ def main():
                 print('Incorrect.')
                 pprint('The right answer is: '+str(problem.answer))
             print('-'*20)
+
+
+def process_raw_symbol(raw_symbol):
+    processed_symbol = None
+    if raw_symbol == 'random':
+        _rand = randint(0, 1)
+        if _rand == 0:
+            processed_symbol = choice((a,b,c,x,y,z))
+        elif _rand == 1:
+            processed_symbol = None
+    elif not raw_symbol:
+        processed_symbol = None
+    else:
+        processed_symbol = symbols(raw_symbol)
+    return processed_symbol
 
 
 def combine_configurations(higher_priority: dict, lower_priority: dict):
@@ -107,45 +125,50 @@ def load_configuration_file(path):
 
 
 def random_numbers(no_of_numbers, frequent_interval=4):  # Took from simple generator
-    interval = random.gauss(frequent_interval, 0.5)
+    interval = gauss(frequent_interval, 0.5)
     results = []
     for n in range(no_of_numbers):
-        results.append(random.uniform(10**interval, 10**(interval+1)))
+        results.append(uniform(10**interval, 10**(interval+1)))
     return results
 
 
 def random_float(interval, float_prec):
-    result = str(random.randint(interval[0], interval[1] - 1))+'.'
+    result = str(randint(interval[0], interval[1] - 1))+'.'
     for i in range(float_prec):
         if i != float_prec - 1:
-            result += str(random.randint(0, 9))
+            result += str(randint(0, 9))
         else:
-            result += str(random.randint(1, 9))
+            result += str(randint(1, 9))
     return float(result)
 
 
 def random_frac(interval, denom_interval):
-    denominator = random.randint(*denom_interval)
-    numerator = random.randint(denominator * interval[0], denominator * interval[1])
+    denominator = randint(*denom_interval)
+    numerator = randint(denominator * interval[0], denominator * interval[1])
     return Rational(numerator, denominator)
 
 
 def random_term(interval=None, maximum_terms=None, denominator_interval=None, float_precision=None, configuration_of=None,
-                int_=True, float_=True, frac=True, expression=True):  # TODO: 支持随机字母(abc...xyz)
+                int_=True, float_=True, frac=True, expression=True, symbol=None):  # TODO: 支持随机字母(abc...xyz)
     value_types = []
     if int_: value_types.append("int")
-    if float_: value_types.append('float')
-    if frac: value_types.append('frac')
     if expression: value_types.append('expression')
-    type_of_term = random.choice(value_types)
+    if not symbol:
+        if float_: value_types.append('float')
+        if frac: value_types.append('frac')
+    type_of_term = choice(value_types)
+    print(f'Chosen {type_of_term}')
     if type_of_term == 'int':
-        return random.randint(*interval)
+        term = randint(*interval)
     elif type_of_term == 'float':
-        return random_float(interval, float_precision)
+        term = random_float(interval, float_precision)
     elif type_of_term == 'frac':
-        return random_float(interval, denominator_interval)
+        term = random_frac(interval, denominator_interval)
     elif type_of_term == 'expression':
-        return f'({simple_computation(maximum_terms, configuration_of).question})'
+        term = simple_computation(maximum_terms, configuration_of).question
+    print(term, symbol, type(symbol))
+    term = Mul(term, symbol) if symbol else term
+    return term
 
 
 """
@@ -158,52 +181,33 @@ Random numbers can be got using the three functions above.
 """
 
 
-def simple_computation(maximum_terms:int=None, configuration_of='simple_computation'):
+def simple_computation(maximum_terms:int=None, configuration_of=None):
     """
     Simple 4-operand computations
     移除了分数项，因为除法运算会表示为分数
     禁用了括号（random_term的expression参数），因为会导致溢出
     :return: Problem object
     """
+    if not configuration_of: configuration_of = 'simple_computation'
     func_config = combine_configurations(type_config[configuration_of], global_config)
-    if maximum_terms: func_config['maximum_terms'] = maximum_terms
-    number_of_terms = random.randint(2, func_config['maximum_terms'])
+    if maximum_terms:
+        func_config['maximum_terms'] = maximum_terms
+    func_config['symbol'] = process_raw_symbol(func_config['symbol'])
 
-    question = str(random_term(
-        interval=func_config['interval'],
-        denominator_interval=func_config["denominator_interval"],
-        float_precision=func_config['float_precision'],
-        frac=False,
-        expression=False
-    ))
-    # type_of_first_term = random.choice(VALUE_TYPES)
-    # if type_of_first_term == 'int':
-    #     first_term = random.randint(*func_config["interval"])
-    # elif type_of_first_term == 'float':
-    #     first_term = random_float(func_config["interval"], func_config["float_precision"])
-    # else:
-    #     raise ValueError(f'Unexpected type of term: {type_of_first_term}')
-    # question = str(first_term)
+    number_of_terms = randint(2, func_config['maximum_terms'])
+    random_term_kwargs = {'interval':func_config['interval'],
+                          'denominator_interval': func_config['denominator_interval'],
+                          'float_precision': func_config['float_precision'],
+                          'frac': False,
+                          'expression': False,
+                          'symbol': func_config['symbol']}
+    str_question = str(random_term(**random_term_kwargs))
 
     for term_number in range(number_of_terms):
-        # type_of_term = random.choice(VALUE_TYPES)
-        # if type_of_term == 'int':
-        #     term = random.randint(*func_config["interval"])
-        # elif type_of_term == 'float':
-        #     term = random_float(func_config["interval"], func_config["float_precision"])
-        # else:
-        #     raise ValueError(f'Unexpected type of term: {type_of_term}')
-
-        question += random.choice(['+', '-', '*', '/'])+str(random_term(
-                                                    interval=func_config['interval'],
-                                                    denominator_interval=func_config["denominator_interval"],
-                                                    float_precision=func_config['float_precision'],
-                                                    frac=False,
-                                                    expression=False
-                                                    ))
-
-    answer = sympify(question).round(func_config['float_precision'])
-    question = sympify(question, evaluate=False)
+        #                      operand                         term
+        str_question += choice(['+', '-', '*', '/'])+str(random_term(**random_term_kwargs))
+    answer = sympify(str_question) if func_config['symbol'] else sympify(str_question).round(func_config['float_precision'])
+    question = sympify(str_question, evaluate=False)
     problem = Problem(question, answer)
     return problem
 
@@ -213,16 +217,29 @@ def perfect_square_trinomial():
     TODO
     完全平方式展开
 
-    (ex_a, ex_b)**2
+    (ex_a+-ex_b)**2
     :return: Problem object
     """
-    ex_a = random_term()
+    func_config = combine_configurations(type_config['perfect_square_trinomial'], global_config)
+    random_term_kwargs = {
+        'interval': func_config['interval'],
+        'maximum_terms': func_config['maximum_terms'],
+        'denominator_interval': func_config['denominator_interval'],
+        'float_precision': func_config['float_precision'],
+        'configuration_of': 'perfect_square_trinomial',
+        'symbol': process_raw_symbol(func_config['symbol']),
+    }
+    ex_a, ex_b = random_term(**random_term_kwargs), random_term(**random_term_kwargs)
+    _rand = randint(0,1)
+    if _rand == 0: ex_b = -ex_b
+    question = UnevaluatedExpr((ex_a+ex_b)**2)
+    answer = UnevaluatedExpr(ex_a**2 + 2*ex_a*ex_b + ex_b**2)
+    return Problem(question, answer)
 
 
 
 #  Global constants
-QUESTION_TYPES = [simple_computation]
-VALUE_TYPES = ['int', 'float']
+QUESTION_TYPES = [simple_computation, perfect_square_trinomial]
 
 
 if __name__ == '__main__':
