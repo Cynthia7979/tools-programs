@@ -197,11 +197,13 @@ def main(test=True, show_misc=True):
     current_date_no = START_DATE
     current_month = Month(current_month_no)
     months = []
+    periods = []
+    _last_day_period = False
     LOGGER.debug('  '.join((str(x) for x in range(36))))
-    for i, row in enumerate(sheet.iter_rows(min_row=2, max_col=36)):  # All cells
+    for i, row in enumerate(sheet.iter_rows(min_row=2, max_col=37)):  # All cells including period
         LOGGER.debug(str(i + 2) + ' '.join([c.style for c in row]))
         current_day = Day(current_date_no)
-        for j, cell in enumerate(row[4:]):  # Cells in a day (row)
+        for j, cell in enumerate(row[4:-1]):  # Cells in a day (row)
             try:
                 current_day.add_emotion(MATCH_COLOR[cell.style], TIME_PERIODS[j])
             except KeyError as e:
@@ -215,6 +217,11 @@ def main(test=True, show_misc=True):
                             current_day.add_emotion(MATCH_COLOR[cell.style], TIME_PERIODS[j])
                     except ValueError:
                         current_day.add_notation(v)
+        if row[-1].style == '差': # Had period
+            if _last_day_period:
+                periods[-1].append(current_date_no)
+            else:
+                periods.append([current_date_no])
         current_date_no += 1
         current_month.add_day(current_day)
         day_type = row[0].style
