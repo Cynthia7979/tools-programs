@@ -10,7 +10,7 @@ mpy = np.array([0,500,700,900,700,200,0,-200])
 
 
 # 300 represents number of points to make between T.min and T.max
-xnew = np.linspace(x.min(), x.max(), 300)
+xnew = np.linspace(x.min(), x.max()+2, 300)
 
 spl = make_interp_spline(x, tpy, k=3)  # type: BSpline
 tpy_smooth = spl(xnew)
@@ -20,12 +20,12 @@ spl = make_interp_spline(x, mpy, k=3)  # type: BSpline
 mpy_smooth = spl(xnew)
 
 plt.figure()
-plt.plot(xnew,tpy_smooth, label='TP')
-plt.plot(xnew,apy_smooth, label='AP')
-plt.plot(xnew,mpy_smooth, label='MP')
-plt.plot(x,tpy)
-plt.plot(x,apy)
-plt.plot(x,mpy)
+plt.plot(x,tpy, 'r')
+plt.plot(x,apy, 'g')
+plt.plot(x,mpy, 'b')
+plt.plot(xnew,tpy_smooth, 'r--', label='TP')
+plt.plot(xnew,apy_smooth, 'g--', label='AP')
+plt.plot(xnew,mpy_smooth, 'b--', label='MP')
 
 plt.xlabel('Labor')
 plt.ylabel('Output')
