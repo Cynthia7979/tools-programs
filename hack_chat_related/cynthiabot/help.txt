@@ -1,0 +1,10 @@
+CynthiaBot help.txt
+--------------------
+`@CynthiaBot` + the followings:
+  * `How are you?` - Get Cynthia's current status
+  * `GitHub` - Get Cynthia's GitHub Username
+  * `help` - Show help.txt
+  * `Random SCP` - Get a random SCP
+  * `Random CN SCP` - Get a random Chinese SCP
+  * `game` - Get recommended a random game in Cynthia's Steam Account (or UPlay?)
+  * `Wishlist` - Get recommended a random game in Cynthia's Steam Wishlist
