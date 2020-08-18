@@ -1,0 +1,23 @@
+Did this activity have a direct impact on the society/community?
+Prefix dict has been built successfully.
+Loading model from cache
+Loading model cost 0.858 seconds.
+Building prefix dict from the default dictionary ...
+To get a list of available modules, keywords, symbols, or topics, type "modules", "keywords", "symbols", or "topics".
+Each module also comes with a one-line summary of what it does; to list the modules whose name or summary contain a given string such as "spam", type "modules spam".
+Did you initiate this activity or club?
+“Jieba” (Chinese for “to stutter”) Chinese text segmentation: built to be the best Python Chinese word segmentation module.
+Hello Cynthia7979, you have made 583 classifications to date.
+Dictionaries are a convenient way to store data for later retrieval by name (key). Keys must be unique, immutable objects, and are typically strings. The values in a dictionary can be anything. For many applications the values are simple types such as integers and strings.
+It gets more interesting when the values in a dictionary are collections (lists, dicts, etc.) In this case, the value (an empty list or dict) must be initialized the first time a given key is used. While this is relatively easy to do manually, the defaultdict type automates and simplifies these kinds of operations.
+A defaultdict works exactly like a normal dict, but it is initialized with a function (“default factory”) that takes no arguments and provides the default value for a nonexistent key.
+A defaultdict will never raise a KeyError. Any key that does not exist gets the value returned by the default factory.
+Ad Astra per Aspera.
+As a student job seeker, you may be wondering whether to include extracurricular activities in your resume.
+The answer is yes, you should.
+Putting extracurricular activities on your resume gives hiring managers a glimpse into your interests outside of your grades and test scores.
+Yet does this strategy really give you an edge over the traditional job seeker?
+Mention Your Achievements: Employers look for staff who have a history of making positive contributions.
+Review each of your experiences and ask yourself if there are achievements in class, clubs, sports, or the workplace that you can include.
+If so, use verbs like enhanced, reorganized, increased, improved, initiated, upgraded, or expanded to show what you accomplished.
+Include any challenging advanced academic projects since this shows employers that you are intelligent and a hard worker.
