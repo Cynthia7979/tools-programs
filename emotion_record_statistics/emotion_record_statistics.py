@@ -172,7 +172,7 @@ CLASSIFY_EMOTIONS = {NUMB: MISC_EMOTIONS, NONE: MISC_EMOTIONS,
                      RAGE: ANGER, OFFENDED: ANGER}
 
 
-def main(test=True, show_misc=True):
+def main(test=True, show_misc=True, show_happy=True):
     """
     :param test: Use the demo file
     :param show_misc: Show misc emotions
@@ -191,25 +191,27 @@ def main(test=True, show_misc=True):
     workbook = xl.load_workbook(PATH) if test else xl.load_workbook(PATH_)
     sheet = workbook.active
 
-    # matplotlib.use('TkAgg')
-
     current_month_no = START_MONTH
     current_date_no = START_DATE
     current_month = Month(current_month_no)
+    total_date_no = 0
+    all_days = []
     months = []
     periods = []
     _last_day_period = False
     LOGGER.debug('  '.join((str(x) for x in range(36))))
     for i, row in enumerate(sheet.iter_rows(min_row=2, max_col=37)):  # All cells including period
         LOGGER.debug(str(i + 2) + ' '.join([c.style for c in row]))
+
         current_day = Day(current_date_no)
+
         for j, cell in enumerate(row[4:-1]):  # Cells in a day (row)
             try:
                 current_day.add_emotion(MATCH_COLOR[cell.style], TIME_PERIODS[j])
             except KeyError as e:
                 LOGGER.error(f'Unrecognized color at {(j, i)}: {cell.style}')
                 raise e
-            if cell.value:
+            if cell.value:  # Notations
                 for v in str(cell.value).split("|"):
                     try:
                         v = int(v)
@@ -217,13 +219,21 @@ def main(test=True, show_misc=True):
                             current_day.add_emotion(MATCH_COLOR[cell.style], TIME_PERIODS[j])
                     except ValueError:
                         current_day.add_notation(v)
-        if row[-1].style == '差': # Had period
-            if _last_day_period:
-                periods[-1].append(current_date_no)
-            else:
-                periods.append([current_date_no])
         current_date_no += 1
+        total_date_no += 1
         current_month.add_day(current_day)
+        all_days.append(current_day)
+
+        if row[-1].style == '差':  # Had period
+            if _last_day_period:
+                periods[-1].append(total_date_no)
+            else:
+                periods.append([total_date_no])
+                _last_day_period = True
+        else:
+            if _last_day_period:
+                _last_day_period = False
+
         day_type = row[0].style
         if day_type == '好':  # Start of a month
             months.append(current_month)
@@ -247,21 +257,12 @@ def main(test=True, show_misc=True):
 
     # 2. Daily Avg Emotion curve
     _, ax2 = new_plot('Average Daily Emotions')
-    all_days = []
-    for m in months:
-        all_days.extend(m.days)
     x_dates = [i for i in range(len(all_days))]
     y_avgs = [d.avg_emotion for d in all_days]
-    print(x_dates, y_avgs)
-    # good_y = np.ma.masked_where(y_avgs>1,y_avgs)
-    # medium_y = np.ma.masked_where((y_avgs<1)|(y_avgs>0), y_avgs)
-    # bad_y = np.ma.masked_where(y_avgs<0, y_avgs)
-    # ax2.plot(x_dates, good_y, color='g')
-    # ax2.plot(x_dates, medium_y, color='y')
-    # ax2.plot(x_dates, bad_y, color='r')
     ax2.plot(x_dates, y_avgs)
     for xy in zip(x_dates, y_avgs):
         ax2.annotate('%.2f' % xy[1], xy=xy)
+
     x_labels = [all_days[0].date]
     mth_offset = 1
     for x, d in enumerate(all_days[1:]):
@@ -271,12 +272,15 @@ def main(test=True, show_misc=True):
             ax2.axvline(x+1, linestyle='--', color='gray')
         else:
             x_labels.append(d.date)
+    plt.xticks([i for i in range(x_dates[0], x_dates[0] + len(x_dates))], labels=x_labels)
+
     ax2.axhline(0, color="r", linewidth=1)
-    plt.xticks([i for i in range(x_dates[0], x_dates[0]+len(x_dates))], labels=x_labels)
+
+    highlight_period(ax2, periods)
 
     # 3. Semi-hourly emotion curves
     _, ax3 = new_plot('Hourly Emotions')
-    emo_v_shourly = [[] for i in range(len(TIME_PERIODS))]  # Pre-calculate for the next one
+    emo_v_shourly = [[] for i in range(len(TIME_PERIODS))]  # Pre-calculate for 4.
     all_emo = [] # Pre-calculate for next ones
     for day in all_days:
         e_ = day.emotions
@@ -294,25 +298,35 @@ def main(test=True, show_misc=True):
 
     # 5. Emotion types stacked bar graph, per day
     _, ax5 = new_plot('Emotion Types per Day')
-    emotion_colormap = ('#A5A5A5', '#ED7D31', '#FFC000', '#4472C4', '#70AD47') if show_misc else \
-                       ('#ED7D31', '#FFC000', '#4472C4', '#70AD47')
-    type_statistics_all = {MISC_EMOTIONS: 0, ANGER: 0, ANXIETY_FEAR: 0, SADNESS: 0, HAPPINESS: 0} if show_misc else \
-                        {ANGER: 0, ANXIETY_FEAR: 0, SADNESS: 0, HAPPINESS: 0}
+    # Prepare to do statistics
+    #                     MISC       ANGER     ANXIETY      SAD       HAPPY
+    emotion_colormap = ['#A5A5A5', '#ED7D31', '#FFC000', '#4472C4', '#70AD47']
+    if not show_misc: emotion_colormap.pop(0)
+    if not show_happy: emotion_colormap.pop(-1)
+
+    type_statistics_all = {MISC_EMOTIONS: 0, ANGER: 0, ANXIETY_FEAR: 0, SADNESS: 0, HAPPINESS: 0}
+    if not show_misc: del type_statistics_all[MISC_EMOTIONS]
+    if not show_happy: del type_statistics_all[HAPPINESS]
+
     for day_count, day in enumerate(all_days):
-        if show_misc:
-            type_statistics_day = {MISC_EMOTIONS: 0, ANGER: 0, ANXIETY_FEAR: 0, SADNESS: 0, HAPPINESS: 0}
-        else:
-            type_statistics_day = {ANGER: 0, ANXIETY_FEAR: 0, SADNESS: 0, HAPPINESS: 0}
-        current_btm = 0
+        type_statistics_day = {MISC_EMOTIONS: 0, ANGER: 0, ANXIETY_FEAR: 0, SADNESS: 0, HAPPINESS: 0}
+        if not show_misc: del type_statistics_day[MISC_EMOTIONS]
+        if not show_happy: del type_statistics_day[HAPPINESS]
+
         for e in day.emotions:
-            if show_misc or (not CLASSIFY_EMOTIONS[e] == MISC_EMOTIONS):
+            if (show_misc or CLASSIFY_EMOTIONS[e] != MISC_EMOTIONS) and \
+               (show_happy or CLASSIFY_EMOTIONS[e] != HAPPINESS) and \
+               (e != NONE):
                 type_statistics_day[CLASSIFY_EMOTIONS[e]] += 1
                 type_statistics_all[CLASSIFY_EMOTIONS[e]] += 1
+
+        current_bottom = 0
         for c, (k,v) in enumerate(type_statistics_day.items()):
-            ax5.bar(day_count+1, v, bottom=current_btm, color=emotion_colormap[c], label=k if c==0 else '')
-            current_btm += v
-            if v!=0: ax5.annotate(str(v), (day_count+1, current_btm-1))
+            ax5.bar(day_count+1, v, bottom=current_bottom, color=emotion_colormap[c], label=k if c==0 else '')
+            current_bottom += v
+            if v!=0: ax5.annotate(str(v), (day_count+1, current_bottom-1))
     plt.xticks([i for i in range(x_dates[0]+1, x_dates[0]+len(x_dates))], labels=x_labels)
+    highlight_period(ax5, periods, extra_offset=1)
 
     # 6. Emotion types pie graph, in total
     _, ax6 = new_plot('Emotion Types in Total')
@@ -339,5 +353,11 @@ def time_to_int(time):
     return int(time.split(':')[0]) + {'30': 0.5, '0': 0, '00': 0}[time.split(':')[1]]
 
 
+def highlight_period(ax, periods, extra_offset=0):
+    for alpha_month, period in enumerate(periods):
+        xmin, xmax = period[0], period[-1]
+        ax.axvspan(xmin+extra_offset, xmax+extra_offset, color="#FF4F3B88")
+
+
 if __name__ == '__main__':
-    main(test=False, show_misc=False)
+    main(test=False, show_misc=True, show_happy=False)

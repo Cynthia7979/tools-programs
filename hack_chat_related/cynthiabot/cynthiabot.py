@@ -105,7 +105,7 @@ def generate_cn(from_keywords:tuple=None):
     while len(result) < CN_MIN or len(result) > CN_MAX:
         result = []
         if START_FROM_INITIATOR and not from_keywords:
-            s = couple_words_cn[INITIATOR].get_random()
+            s = random.choice(list(couple_words_cn[INITIATOR]._successors.keys()))
         else:
             s = random.choice(list(couple_words_cn.keys())) if not from_keywords else from_keywords
             while s in ('。','，','”','】'):
@@ -191,7 +191,6 @@ def reply(chat, message, sender):
                               f' to check Cynthia\'s status.')
     except Exception as e:
         chat.send_message(f'{e.__class__.__name__}: {e}')
-        raise e
 
 
 def welcome(chat, nick):
@@ -209,7 +208,7 @@ if __name__ == "__main__":
     load('./word_sources/wake-up-in-twilight_word_sources.txt', cn=True)
     # load('./word_sources/sral-9_word_sources.txt', cn=True)
     load('./word_sources/essay_material_word_sources.txt', cn=True, encoding='utf-16-le')
-    cynthia_channel = hackchat.HackChat('CynthiaBot', 'cynthia!')
+    cynthia_channel = hackchat.HackChat('CynthiaBot_B', 'cynthia!')
     print('Running...')
     cynthia_channel.send_message('Hello everyone!! Enter `@CynthiaBot help` to view a list of commands.')
     cynthia_channel.on_message += [reply]
