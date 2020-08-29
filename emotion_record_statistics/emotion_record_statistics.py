@@ -275,6 +275,7 @@ def main(test=True, show_misc=True, show_happy=True):
     plt.xticks([i for i in range(x_dates[0], x_dates[0] + len(x_dates))], labels=x_labels)
 
     ax2.axhline(0, color="r", linewidth=1)
+    ax2.axhline(1, color="g", linewidth=1)
 
     highlight_period(ax2, periods)
 

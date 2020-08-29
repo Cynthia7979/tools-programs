@@ -6,6 +6,7 @@ from string import ascii_lowercase
 from collections import defaultdict
 
 
+# Sentence generation module
 CUT_CHARACTERS = True
 CN_MAX = 30
 CN_MIN = 15
@@ -124,7 +125,7 @@ def send_file_content(file, chat):
 
 
 def add_chat_source(chat, message, sender):
-    if '@CynthiaBot' not in message and 'CynthiaBot' not in sender:
+    if '@CynthiaBot' not in message and '*debug*' not in message and 'CynthiaBot' not in sender:
         with open('./word_sources/chat_log_word_sources.txt', 'a', encoding='utf-8') as f:
             f.write(message+'\n')
 
@@ -197,6 +198,11 @@ def welcome(chat, nick):
     chat.send_message(f'@{nick}, welcome! Enter `@CynthiaBot help` to view a list of commands.')
 
 
+def self_on_join(chat):
+    chat.send_message('Hello everyone!! Enter `@CynthiaBot help` to view a list of commands.')
+    chat._send_packet({"cmd": "emote", "text": "*stands up and asked for a cup of tea*"})
+    chat._send_packet({"cmd": "emote", "text": '*covers its mouth and said,* "Oh! I am a waiter myself!"'})
+
 if __name__ == "__main__":
     load("./word_sources/SCP_word_sources.txt")
     load('./word_sources/quote_word_sources.txt')
@@ -208,9 +214,9 @@ if __name__ == "__main__":
     load('./word_sources/wake-up-in-twilight_word_sources.txt', cn=True)
     # load('./word_sources/sral-9_word_sources.txt', cn=True)
     load('./word_sources/essay_material_word_sources.txt', cn=True, encoding='utf-16-le')
-    cynthia_channel = hackchat.HackChat('CynthiaBot_B', 'cynthia!')
+    cynthia_channel = hackchat.HackChat('CynthiaBot', 'cynthia!')
     print('Running...')
-    cynthia_channel.send_message('Hello everyone!! Enter `@CynthiaBot help` to view a list of commands.')
+    self_on_join(cynthia_channel)
     cynthia_channel.on_message += [reply]
     cynthia_channel.on_message += [add_chat_source]
     cynthia_channel.on_join += [welcome]
