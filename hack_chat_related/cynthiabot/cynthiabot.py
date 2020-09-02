@@ -5,6 +5,8 @@ import jieba
 from string import ascii_lowercase
 from collections import defaultdict
 
+# General constants
+BOTNAME = 'CynthiaBot_A'
 
 # Sentence generation module
 CUT_CHARACTERS = True
@@ -208,13 +210,13 @@ if __name__ == "__main__":
     load('./word_sources/quote_word_sources.txt')
     load('./word_sources/general_en_word_sources.txt')
     load('./word_sources/forum_word_sources.txt')
-    load("./word_sources/general_chinese_word_sources.txt", cn=True)
-    load('./word_sources/tree_word_sources.txt', cn=True)
-    load('./word_sources/chat_log_word_sources.txt', cn=True)
-    load('./word_sources/wake-up-in-twilight_word_sources.txt', cn=True)
-    # load('./word_sources/sral-9_word_sources.txt', cn=True)
-    load('./word_sources/essay_material_word_sources.txt', cn=True, encoding='utf-16-le')
-    cynthia_channel = hackchat.HackChat('CynthiaBot', 'cynthia!')
+    load("./word_sources/cn_general_chinese_word_sources.txt", cn=True)
+    load('./word_sources/cn_tree_word_sources.txt', cn=True)
+    load('./word_sources/cn_chat_log_word_sources.txt', cn=True)
+    load('./word_sources/cn_wake-up-in-twilight_word_sources.txt', cn=True)
+    # load('./word_sources/cn_sral-9_word_sources.txt', cn=True)
+    load('./word_sources/cn_essay_material_word_sources.txt', cn=True, encoding='utf-16-le')
+    cynthia_channel = hackchat.HackChat(BOTNAME, 'cynthia!')
     print('Running...')
     self_on_join(cynthia_channel)
     cynthia_channel.on_message += [reply]
