@@ -63,7 +63,7 @@ def main():
 
     # button_column_span = int((grid_width+3)/2) if grid_width<grid_height else int((grid_width+5)/2)
     generate_btn = tk.Button(root, text='Generate Another',
-                             command=lambda: generate_numbers(grid, thread))
+                             command=lambda: generate_numbers(grid, thread, end=grid_width*grid_height))
     generate_btn.grid(row=grid_height+2, column=1,
                       columnspan=grid_width-1)
     configure_btn = tk.Button(root, text='Configure...',
@@ -100,6 +100,7 @@ def generate_grid(master, width=5, height=5):
 
 def generate_numbers(grid, thread, start=1, end=25):
     num_sequence = list(range(start, end + 1))
+    print(num_sequence)
     shuffle(num_sequence)
     i = 0
     for row in grid:
