@@ -6,11 +6,12 @@ import ctypes
 
 
 def main():
+    print('start of program')
     with open('data.json', encoding="utf-8") as f:
         data = json.load(f)
     today = dt.datetime.now().date()
     year, month, day = today.year, today.month, today.day
-    if (str(today) != data['update']) and not today.weekday() >= 5:  # Not already run & Not weekend
+    if not today.weekday() >= 5:  # Not weekend
         group_onduty = get_group_onduty(data)
         people_in_group = data['groups'][group_onduty - 1]
         wallpaper = generate_wallpaper(year, month, day, group_onduty, people_in_group)
@@ -24,6 +25,7 @@ def main():
 
 
 def get_group_onduty(data) -> int :
+    print('getting group on duty...')
     today = dt.datetime.now().date()
     last_update = dt.datetime.strptime(data['update'], '%Y-%m-%d').date()
     days_passed = (today-last_update).days
@@ -32,6 +34,7 @@ def get_group_onduty(data) -> int :
 
 
 def generate_wallpaper(year, month, day, group_no:int, group_members:tuple):
+    print('generating wallpaper...')
     if random.randint(0,1) == 0:  # Light theme
         bg_color = (random.randint(124, 255), random.randint(124, 255), random.randint(124, 255))
         text_color = "black"
@@ -60,6 +63,4 @@ def generate_wallpaper(year, month, day, group_no:int, group_members:tuple):
 #     else:
 #         days += 365
 
-
-if __name__ == '__main__':
-    main()
+main()
