@@ -23,7 +23,7 @@ and the date of last update
 - [x] Change the wallpaper to the generated one
 - [x] (**NEW!**) Wallpaper with picture mode
     - [x] Pic Mode 1: Picture `1080*540` at left, everything else align to the picture side
-    - [x] Pic Mode 2: Picture `1920*1080` under a translucent white cover, aligning is normal, text color is black.
+    - [x] Pic Mode 2: Picture `1920*1080` under a translucent white/dark cover, aligning is normal, text color is black.
     * To use Pic Mode, rename your image to "`picmode_source.jpg`" or "`picmode_source.png`" and put it in the same
     directory with the `.py` file.
     * **NOTE:** The program will crop Side Pic Mode wallpapers to 2:1 porportion
