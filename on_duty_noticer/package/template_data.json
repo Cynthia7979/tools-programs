@@ -1,0 +1,11 @@
+{
+  "groups": [
+    ["AAA", "BBB", "*Leader"],
+    ["AAA", "BBB", "*Leader"],
+    ["AAA", "BBB", "*Leader"]
+  ],
+  "update": "2020-09-14",
+  "lastGroup": 2,
+  "pictureMode": true,
+  "fullMode": false
+}

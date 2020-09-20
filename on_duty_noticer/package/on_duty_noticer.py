@@ -18,23 +18,22 @@ def main():
     locale.setlocale(locale.LC_CTYPE, 'chinese')  # Support Chinese in strftime()
     today = dt.datetime.now().date()
 
-    if not today.weekday() >= 4:  # Not Friday, Saturday or Sunday
-        group_onduty = get_group_onduty(today, data)
-        people_in_group = data['groups'][group_onduty - 1]
-        if data['pictureMode']:
-            if data['fullMode']:
-                wallpaper = generate_full_pic_wallpaper(today, group_onduty, people_in_group)
-            else:
-                wallpaper = generate_side_pic_wallpaper(today, group_onduty, people_in_group)
+    group_onduty = get_group_onduty(today, data)
+    people_in_group = data['groups'][group_onduty - 1]
+    if data['pictureMode']:
+        if data['fullMode']:
+            wallpaper = generate_full_pic_wallpaper(today, group_onduty, people_in_group)
         else:
-            wallpaper = generate_normal_wallpaper(today, group_onduty, people_in_group)
-        wallpaper.save('D:/wallpaper.png')
-        ctypes.windll.user32.SystemParametersInfoW(20, 0, "D:/wallpaper.png", 0)
-        data_ = data.copy()
-        data_['update'] = str(today)
-        data_['lastGroup'] = group_onduty
-        with open('data.json', 'w', encoding='utf-8') as f:
-            json.dump(data_, f)
+            wallpaper = generate_side_pic_wallpaper(today, group_onduty, people_in_group)
+    else:
+        wallpaper = generate_normal_wallpaper(today, group_onduty, people_in_group)
+    wallpaper.save('D:/wallpaper.png')
+    ctypes.windll.user32.SystemParametersInfoW(20, 0, "D:/wallpaper.png", 0)
+    data_ = data.copy()
+    data_['update'] = str(today)
+    data_['lastGroup'] = group_onduty
+    with open('data.json', 'w', encoding='utf-8') as f:
+        json.dump(data_, f)
 
 
 def get_group_onduty(today, data) -> int:
@@ -42,7 +41,7 @@ def get_group_onduty(today, data) -> int:
     last_update = dt.datetime.strptime(data['update'], '%Y-%m-%d').date()
     days_passed = (today-last_update).days
     last_group = data["lastGroup"]
-    delta = (today.weekday() == 0) *-3  # If it's Monday, then ignore extra weekend days
+    delta = (today.weekday() == 0) *-2  # If it's Monday, then ignore extra weekend days
     return [3,1,2][(days_passed+last_group+delta) % 3]
 
 
@@ -57,13 +56,16 @@ def generate_normal_wallpaper(date, group_no:int, group_members:tuple):
 
     background = Image.new("RGB", (1920, 1080), bg_color)
     draw = ImageDraw.Draw(background)
-    draw.text((540,200), date.strftime('%Y年%m月%d日'), text_color, font=normal)
-    draw.text((550,375), f"{group_no}组值日", text_color, font=large)
-    draw.text((880,650), f'组员：', text_color, font=small)
-    if len(group_members) == 4:
-        draw.text((520,725), "，".join(group_members), text_color, font=small)
-    elif len(group_members) == 5:
-        draw.text((380,725), "，".join(group_members), text_color, font=small)
+    draw.text((500,200), date.strftime('%Y年%m月%d日'), text_color, font=normal)
+    if date.weekday() >= 5:
+        draw.text((490, 375), "周末快乐", text_color, font=large)
+    else:
+        draw.text((550,375), f"{group_no}组值日", text_color, font=large)
+        draw.text((880,650), f'组员：', text_color, font=small)
+        if len(group_members) == 4:
+            draw.text((520,725), "，".join(group_members), text_color, font=small)
+        elif len(group_members) == 5:
+            draw.text((380,725), "，".join(group_members), text_color, font=small)
 
     return background
 
@@ -88,11 +90,14 @@ def generate_side_pic_wallpaper(date, group_no:int, group_members:tuple):
     background.paste(source_img, (0,0))
     draw = ImageDraw.Draw(background)
     draw.text((570, 225), date.strftime('%Y年%m月%d日'), text_color, font=normal)
-    draw.text((570,400), f"{group_no}组值日", text_color, font=large)
-    if len(group_members) == 4:
-        draw.text((570,700), "，".join(group_members), text_color, font=small)
-    elif len(group_members) == 5:
-        draw.text((570,700), "，".join(group_members), text_color, font=small)
+    if date.weekday() >= 5:
+        draw.text((540, 400), "周末快乐", text_color, font=large)
+    else:
+        draw.text((570,400), f"{group_no}组值日", text_color, font=large)
+        if len(group_members) == 4:
+            draw.text((570,700), "，".join(group_members), text_color, font=small)
+        elif len(group_members) == 5:
+            draw.text((570,700), "，".join(group_members), text_color, font=small)
 
     return background
 
@@ -114,13 +119,16 @@ def generate_full_pic_wallpaper(date, group_no:int, group_members:tuple):
 
     background = Image.blend(background, fg, 0.5)
     draw = ImageDraw.Draw(background)
-    draw.text((540, 200), date.strftime('%Y年%m月%d日'), text_color, font=normal)
-    draw.text((550, 375), f"{group_no}组值日", text_color, font=large)
-    draw.text((880, 650), f'组员：', text_color, font=small)
-    if len(group_members) == 4:
-        draw.text((520, 725), "，".join(group_members), text_color, font=small)
-    elif len(group_members) == 5:
-        draw.text((380, 725), "，".join(group_members), text_color, font=small)
+    draw.text((500, 200), date.strftime('%Y年%m月%d日'), text_color, font=normal)
+    if date.weekday() >= 5:
+        draw.text((510, 375), "周末快乐", text_color, font=large)
+    else:
+        draw.text((550, 375), f"{group_no}组值日", text_color, font=large)
+        draw.text((880, 650), f'组员：', text_color, font=small)
+        if len(group_members) == 4:
+            draw.text((520, 725), "，".join(group_members), text_color, font=small)
+        elif len(group_members) == 5:
+            draw.text((380, 725), "，".join(group_members), text_color, font=small)
 
     return background
 
