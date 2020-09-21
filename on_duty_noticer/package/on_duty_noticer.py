@@ -29,11 +29,12 @@ def main():
         wallpaper = generate_normal_wallpaper(today, group_onduty, people_in_group)
     wallpaper.save('D:/wallpaper.png')
     ctypes.windll.user32.SystemParametersInfoW(20, 0, "D:/wallpaper.png", 0)
-    data_ = data.copy()
-    data_['update'] = str(today)
-    data_['lastGroup'] = group_onduty
-    with open('data.json', 'w', encoding='utf-8') as f:
-        json.dump(data_, f)
+    if today.weekday() >= 5:
+        data_ = data.copy()
+        data_['update'] = str(today)
+        data_['lastGroup'] = group_onduty
+        with open('data.json', 'w', encoding='utf-8') as f:
+            json.dump(data_, f)
 
 
 def get_group_onduty(today, data) -> int:
@@ -58,14 +59,14 @@ def generate_normal_wallpaper(date, group_no:int, group_members:tuple):
     draw = ImageDraw.Draw(background)
     draw.text((500,200), date.strftime('%Y年%m月%d日'), text_color, font=normal)
     if date.weekday() >= 5:
-        draw.text((490, 375), "周末快乐", text_color, font=large)
+        draw.text((450, 425), "周末快乐", text_color, font=large)
     else:
-        draw.text((550,375), f"{group_no}组值日", text_color, font=large)
-        draw.text((880,650), f'组员：', text_color, font=small)
+        draw.text((500,425), f"{group_no}组值日", text_color, font=large)
+        draw.text((830,700), f'组员：', text_color, font=small)
         if len(group_members) == 4:
-            draw.text((520,725), "，".join(group_members), text_color, font=small)
+            draw.text((470,775), "，".join(group_members), text_color, font=small)
         elif len(group_members) == 5:
-            draw.text((380,725), "，".join(group_members), text_color, font=small)
+            draw.text((330,775), "，".join(group_members), text_color, font=small)
 
     return background
 
