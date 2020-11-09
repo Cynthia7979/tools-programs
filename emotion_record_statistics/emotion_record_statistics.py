@@ -9,7 +9,7 @@ Notes on marks:
 
 "好" - End of a month
 "适中" - End of the record
-"差" - (Vacant style used for debug)
+"差" - Periods
 """
 # import xlrd
 import openpyxl as xl
@@ -37,6 +37,7 @@ PATH = 'emotion_record.xlsx'
 PATH_ = 'D://情绪记录表.xlsx'
 START_MONTH = 4
 START_DATE = 16
+BASE_VALUE = 1
 LOGGING_LEVEL = logging.DEBUG
 
 
@@ -134,7 +135,7 @@ class Month(object):  # It's too similar with Day!
 
 # Emotions (Individually declared to reuse later)
 MISC_EMOTIONS = 'misc'
-NUMB = EmotionType("着色 3", "numb", -2)
+NUMB = EmotionType("着色 3", "numb", -1)
 NONE = EmotionType("常规", '(none)', 0)
 
 ANXIETY_FEAR = 'Anxiety & Fear'
@@ -142,19 +143,19 @@ ANXIOUS = EmotionType("着色 4", "anxious", -10)
 NERVOUS = EmotionType("60% - 着色 4", "nervous", -5)
 
 SADNESS = 'Sadness'
-DEPRESSED = EmotionType("着色 1", "depressed", -10)
-FRUSTRATED = EmotionType("60% - 着色 1", "frustrated", -5)
+DEPRESSED = EmotionType("着色 1", "depressed", -12)
+FRUSTRATED = EmotionType("60% - 着色 1", "frustrated", -6)
 SAD = EmotionType("40% - 着色 1", "sad", -3)
 
 HAPPINESS = 'Happiness'
-ECSTASY = EmotionType("着色 6", 'Ecstasy', 10)
-EXCITED = EmotionType("60% - 着色 6", 'excited', 5)
-HAPPY = EmotionType("40% - 着色 6", 'happy', 3)
-CHILLING_OUT = EmotionType("20% - 着色 6", "chilling out", 1)
+ECSTASY = EmotionType("着色 6", 'Ecstasy', 12)
+EXCITED = EmotionType("60% - 着色 6", 'excited', 7)
+HAPPY = EmotionType("40% - 着色 6", 'happy', 5)
+CHILLING_OUT = EmotionType("20% - 着色 6", "chilling out", BASE_VALUE)
 
 ANGER = 'Anger'
-RAGE = EmotionType("着色 2", 'rage', 7)
-OFFENDED = EmotionType("60% - 着色 2", 'offended', 3)
+RAGE = EmotionType("着色 2", 'rage', -5)
+OFFENDED = EmotionType("60% - 着色 2", 'offended', -3)
 
 MATCH_COLOR = {"着色 3": NUMB, "20% - 着色 6": CHILLING_OUT, "常规": NONE,
                "着色 4": ANXIOUS, "60% - 着色 4": NERVOUS,
@@ -259,7 +260,7 @@ def main(test=True, show_misc=True, show_happy=True):
     _, ax2 = new_plot('Average Daily Emotions')
     x_dates = [i for i in range(len(all_days))]
     y_avgs = [d.avg_emotion for d in all_days]
-    ax2.plot(x_dates, y_avgs)
+    ax2.plot(x_dates, y_avgs, marker='o', linestyle='-')
     for xy in zip(x_dates, y_avgs):
         ax2.annotate('%.2f' % xy[1], xy=xy)
 
@@ -275,7 +276,7 @@ def main(test=True, show_misc=True, show_happy=True):
     plt.xticks([i for i in range(x_dates[0], x_dates[0] + len(x_dates))], labels=x_labels)
 
     ax2.axhline(0, color="r", linewidth=1)
-    ax2.axhline(1, color="g", linewidth=1)
+    ax2.axhline(BASE_VALUE, color="g", linewidth=1)
 
     highlight_period(ax2, periods)
 
