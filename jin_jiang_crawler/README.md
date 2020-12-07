@@ -5,3 +5,6 @@ Format of Jin Jiang links:
 ```
 http://www.jjwxc.net/onebook.php?novelid={bookId}&chapterid={chapterId}
 ```
+
+# Status
+Gugued.
