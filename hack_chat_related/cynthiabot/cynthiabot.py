@@ -8,6 +8,13 @@ from collections import defaultdict
 # General constants
 BOTNAME = 'CynthiaBot_A'
 
+
+with open('games.txt', encoding='utf-8') as f:
+    gamelist = f.readlines()
+with open('wishlist.txt', encoding='utf-8') as f:
+    wishlist = f.readlines()
+
+
 # Sentence generation module
 CUT_CHARACTERS = True
 CN_MAX = 30
@@ -34,11 +41,6 @@ class LString:
             else:
                 ran -= value
 
-
-with open('games.txt', encoding='utf-8') as f:
-    gamelist = f.readlines()
-with open('wishlist.txt', encoding='utf-8') as f:
-    wishlist = f.readlines()
 
 couple_words = defaultdict(LString)
 couple_words_cn = defaultdict(LString)
@@ -120,6 +122,7 @@ def generate_cn(from_keywords:tuple=None):
     return "".join(result)
 
 
+# Network Interactions
 def send_file_content(file, chat):
     with open(file, encoding='utf-8') as f:
         content = f.read()
@@ -201,9 +204,10 @@ def welcome(chat, nick):
 
 
 def self_on_join(chat):
-    chat.send_message('Hello everyone!! Enter `@CynthiaBot help` to view a list of commands.')
-    chat._send_packet({"cmd": "emote", "text": "*stands up and asked for a cup of tea*"})
-    chat._send_packet({"cmd": "emote", "text": '*covers its mouth and said,* "Oh! I am a waiter myself!"'})
+    chat._send_packet({"cmd": "emote", "text": "*waves*"})
+    chat._send_packet({"cmd": "emote",
+                       "text": '*says "Hello everyone!! Enter `@CynthiaBot help` to view a list of commands."*'})
+
 
 if __name__ == "__main__":
     load("./word_sources/SCP_word_sources.txt")
