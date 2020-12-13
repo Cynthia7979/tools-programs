@@ -38,3 +38,38 @@ ic
 这个应该是直接复读了原文
 为什么@两遍
 因为我忘了大写了
+这也是原文
+它本来应该更creative一点的
+比如括 号 狂 魔
+infringe ment
+好家伙
+比如这个
+    我要笑死了（不是了（不要啊（（
+就是它写过的
+？？
+？？？
+？？？？
+因为之前和E.K.发消息天天（（（（（
+所以它就学会了
+我来看看这是啥颜色
+（聊天记录也是学习来源之一
+我天
+好家伙
+这个
+亮一点
+？？？？？
+稍等在让我妈看生成句子中所有的感动。
+笑死
+我在瞎输入颜色
+哈哈哈哈
+哈哈哈哈哈哈
+稍等
+我重启一下
+这样我们的聊天记录就能喂给它了
+btw你也可以用那些命令
+I am **WriterBot**! `@WriterBot` to use one of the following commands:
+* `writewithme` - practice creative writing with random words/phrases and auto recording.
+* `flashfiction` - get a quick idea for writing a story with less than 50 words.
+* `save <filename> <content>` - save a specific work to my computer
+* `browse` - browse works written by others
+* `read <filename>` - read a specific work
