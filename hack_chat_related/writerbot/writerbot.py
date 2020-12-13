@@ -13,7 +13,7 @@ def get_word_list(file):
 def save_work(filename, author, content):
     print('Saving', filename, 'by', author)
     path = f'works/{filename}_{author}.txt'
-    with open(path) as f:
+    with open(path, 'w') as f:
         f.write(content)
     return path
 
@@ -24,7 +24,7 @@ CHAT = hackchat.HackChat(NICKNAME, 'cynthia!')
 INTRO = """I am **WriterBot**! `@WriterBot` to use one of the following commands:
 * `writewithme` - practice creative writing with random words/phrases and auto recording.
 * `flashfiction` - get a quick idea for writing a story with less than 50 words.
-* `save <filename>` - save a specific work to my computer
+* `save <filename> <content>` - save a specific work to my computer
 * `browse` - browse works written by others
 * `read <filename>` - read a specific work"""
 
@@ -32,17 +32,18 @@ INTRO = """I am **WriterBot**! `@WriterBot` to use one of the following commands
 # Actions
 def handle_message(chat, message:str, sender):
     print(f'From {sender}: {message}')
-    args = message.lower().split()
-    if args[0] == '@writerbot':
-        if args[1] == 'writewithme':
+    args = message.split()
+    if args[0] == '@writerbot' and len(args) > 1:
+        command = args[1].lower()
+        if command == 'writewithme':
             write_with_me_init(sender)
-        elif args[1] == 'flashfiction':
+        elif command == 'flashfiction':
             flash_fiction(sender)
-        elif args[1] == 'save':
-            custom_save(sender, message, args)
-        elif args[1] == 'browse':
+        elif command == 'save':
+            custom_save(sender, args)
+        elif command == 'browse':
             browse()
-        elif args[1] == 'read':
+        elif command == 'read':
             read(args)
     elif sender in WWM_MAP.keys():
         print(sender, 'is an WWM user')
@@ -65,13 +66,14 @@ def flash_fiction(sender):
     CHAT.send_message('After you finish, you can use `@writerbot save <filename>` to save your work!')
 
 
-def custom_save(sender, message, args):
+def custom_save(sender, args):
     try:
         filename = args[2]
-        save_work(filename, sender, message)
+        content = ' '.join(args[3:])
+        save_work(filename, sender, content)
         CHAT.send_message(f'@{sender} Your work have been saved.')
     except IndexError:
-        CHAT.send_message(f'@{sender} Please designate a filename with `@writerbot save <filename>`!')
+        CHAT.send_message(f'@{sender} Please check your syntax, the correct one should be `save <filename>`!')
 
 
 def browse():
@@ -142,7 +144,7 @@ def write_with_me_handle(sender, message):
                               else f'@{sender} {random.choice(REPLIES)}')
     if WWM_MAP[sender].ended:
         if message == '[sv]':
-            path = save_work('WWM_'+date.today().strftime('%Y%m%d'),
+            path = save_work('WWM_'+date.today().strftime('%H%M%S'),
                              sender,
                              WWM_MAP[sender].get_results())
             CHAT.send_message(f'Saved to {path}')
