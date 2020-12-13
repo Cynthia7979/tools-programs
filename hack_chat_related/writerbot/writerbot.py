@@ -33,7 +33,7 @@ INTRO = """I am **WriterBot**! `@WriterBot` to use one of the following commands
 def handle_message(chat, message:str, sender):
     print(f'From {sender}: {message}')
     args = message.split()
-    if args[0] == '@writerbot' and len(args) > 1:
+    if args[0].lower() == '@writerbot' and len(args) > 1:
         command = args[1].lower()
         if command == 'writewithme':
             write_with_me_init(sender)

@@ -1,0 +1,40 @@
+I am **WriterBot**! `@WriterBot` to use one of the following commands:
+* `writewithme` - practice creative writing with random words/phrases and auto recording.
+* `flashfiction` - get a quick idea for writing a story with less than 50 words.
+* `save <filename> <content>` - save a specific work to my computer
+* `browse` - browse works written by others
+* `read <filename>` - read a specific work
+这个Cynthiabot是你那个
+说瞎话的bot吗
+对
+@Cynthiabot 名言警句
+。。。
+可还行
+可还行
+可还行
+不是
+hi
+换颜色.jpg
+咋换的
+输入/color 颜色码不带#
+比如/color 00ffcc
+color 66ccff 这样吗
+？
+为什么
+不是
+要加斜杠
+阿天
+发不出去？
+我的cynthiabot大概正在学习我们的堆话
+对话
+为啥
+就
+@cynthiabot 名言警句
+ic
+会了
+好家伙
+好强
+笑死
+这个应该是直接复读了原文
+为什么@两遍
+因为我忘了大写了
