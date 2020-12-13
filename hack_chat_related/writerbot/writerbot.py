@@ -63,7 +63,7 @@ def on_join_channel():
 def flash_fiction(sender):
     CHAT.send_message(f"@{sender} Okay... Write a Flash Fiction (<50 words) with a **{random.choice(NOUNS)}** " +
                       f"and a **{random.choice(ADJS)} {random.choice(NOUNS)}**.")
-    CHAT.send_message('After you finish, you can use `@writerbot save <filename>` to save your work!')
+    CHAT.send_message('After you finish, you can use `@writerbot save <filename> <content>` to save your work!')
 
 
 def custom_save(sender, args):
@@ -73,7 +73,7 @@ def custom_save(sender, args):
         save_work(filename, sender, content)
         CHAT.send_message(f'@{sender} Your work have been saved.')
     except IndexError:
-        CHAT.send_message(f'@{sender} Please check your syntax, the correct one should be `save <filename>`!')
+        CHAT.send_message(f'@{sender} Please check your syntax, the correct one should be `save <filename> <content>`!')
 
 
 def browse():
