@@ -130,7 +130,11 @@ def send_file_content(file, chat):
 
 
 def add_chat_source(chat, message, sender):
-    if '@CynthiaBot' not in message and '*debug*' not in message and 'CynthiaBot' not in sender:
+    if '@cynthiabot' not in message.lower() and \
+        '@writerbot' not in message.lower() and \
+            '*debug*' not in message and \
+            'CynthiaBot' not in sender and \
+            'WriterBot' not in sender:
         with open('./word_sources/chat_log_word_sources.txt', 'a', encoding='utf-8') as f:
             f.write(message+'\n')
 

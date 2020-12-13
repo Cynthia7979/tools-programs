@@ -1,9 +1,3 @@
-I am **WriterBot**! `@WriterBot` to use one of the following commands:
-* `writewithme` - practice creative writing with random words/phrases and auto recording.
-* `flashfiction` - get a quick idea for writing a story with less than 50 words.
-* `save <filename> <content>` - save a specific work to my computer
-* `browse` - browse works written by others
-* `read <filename>` - read a specific work
 这个Cynthiabot是你那个
 说瞎话的bot吗
 对
@@ -67,9 +61,6 @@ infringe ment
 我重启一下
 这样我们的聊天记录就能喂给它了
 btw你也可以用那些命令
-I am **WriterBot**! `@WriterBot` to use one of the following commands:
-* `writewithme` - practice creative writing with random words/phrases and auto recording.
-* `flashfiction` - get a quick idea for writing a story with less than 50 words.
-* `save <filename> <content>` - save a specific work to my computer
-* `browse` - browse works written by others
-* `read <filename>` - read a specific work
+好家伙
+adj. 兴奋的；任性的；性急的；顽固的；使人头晕的；令人陶醉的
+好一个兴奋的图钉
