@@ -15,3 +15,4 @@ eco_probem_solving/eco_total_cost.py
 hack_chat_related/chat_log_word_sources.txt
 on_duty_noticer/data.json
 on_duty_noticer/package/data.json
+hack_chat_related/logs/*.log
