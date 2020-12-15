@@ -142,6 +142,11 @@ def write_with_me_handle(sender, message):
             WWM_MAP[sender].add_record(message)
             CHAT.send_message(f'@{sender} Linebreak added' if message=='[lb]'
                               else f'@{sender} {random.choice(REPLIES)}')
+    else:
+        CHAT.send_message("That's all? Great! Let's take a look at the result:")
+        CHAT.send_message(WWM_MAP[sender].get_results())
+        CHAT.send_message('Type `[sv]` to save, other things to quit.')
+
     if WWM_MAP[sender].ended:
         if message == '[sv]':
             path = save_work('WWM_'+date.today().strftime('%H%M%S'),
@@ -150,10 +155,7 @@ def write_with_me_handle(sender, message):
             CHAT.send_message(f'Saved to {path}')
         del WWM_MAP[sender]
         print('WriteWithMe session with', sender, 'ended')
-    else:
-        CHAT.send_message("That's all? Great! Let's take a look at the result:")
-        CHAT.send_message(WWM_MAP[sender].get_results())
-        CHAT.send_message('Type `[sv]` to save (to the computer I\'m running on), other things to quit.')
+
 
 
 # Main
