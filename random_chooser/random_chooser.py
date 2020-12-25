@@ -3,7 +3,7 @@ import random
 import sys, os
 
 
-def main(file='source.txt', debug=False):
+def main(file='source.txt', num=1, debug=False):
     f = open(file, encoding='utf-8')
     lines = [s.strip('\n') for s in f.readlines()]
     choices = []
@@ -19,13 +19,15 @@ def main(file='source.txt', debug=False):
             frequency = 1
         choices.extend([choice]*frequency)
     number_of_choices = len(choices)-1
-    try:
-        final_result = get_random_number(0, number_of_choices)
-    except requests.exceptions.ConnectionError:
-        print('Cannot connect to RANDOM.ORG. Using pseudo-random instead...')
-        final_result = random.randint(0,number_of_choices)
-    print(choices[final_result])
-    if debug: print(choices)
+    final_result = []
+    for i in range(num):
+        try:
+            final_result.append(get_random_number(0, number_of_choices))
+        except requests.exceptions.ConnectionError:
+            print('Cannot connect to RANDOM.ORG. Using pseudo-random instead...')
+            final_result.append(random.randint(0,number_of_choices))
+    print('\n'.join([choices[random_index] for random_index in final_result]))
+    if debug: print('pool:', choices)
 
 
 def get_random_number(minimum, maximum, number_of_numbers=1, base=10):
@@ -34,10 +36,13 @@ def get_random_number(minimum, maximum, number_of_numbers=1, base=10):
 
 
 if __name__ == '__main__':
+    file_ = 'source.txt'
+    num_ = 1
+    debug_ = False
     try:
-        _, file_, *debug_ = sys.argv
-        debug_ = False if debug_ == ['False'] else True
+        _, num_, *file_ = sys.argv
+        num_ = int(num_)
+        file_ = file_[0] if file_ else 'source.txt'
     except ValueError:
-        file_ = 'source.txt'
-        debug_ = False
-    main(file=file_, debug=debug_)
+        pass
+    main(file=file_, num=num_, debug=debug_)
