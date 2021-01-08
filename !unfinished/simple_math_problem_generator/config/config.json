@@ -1,0 +1,9 @@
+{
+  "__about__": "Global Configuration",
+  "float_precision": 2,
+  "maximum_terms": 5,
+  "interval": [0, 100],
+  "pretty_output": false,
+  "symbol": false,
+  "denominator_interval": [2, 10]
+}
