@@ -1,0 +1,24 @@
+www.planecrashinfo.com/database.htm
+└ <tbody>
+    └ <td> "<=" </td>
+    └ <td><strong><a>
+        └ www.planecrashinfo.com/{year}/{year}.htm
+            └ <tbody>
+                └ <tr>title line</tr>
+                └ <tr><td><font><a>
+                    └ www.planecrashinfo.com/{year}/{year}-{number}.htm
+                        └ <tbody>
+                            └ Title: "ACCIDENT DETAILS"
+                            └ Date (Month dd, yyyy)
+                            └ Time in 24 hr. (hhmm)
+                            └ Location ("near"? location)
+                            └ Operator
+                            └ Flight #
+                            └ Route
+                            └ AC Type
+                            └ Registration (ICAO)
+                            └ Construction/serial No. + Line/fuselage No.
+                            └ Total Aboard
+                            └ Total Fatalities
+                            └ Total killed on ground
+                            └ Summary

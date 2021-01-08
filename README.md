@@ -5,5 +5,5 @@ Other programs I made that's not a game.
 completion, documentation and/or correct usage of some modules. 
 Please use at your own risk.**
 
-For *unfinished* projects, check `TODO.md`. Other ones are functioning, 
-at lease in most times.
+For *unfinished* projects, check `unfinished/` and `TODO.md`. Other ones are functioning, 
+at least in most times.
