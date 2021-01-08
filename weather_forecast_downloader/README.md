@@ -15,4 +15,5 @@ And (boom) this project manifested.
 
 #### *La Fine* (what)
 
-Downloaded files will be stored in videos/, which is ignored in .gitignore
+Downloaded files will be stored in videos/, which is ignored in `.gitignore`. If you need those videos for some reasons,
+please download them yourself by running the code.
