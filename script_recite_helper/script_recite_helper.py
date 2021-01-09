@@ -3,6 +3,7 @@ import os
 
 SPLITER = "："
 NAME_KEYWORD = "萍"
+NON_KEYWORDS = ('侍萍',)
 FILENAME = './script.txt'
 
 HEADER = '\033[95m'
@@ -20,11 +21,13 @@ def main():
         for line in f.readlines():
             line = line.strip('\r\n')
             speaker = line[:line.find(SPLITER)]
-            if NAME_KEYWORD in speaker:
+            if NAME_KEYWORD in speaker and not any([non_keyword in speaker for non_keyword in NON_KEYWORDS]):
                 _ = input('[YOUR LINE]')
                 delete_previous_line()
                 print(WARNING+line+ENDC)
             else:
+                _ = input()
+                delete_previous_line()
                 print(line)
     os.system('cls' if os.name=='nt' else 'clear')
     print('-- La fine --')
