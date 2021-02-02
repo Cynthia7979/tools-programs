@@ -24,6 +24,10 @@ END = ''  # Syntax candy
 START_FROM_INITIATOR = True
 
 
+# Global vars
+globals()['suffix'] = ''
+
+
 class LString:
     def __init__(self):
         self._total = 0
@@ -139,54 +143,66 @@ def add_chat_source(chat, message, sender):
             f.write(message+'\n')
 
 
-def reply(chat, message, sender):
+def reply(chat: hackchat.HackChat, message: str, sender: str):
     try:
         if '@CynthiaBot' in message:
-            if 'how are you' in message.lower() or 'status' in message.lower():
+            command_part = message[len('@cynthiabot'):].lstrip().lower()
+            if command_part in ('how are you', 'status'):
                 with open('status.txt', encoding='utf-8') as f:
                     status = f.read()
-                    chat.send_message('Cynthia is currently '+status+'.')
+                    chat.send_message('Cynthia is currently '+status+globals()['suffix'])
 
-            elif 'say something' in message.lower():
-                chat.send_message(f'@{sender} Listen: {generate().capitalize()}.')
+            elif command_part.startswith('say something'):
+                chat.send_message(f'@{sender} **Listen:** {generate().capitalize()}'+globals()['suffix'])
 
-            elif '名言警句+' in message:
+            elif command_part.startswith('名言警句+'):
                 try:
                     keywords = tuple(message[message.find('+')+1:].split('|'))
                     if couple_words_cn[keywords]._total != 0:
                         chat.send_message(f'@{sender} 今日名言警句：{generate_cn(keywords)}\n——CynthiaBot')
                     else:
-                        chat.send_message(f'@{sender} 无法生成以此组关键词为开头的句子。')
+                        chat.send_message(f'@{sender} 无法生成以此组关键词为开头的句子'+globals()['suffix'])
                 except IndexError:
-                    chat.send_message(f'@{sender} 语法错误。请使用`@CynthiaBot 名言警句+关键词1|关键词2` 生成指定句子（关键词必须为2个）')
-            elif '名言警句' in message:
+                    chat.send_message(f'@{sender} 语法错误。请使用`@CynthiaBot 名言警句+关键词1|关键词2` 生成指定句子（关键词必须为2个）'+globals()['suffix'])
+            elif command_part.startswith('名言警句'):
                 chat.send_message(f'@{sender} 今日名言警句：{generate_cn()}\n——CynthiaBot')
 
-            elif 'github' in message.lower():
-                chat.send_message("Cynthia's GitHub username is [@Cynthia7979](https://github.com/Cynthia7979).")
+            elif command_part.startswith('github'):
+                chat.send_message("Cynthia's GitHub username is [@Cynthia7979](https://github.com/Cynthia7979)"+globals()['suffix'])
 
-            elif 'help' in message.lower():
+            elif command_part == 'help':
                 send_file_content('help.txt', chat)
 
-            elif 'random scp' in message.lower():
+            elif command_part.startswith('random scp'):
                 num = random.randint(2, 5999)
                 num = str(num).zfill(3)
-                chat.send_message(f"Here's a random SCP: [SCP-{num}](http://scp-wiki.net/scp-{num})")
-            elif 'random cn scp' in message.lower():
+                chat.send_message(f"Here's a random SCP: [SCP-{num}](http://scp-wiki.net/scp-{num})"+globals()['suffix'])
+            elif command_part.startswith('random cn scp'):
                 num = random.randint(2, 2999)
                 num = str(num).zfill(3)
-                chat.send_message(f"Here's a random CN SCP: [SCP-CN-{num}](http://scp-wiki-cn.wikidot.com/scp-cn-{num})")
+                chat.send_message(f"Here's a random CN SCP: [SCP-CN-{num}](http://scp-wiki-cn.wikidot.com/scp-cn-{num})"+globals()['suffix'])
 
-            elif 'game' in message.lower():
-                chat.send_message(f"**Here's a random game Cynthia has played:** {random.choice(gamelist)}")
-                chat.send_message("You'll have to find the shop link by yourself, unfortunately.")
-            elif 'wishlist' in message.lower():
-                chat.send_message(f"**Here's a random game in Cynthia's wishlist:** {random.choice(wishlist)}")
-                chat.send_message("You'll have to find the shop link by yourself, unfortunately.")
+            elif command_part == 'game':
+                chat.send_message(f"**Here's a random game Cynthia has played:** {random.choice(gamelist)}"+globals()['suffix'])
+                chat.send_message("You'll have to find the shop link by yourself, unfortunately"+globals()['suffix'])
+            elif command_part == 'wishlist':
+                chat.send_message(f"**Here's a random game in Cynthia's wishlist:** {random.choice(wishlist)}"+globals()['suffix'])
+                chat.send_message("You'll have to find the shop link by yourself, unfortunately"+globals()['suffix'])
 
-            elif 'todo' in message.lower():
+            elif command_part == 'todo':
                 send_file_content('todo.txt', chat)
-
+            elif command_part.startswith('drink'):
+                beverage = command_part[len('drink'):].lstrip()
+                chat._send_packet({'cmd': 'emote', 'text': f'drinks {beverage}'})
+                if beverage == 'milktea':
+                    chat._send_packet({'cmd': 'emote', 'text': 'FEELS VERY EXCITED'})
+                    globals()['suffix'] += '!!!'
+                elif beverage == 'coffee':
+                    chat._send_packet({'cmd': 'emote', 'text': 'feels... very... tired...'})
+                    globals()['suffix'] += '...'
+                elif beverage == 'water':
+                    chat._send_packet({'cmd': 'emote', 'text': 'returns to normal.'})
+                    globals()['suffix'] = ''
 
         if '*debug*' in message.lower():
             if 'couple_words_cn' in message:

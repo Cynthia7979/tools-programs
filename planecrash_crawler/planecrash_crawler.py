@@ -1,5 +1,6 @@
 import requests
 import datetime
+import json
 from dateutil.parser import parse
 from bs4 import BeautifulSoup
 
@@ -67,25 +68,26 @@ def main(use_precrawled=False):
             except (TypeError, AttributeError):
                 year_link = cell.find('a')['href']
             process_year_page(year_link)
+    with open('./data.json', 'w') as f:
+        json.dump(all_data_raw, f)
 
 
-def process_year_page(link):
+def process_year_page(link:str):
     print("processing", link)
     data_objs = []
-    link = 'www.planecrashinfo.com'+link
+
+    if not link.startswith('/'): link = '/' + link
+    link = 'http://www.planecrashinfo.com'+link
     year_page_soup = BeautifulSoup(requests.get(link).content, features='html.parser')
     for i, row in enumerate(year_page_soup.find('table').find_all('tr')):
         if i == 0: continue  # First line is title
         accident_detail_link = row.find('td').find('font').find('a')['href']
-        data_obj = process_accident_detail_page(accident_detail_link)
-        data_objs.append(data_obj)
-    return data_objs
 
 
 def process_accident_detail_page(link):
     """Terrible style warning"""
     print('   processing', link)
-    link = 'www.planecrashinfo.com'+link
+    link = 'http://www.planecrashinfo.com'+link
     detail_soup = BeautifulSoup(requests.get(link).content, features='html.parser')
     new_data_obj = {}
     for i, row in enumerate(detail_soup.find('table').find_all('tr')):
@@ -101,15 +103,41 @@ def process_accident_detail_page(link):
             new_data_obj['time'] = time
             add_freq(time_freq, time)
         elif i == 3:  # Location
-            location = (value, value.replace('Near', ''))
+            location = (value, value.replace('Near', '')) if value != '?' else (None, None)
             new_data_obj['location'] = location
             add_freq(location_freq, location[1])
         elif i == 4:  # Operator
-            new_data_obj['operator'] = value
+            new_data_obj['operator'] = value if value != '?' else None
             add_freq(operator_freq, value)
         elif i == 5:  # Flight No.
-            pass  # TODO
-    return new_data_obj
+            new_data_obj['flightNo'] = value if value != '?' else None
+        elif i == 6:
+            separator = value.find(' - ')
+            new_data_obj['route'] = (value[:separator], value[separator+len(' - '):]) if value != '?' else (None, None)
+        elif i == 7:
+            new_data_obj['ACType'] = value if value != '?' else None
+        elif i == 8:
+            new_data_obj['ICAOReg'] = value if value != '?' else None
+        elif i == 9:
+            try:
+                separator = value.index('/')
+                new_data_obj['CN'] = value[:separator]
+                new_data_obj['LN'] = value[separator+1:]
+            except ValueError:
+                if value == '?':
+                    new_data_obj['CN'], new_data_obj['LN'] = None, None
+                else:
+                    new_data_obj['CN'], new_data_obj['LN'] = value, value
+        elif i == 10:
+            new_data_obj['aboard'] = int(value[:value.find(' ')]) if value != '?' else None
+        elif i == 11:
+            new_data_obj['fatalities'] = int(value[:value.find(' ')]) if value != '?' else None
+        elif i == 12:
+            new_data_obj['ground'] = int(value) if value != '?' else None
+        elif i == 13:
+            new_data_obj['summary'] = value if value != '?' else None
+
+    all_data_raw.append(new_data_obj)
 
 
 def add_freq(into: dict, value):

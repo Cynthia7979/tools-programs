@@ -8,5 +8,6 @@ CynthiaBot help.txt
   * `Random CN SCP` - Get a random Chinese SCP
   * `game` - Get recommended a random game in Cynthia's Steam Account (or UPlay?)
   * `Wishlist` - Get recommended a random game in Cynthia's Steam Wishlist
+  * `Drink <beverage>` - Have CynthiaBot drink something. Try `milktea` or `coffee`!
   * `Say something` - Get a philosophical bot-generated quote.
   * `名言警句` - 获取中文名言警句（开发中）
