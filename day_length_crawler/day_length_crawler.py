@@ -20,11 +20,11 @@ def main():
     dates = list(day_lengths.keys())
     lengths = list(day_lengths.values())
     shortest = lengths.index(min(lengths))
-    print('Date with longest day length:',
+    print('Date with shortest day length:',
           dates[shortest].strftime('%j'),
           lengths[shortest], 'hours')
     longest = lengths.index(max(lengths))
-    print('Date with shortest day length:',
+    print('Date with longest day length:',
           dates[longest].strftime('%j'),
           lengths[longest], 'hours')
 
