@@ -4,7 +4,6 @@
 
 import requests
 import datetime
-import time
 from bs4 import BeautifulSoup
 
 
@@ -27,6 +26,8 @@ def main():
     print('Date with longest day length:',
           dates[longest].strftime('%j'),
           lengths[longest], 'hours')
+    average = sum(lengths)/len(lengths)
+    print('Average day length: ', average, 'hours')
 
 
 def get_soup(url):
