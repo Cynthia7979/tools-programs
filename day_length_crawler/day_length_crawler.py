@@ -1,15 +1,19 @@
 # This program is used to fetch and analyze day length data of Florence
 # from https://dateandtime.info/citysunrisesunset.php
 # For my Math assignment
+# ?id=3176959 Florence, Italy
+# ?id=524305 Murmansk, Russia (in Arctic)
 
 import requests
 import datetime
 from bs4 import BeautifulSoup
 
+YEAR = 2019
+
 
 def main():
     day_lengths = {}
-    URL = "https://dateandtime.info/citysunrisesunset.php?id=3176959&month={month}&year=2019"
+    URL = "https://dateandtime.info/citysunrisesunset.php?id=524305&month={month}&year="+str(YEAR)
     for month in range(1, 13):
         soup = get_soup(URL.format(month=month))
         day_lengths.update(get_day_lengths(soup))
@@ -46,8 +50,13 @@ def get_day_lengths(soup: BeautifulSoup):
         date_text = date_text.replace('\n', '').replace('\t', '').strip()
         day_length_text = all_cells[-1].text.replace('\t', '').replace('\n', '')
         print(date_text, day_length_text)
-        date = datetime.datetime.strptime(date_text, "%a, %B %d").replace(year=2019)
-        day_length = datetime.datetime.strptime(day_length_text, '%H:%M:%S')
+        date = datetime.datetime.strptime(date_text, "%a, %B %d").replace(year=YEAR)
+        if day_length_text == '24 hours':
+            day_length = datetime.datetime(1, 1, 1, 23, 59, 59)
+        elif day_length_text == '0 h 0 m 0 s':
+            day_length = datetime.datetime(1, 1, 1, 0, 0, 0)
+        else:
+            day_length = datetime.datetime.strptime(day_length_text, '%H:%M:%S')
         day_length_hours = in_hours(day_length)
         day_lengths[date] = day_length_hours
     return day_lengths
