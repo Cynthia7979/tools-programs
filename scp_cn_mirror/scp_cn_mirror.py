@@ -3,14 +3,19 @@ import sys, os
 import time
 from bs4 import BeautifulSoup
 
-mirror_dir = 'E://scp-wiki-cn/wanderers-mirror/'
+mirror_dir = 'F://scp-wiki-cn/mirror/'
 
+# 所有fragment分类
+home_page = "http://scp-wiki-cn.wikidot.com/tag-search/category/fragment/limit/1617461727142/order/created_at%20desc/"
+# 所有原创
 # home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/limit/1617366553684/order/created_at%20desc/"
+# 所有原创成人内容
 # home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/category/adult/limit/1617444176386/order/created_at%20desc/"
-home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/category/wanderers/limit/1617445267227/order/created_at%20desc/"
+# 所有原创图书馆
+# home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/category/wanderers-adult/limit/1617445267227/order/created_at%20desc/"
 home_page += 'p/{p}'
 start_page = 1
-end_page = 23
+end_page = 1
 
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -30,6 +35,7 @@ def main():
     if not os.path.exists(mirror_dir):
         os.mkdir(mirror_dir)
         print('Target directory does not exist, creating...')
+    print('Mirroring from', home_page)
     print('Mirroring into', mirror_dir, '...')
 
     for i in range(start_page, end_page+1):
