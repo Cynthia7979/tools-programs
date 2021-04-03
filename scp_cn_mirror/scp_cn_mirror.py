@@ -14,8 +14,8 @@ home_page = "http://scp-wiki-cn.wikidot.com/tag-search/category/fragment/limit/1
 # 所有原创图书馆
 # home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/category/wanderers-adult/limit/1617445267227/order/created_at%20desc/"
 home_page += 'p/{p}'
-start_page = 1
-end_page = 1
+start_page = 36
+end_page = 66
 
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -81,7 +81,11 @@ def mirror(link):
         print('Mirroring', page_name)
         content = request(link, headers=headers)
 
-    content = str(content, encoding='utf-8')
+    try:
+        content = str(content, encoding='utf-8')
+    except UnicodeDecodeError:
+        print("WARNING: SKIPPING", page_name, "as it contains non-utf-8 content")
+        return
     with open(os.path.join(mirror_dir, page_name+'.html'), 'w', encoding='utf-8') as f:
         f.write(content)
         print('Mirrored:', link)
