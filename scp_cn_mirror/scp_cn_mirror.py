@@ -6,10 +6,19 @@ from bs4 import BeautifulSoup
 # mirror_dir = 'F://scp-wiki-cn/mirror/'
 mirror_dir = 'E://scp-wiki-cn/adult-mirror/'
 # home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/limit/1617366553684/order/created_at%20desc/p/{p}"
-home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/category/adult/limit/1617444176386/order/created_at%20desc"
+home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/category/adult/limit/1617444176386/order/created_at%20desc/p/{p}"
 
 adult_headers = {
-    "Cookie": "__n_id2=2c0dd940-b761-4325-b623-24baf0df8dc7; __qca=P0-1315370410-1586302676763; __gads=ID=331c2923e1446493-22f4040a08c300d0:T=1597840740:RT=1597840740:R:S=ALNI_MbbzhxVublxJScJgOTVhxJewmkOmQ; _pbjs_userid_consent_data=6683316680106290; na-unifiedid=%7B%22TDID%22%3A%22d25825eb-3c34-46dc-922f-6bddad92a330%22%2C%22TDID_LOOKUP%22%3A%22TRUE%22%2C%22TDID_CREATED_AT%22%3A%222021-02-08T03%3A02%3A58%22%7D; WIKIDOT_SESSION_ID=1615981396_96062967; wikidot_udsession=1; wikidot_udsession=1; __utmz=1.1617262409.573.25.utmcsr=scpper.com|utmccn=(referral)|utmcmd=referral|utmcct=/user/3687969; wikidot_token7=4875975f575dc231c46977643726a30e; __utmc=1; __utma=1.533478953.1521295561.1617418092.1617443573.580; __utmt=1; __utmt_old=1; __utmb=1.20.10.1617443573"
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+    "Accept-Encoding": "gzip, deflate",
+    "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Cache-Control": "max-age=0",
+    "Cookie": "__n_id2=2c0dd940-b761-4325-b623-24baf0df8dc7; __qca=P0-1315370410-1586302676763; __gads=ID=331c2923e1446493-22f4040a08c300d0:T=1597840740:RT=1597840740:R:S=ALNI_MbbzhxVublxJScJgOTVhxJewmkOmQ; _pbjs_userid_consent_data=6683316680106290; na-unifiedid=%7B%22TDID%22%3A%22d25825eb-3c34-46dc-922f-6bddad92a330%22%2C%22TDID_LOOKUP%22%3A%22TRUE%22%2C%22TDID_CREATED_AT%22%3A%222021-02-08T03%3A02%3A58%22%7D; wikidot_udsession=1; wikidot_udsession=1; __utmz=1.1617262409.573.25.utmcsr=scpper.com|utmccn=(referral)|utmcmd=referral|utmcct=/user/3687969; wikidot_token7=4875975f575dc231c46977643726a30e; __utmc=1; __utma=1.533478953.1521295561.1617418092.1617443573.580; __utmt=1; __utmt_old=1; __utmb=1.30.10.1617443573; WIKIDOT_SESSION_ID=1617444480_76706048",
+    "Host": "scp-wiki-cn.wikidot.com",
+    "Proxy-Connection": "keep-alive",
+    "Referer": "http://scp-wiki-cn.wikidot.com/adult:interrogation/noredirect/true",
+    "Upgrade-Insecure-Requests": "1",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36 OPR/74.0.3911.218"
 }
 
 
