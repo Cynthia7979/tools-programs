@@ -95,17 +95,5 @@ def request(link, headers=None):
     return content
 
 
-def save_source(link):
-    page_name = get_page_name(link)
-    if os.path.exists(os.path.join(source_dir, page_name+'.html')):
-        print('SKIPPING source saving', page_name, 'due to existing file')
-        return
-    print('Saving source of', page_name)
-
-    header = source_header
-    header['Referer'] = link
-    source = request(source_code_api, header)
-
-
 if __name__ == '__main__':
     main()
