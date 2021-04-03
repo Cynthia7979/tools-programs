@@ -3,12 +3,16 @@ import sys, os
 import time
 from bs4 import BeautifulSoup
 
-# mirror_dir = 'F://scp-wiki-cn/mirror/'
-mirror_dir = 'E://scp-wiki-cn/adult-mirror/'
-# home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/limit/1617366553684/order/created_at%20desc/p/{p}"
-home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/category/adult/limit/1617444176386/order/created_at%20desc/p/{p}"
+mirror_dir = 'E://scp-wiki-cn/wanderers-mirror/'
 
-adult_headers = {
+# home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/limit/1617366553684/order/created_at%20desc/"
+# home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/category/adult/limit/1617444176386/order/created_at%20desc/"
+home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/category/wanderers/limit/1617445267227/order/created_at%20desc/"
+home_page += 'p/{p}'
+start_page = 1
+end_page = 23
+
+headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
     "Accept-Encoding": "gzip, deflate",
     "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -25,8 +29,10 @@ adult_headers = {
 def main():
     if not os.path.exists(mirror_dir):
         os.mkdir(mirror_dir)
+        print('Target directory does not exist, creating...')
+    print('Mirroring into', mirror_dir, '...')
 
-    for i in range(1, 4):
+    for i in range(start_page, end_page+1):
         print('Iter', i)
         home_page_soup = get_soup(home_page.format(p=i))
         for link in get_links(home_page_soup):
@@ -64,10 +70,10 @@ def mirror(link):
 
     if "/adult:" in link:
         print("Mirroring", page_name, 'with category-specific method')
-        content = request(link+'/noredirect/true', headers=adult_headers)
+        content = request(link +'/noredirect/true', headers=headers)
     else:
         print('Mirroring', page_name)
-        content = request(link)
+        content = request(link, headers=headers)
 
     content = str(content, encoding='utf-8')
     with open(os.path.join(mirror_dir, page_name+'.html'), 'w', encoding='utf-8') as f:
