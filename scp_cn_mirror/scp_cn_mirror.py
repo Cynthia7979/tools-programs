@@ -3,6 +3,7 @@ import sys, os
 import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.common.exceptions import *
 
 mirror_dir = 'F://scp-wiki-cn/mirror/'
 source_dir = 'F://scp-wiki-cn/source/'
@@ -141,16 +142,48 @@ def save_source(link, browser):
     if os.path.exists(os.path.join(source_dir, page_name+'.txt')):
         print('SKIPPING saving source of', page_name, 'due to existing file')
         return
+    if 'deleted;' in page_name:
+        print('SKIPPING saving source of', page_name, 'because it is in deleted: category')
+        return
+    print('Getting source code of', page_name)
 
-    browser.get(link)
+    try:
+        browser.get(link)
 
-    elem_more_options_button = browser.find_element_by_id('more-options-button')
-    elem_more_options_button.click()
+        elem_more_options_button = browser.find_element_by_id('more-options-button')
+        elem_more_options_button.click()
 
-    elem_view_source_button = browser.find_element_by_id('view-source-button')
-    elem_view_source_button.click()
+        elem_view_source_button = browser.find_element_by_id('view-source-button')
+        elem_view_source_button.click()
+    except NoSuchElementException:
+        succeed = False
+        while not succeed:
+            print('Cannot find more-options or view-source button, retrying...')
+            try:
+                browser.get(link)
 
-    text_page_source = browser.find_element_by_class_name('page-source').text
+                elem_more_options_button = browser.find_element_by_id('more-options-button')
+                elem_more_options_button.click()
+
+                elem_view_source_button = browser.find_element_by_id('view-source-button')
+                elem_view_source_button.click()
+
+                succeed = True
+            except NoSuchElementException:
+                pass
+
+    try:
+        text_page_source = browser.find_element_by_class_name('page-source').text
+    except NoSuchElementException:
+        succeed = False
+        while not succeed:
+            print('Cannot find .page-source, retrying...')
+            try:
+                text_page_source = browser.find_element_by_class_name('page-source').text
+
+                succeed = True
+            except NoSuchElementException:
+                pass
 
     with open(os.path.join(source_dir, page_name+'.txt'), 'w', encoding='utf-8') as f:
         f.write(text_page_source)
