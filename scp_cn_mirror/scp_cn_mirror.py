@@ -2,11 +2,17 @@ import requests
 import sys, os
 import time
 from bs4 import BeautifulSoup
+from selenium import webdriver
 
 mirror_dir = 'F://scp-wiki-cn/mirror/'
+source_dir = 'F://scp-wiki-cn/source/'
 
+driver = 'chrome'
+
+# 所有页面
+home_page = "http://scp-wiki-cn.wikidot.com/tag-search/limit/1617539958174/order/created_at%20desc/"
 # 所有fragment分类
-home_page = "http://scp-wiki-cn.wikidot.com/tag-search/category/fragment/limit/1617461727142/order/created_at%20desc/"
+# home_page = "http://scp-wiki-cn.wikidot.com/tag-search/category/fragment/limit/1617461727142/order/created_at%20desc/"
 # 所有原创
 # home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/limit/1617366553684/order/created_at%20desc/"
 # 所有原创成人内容
@@ -14,8 +20,8 @@ home_page = "http://scp-wiki-cn.wikidot.com/tag-search/category/fragment/limit/1
 # 所有原创图书馆
 # home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/category/wanderers-adult/limit/1617445267227/order/created_at%20desc/"
 home_page += 'p/{p}'
-start_page = 36
-end_page = 66
+start_page = 1
+end_page = 914
 
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -35,15 +41,30 @@ def main():
     if not os.path.exists(mirror_dir):
         os.mkdir(mirror_dir)
         print('Target directory does not exist, creating...')
+
+    # 此处代码修改自[CSharperMantle/scp_fetcher_bs4](https://github.com/CSharperMantle/scp_fetcher_bs4)
+    if driver == 'chrome':
+        browser = webdriver.Chrome()
+    elif driver == 'firefox':
+        browser = webdriver.Chrome()
+    elif driver == 'opera':
+        browser = webdriver.Opera()
+    else:
+        raise ValueError('"driver" variable needs to be one of "chrome", "opera" or "firefox".')
+    browser.implicitly_wait(5)
+    browser.get('https://scp-wiki-cn.wikidot.com')
+    input('请在打开的窗口中登录，完成后按回车键>')
+
     print('Mirroring from', home_page)
     print('Mirroring into', mirror_dir, '...')
+    print('Saving source code to', source_dir, '...')
 
     for i in range(start_page, end_page+1):
         print('Iter', i)
         home_page_soup = get_soup(home_page.format(p=i))
         for link in get_links(home_page_soup):
             mirror(link)
-            # save_source(link)
+            save_source(link, browser)
             time.sleep(0.1)
 
 
@@ -110,6 +131,30 @@ def request(link, headers=None):
         except Exception as e:
             print('Retrying', link, e)
     return content
+
+
+def save_source(link, browser):
+    """
+    此处代码修改自[CSharperMantle/scp_fetcher_bs4](https://github.com/CSharperMantle/scp_fetcher_bs4)
+    """
+    page_name = get_page_name(link)
+    if os.path.exists(os.path.join(source_dir, page_name+'.txt')):
+        print('SKIPPING saving source of', page_name, 'due to existing file')
+        return
+
+    browser.get(link)
+
+    elem_more_options_button = browser.find_element_by_id('more-options-button')
+    elem_more_options_button.click()
+
+    elem_view_source_button = browser.find_element_by_id('view-source-button')
+    elem_view_source_button.click()
+
+    text_page_source = browser.find_element_by_class_name('page-source').text
+
+    with open(os.path.join(source_dir, page_name+'.txt'), 'w', encoding='utf-8') as f:
+        f.write(text_page_source)
+        print('Source saved:', link)
 
 
 if __name__ == '__main__':

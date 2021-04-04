@@ -4,11 +4,11 @@
 
 ## 特性和注意事项
 * 这是一天以内写的代码，有可能会有bug，如果有的话请开个Issue告诉我。
-* 本工具会下载网站的HTML源码，**而非纯文字或Wikidot源码**。这是为了最大限度地保留原文风格所考虑，也是因为Wikidot源码的API需要一个目前无法获取到的页面ID。
+* 本工具会下载网站的**HTML源码和Wikidot源码**。Wikidot源码的抓取代码来自[CSharperMantle](https://github.com/CSharperMantle)写的[scp_fetcher_bs4](https://github.com/CSharperMantle/scp_fetcher_bs4/)
 * 如果你的作品引用了任何外部代码或图片，请手动备份这些文件。本工具只会备份文本和（写在module里的）CSS。
 * 如果目标目录不存在，本工具会自动创建该目录
 * 如果已有同名的文件，工具会**跳过**该页面，并继续备份其他页面
-* 本工具需要`python`及其`requests`和`BeautifulSoup4`库，下载方式见下
+* 本工具需要`python`及其`requests`, `selenium` 和`BeautifulSoup4`库，以及浏览器驱动，下载方式见下
 
 ## 使用方法
 
@@ -17,11 +17,25 @@
     * `Python`版本是3.7.9
     * `requests` 2.25.1
     * `beautifulsoup4` 4.9.3
+    * `selenium` 3.141.0
+    * `geckodriver`、`operachromiumdriver`和`chromedriver`需要其一，且需要在`PATH`中
 * 否则请看这里：
     * 在[这里](https://www.python.org/downloads/release/python-379/#Files)下载你的操作系统的Python安装包
     * 运行安装包，一路点继续完成安装
     * 按`Ctrl+R`（Mac用户请打开Terminal）打开命令行，输入`pip install requests`
     * 在它停止蹦出新的提示后，输入`pip install beautifulsoup4`
+    * 在它又一次停止蹦出新的提示后，输入`pip install selenium`
+    * 如果你安装了火狐浏览器（Firefox），请：
+        * 参考[这个教程](https://blog.csdn.net/rhx_qiuzhi/article/details/80296801)安装Windows或Ubuntu的`geckodriver`
+        * 如果你是Mac用户，参考[这篇文章](https://blog.csdn.net/vulnerableyears/article/details/92016645)安装
+    * 如果你安装了Google Chrome浏览器，请：
+        * 参考[这个教程](https://www.jianshu.com/p/dc0336a0bf50)安装`chromedriver`
+    * 如果你安装了Opera浏览器，请：
+        * 先将Opera升级到最新版本
+        * 在[这里](https://github.com/operasoftware/operachromiumdriver/releases)下载`operachromiumdriver`
+        * 将压缩包最内部的`operadriver.exe`和`sha512_sum`拷贝到Opera的安装目录下，版本号最高的文件夹中（即你现在使用的版本）
+        * 将版本号的目录路径添加到环境变量（PATH）中——如果你不知道怎么做，请百度对应操作系统的环境变量编辑方法，或者参考上面的两篇文章
+    * 如果哪个都没装的话，就随便选一个浏览器从头安装吧……
     * 完成
 
 ### 修改变量
@@ -30,9 +44,13 @@
 * 下载本目录中的`scp_cn_mirror.py`文件
 * 用记事本 或 你喜欢的编辑器 或 “运行程序”中提到的IDLE 打开这个文件
 * 有以下几个内容可以自定义：
-    * 第六行 **`mirror_dir`**：存储html文件的目录，将两个单引号之间的内容修改至目录的绝对路径。如：`F://scp-wiki-cn/mirror/`，`C://mirror/`
-    * 第九行 **`home_page`**：[标签搜索](http://scp-wiki-cn.wikidot.com/tag-search)结果页链接。将两个双引号之间的内容修改至链接，以`/`字符结尾。代码里已经给出了几个可用的链接，可以注释掉（在前面加“#”）不需要的链接并留下要用的。如果需要进一步自定义链接，请见下方“如何获取`home_page`？”
-    * 第十五和十六行 **`start_page`**和**`end_page`**：起始和结束页码，对应标签搜索结果页面的分页，最低为1。
+    * 第7行 **`mirror_dir`**：存储html文件的目录，将两个单引号之间的内容修改至目录的绝对路径。如：`F://scp-wiki-cn/mirror/`，`C://mirror/`
+    * 第8行 **`source_dir`**：存储wikidot源码的目录，同上
+    * 第10行 **`driver`**：使用哪个浏览器驱动获取源码，可以填`'firefox'`（火狐浏览器）、`'opera'`、或`'chrome'`（Google Chrome浏览器）
+        * 上面下载了哪个驱动就填哪个
+    * 第13行 **`home_page`**：[标签搜索](http://scp-wiki-cn.wikidot.com/tag-search)结果页链接。将两个双引号之间的内容修改至链接，以`/`字符结尾。代码里已经给出了几个可用的链接，可以注释掉（在前面加“#”）不需要的链接并留下要用的。如果需要进一步自定义链接，请见下方“如何获取`home_page`？”
+    * 第23和24行 **`start_page`**和**`end_page`**：起始和结束页码，对应标签搜索结果页面的分页，最低为1。
+    * 如果由于打开浏览器和加载页面导致运行速度过慢，请注释第52行（即，在前面加上`#`号）
 
 #### 如何获取`home_page`？
 1. 打开[标签搜索](http://scp-wiki-cn.wikidot.com/tag-search)页面
