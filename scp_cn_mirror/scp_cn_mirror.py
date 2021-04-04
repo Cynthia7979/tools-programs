@@ -8,7 +8,9 @@ from selenium.common.exceptions import *
 mirror_dir = 'F://scp-wiki-cn/mirror/'
 source_dir = 'F://scp-wiki-cn/source/'
 
-driver = 'chrome'
+fetch_source = False
+if fetch_source:
+    driver = 'chrome'
 
 # 所有页面
 home_page = "http://scp-wiki-cn.wikidot.com/tag-search/limit/1617539958174/order/created_at%20desc/"
@@ -43,29 +45,32 @@ def main():
         os.mkdir(mirror_dir)
         print('Target directory does not exist, creating...')
 
-    # 此处代码修改自[CSharperMantle/scp_fetcher_bs4](https://github.com/CSharperMantle/scp_fetcher_bs4)
-    if driver == 'chrome':
-        browser = webdriver.Chrome()
-    elif driver == 'firefox':
-        browser = webdriver.Chrome()
-    elif driver == 'opera':
-        browser = webdriver.Opera()
-    else:
-        raise ValueError('"driver" variable needs to be one of "chrome", "opera" or "firefox".')
-    browser.implicitly_wait(5)
-    browser.get('https://scp-wiki-cn.wikidot.com')
-    input('请在打开的窗口中登录，完成后按回车键>')
+    if fetch_source:
+        # 此处代码修改自[CSharperMantle/scp_fetcher_bs4](https://github.com/CSharperMantle/scp_fetcher_bs4)
+        if driver == 'chrome':
+            browser = webdriver.Chrome()
+        elif driver == 'firefox':
+            browser = webdriver.Chrome()
+        elif driver == 'opera':
+            browser = webdriver.Opera()
+        else:
+            raise ValueError('"driver" variable needs to be one of "chrome", "opera" or "firefox".')
+        browser.implicitly_wait(5)
+        browser.get('https://scp-wiki-cn.wikidot.com')
+        input('请在打开的窗口中登录，完成后按回车键>')
 
     print('Mirroring from', home_page)
     print('Mirroring into', mirror_dir, '...')
-    print('Saving source code to', source_dir, '...')
+    if fetch_source:
+        print('Saving source code to', source_dir, '...')
 
     for i in range(start_page, end_page+1):
         print('Iter', i)
         home_page_soup = get_soup(home_page.format(p=i))
         for link in get_links(home_page_soup):
             mirror(link)
-            # save_source(link, browser)
+            if fetch_source:
+                save_source(link, browser)
             time.sleep(0.1)
 
 
