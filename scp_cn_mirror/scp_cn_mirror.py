@@ -21,7 +21,7 @@ home_page = "http://scp-wiki-cn.wikidot.com/tag-search/limit/1617539958174/order
 # 所有原创图书馆
 # home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/category/wanderers-adult/limit/1617445267227/order/created_at%20desc/"
 home_page += 'p/{p}'
-start_page = 1
+start_page = 3
 end_page = 914
 
 headers = {
@@ -65,7 +65,7 @@ def main():
         home_page_soup = get_soup(home_page.format(p=i))
         for link in get_links(home_page_soup):
             mirror(link)
-            save_source(link, browser)
+            # save_source(link, browser)
             time.sleep(0.1)
 
 
@@ -155,7 +155,7 @@ def save_source(link, browser):
 
         elem_view_source_button = browser.find_element_by_id('view-source-button')
         elem_view_source_button.click()
-    except NoSuchElementException:
+    except (NoSuchElementException, ElementClickInterceptedException):
         succeed = False
         while not succeed:
             print('Cannot find more-options or view-source button, retrying...')
