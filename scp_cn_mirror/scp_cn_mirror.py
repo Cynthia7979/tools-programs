@@ -23,8 +23,9 @@ home_page = "http://scp-wiki-cn.wikidot.com/tag-search/limit/1617539958174/order
 # 所有原创图书馆
 # home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/category/wanderers-adult/limit/1617445267227/order/created_at%20desc/"
 home_page += 'p/{p}'
-start_page = 3
-end_page = 914
+overwrite = False
+start_page = 1
+end_page = 4
 
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -97,7 +98,7 @@ def get_links(home_page_soup):
 
 def mirror(link):
     page_name = get_page_name(link)
-    if os.path.exists(os.path.join(mirror_dir, page_name+'.html')):
+    if os.path.exists(os.path.join(mirror_dir, page_name+'.html')) and not overwrite:
         print('SKIPPING mirroring', page_name, 'due to existing file')
         return
 
@@ -144,7 +145,7 @@ def save_source(link, browser):
     此处代码修改自[CSharperMantle/scp_fetcher_bs4](https://github.com/CSharperMantle/scp_fetcher_bs4)
     """
     page_name = get_page_name(link)
-    if os.path.exists(os.path.join(source_dir, page_name+'.txt')):
+    if os.path.exists(os.path.join(source_dir, page_name+'.txt')) and not overwrite:
         print('SKIPPING saving source of', page_name, 'due to existing file')
         return
     if 'deleted;' in page_name:
