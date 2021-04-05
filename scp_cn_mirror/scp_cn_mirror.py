@@ -22,10 +22,13 @@ home_page = "http://scp-wiki-cn.wikidot.com/tag-search/limit/1617539958174/order
 # home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/category/adult/limit/1617444176386/order/created_at%20desc/"
 # 所有原创图书馆
 # home_page = "http://scp-wiki-cn.wikidot.com/tag-search/tag/%2b原创/category/wanderers-adult/limit/1617445267227/order/created_at%20desc/"
+# 所有页面，按更新时间排序
+# home_page = "http://scp-wiki-cn.wikidot.com/tag-search/limit/1617584622878/list3_limit/1/list5_offset/1/order/updated_at%20desc/"
+
 home_page += 'p/{p}'
-overwrite = False
+overwrite = True
 start_page = 1
-end_page = 4
+end_page = 20
 
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -163,7 +166,12 @@ def save_source(link, browser):
         elem_view_source_button.click()
     except (NoSuchElementException, ElementClickInterceptedException):
         succeed = False
+        trials = 0
         while not succeed:
+            if trials > 10:
+                print('SKIPPING saving source of', page_name, 'because it lacks more-options or view-source button')
+                return
+
             print('Cannot find more-options or view-source button, retrying...')
             try:
                 browser.get(link)
@@ -175,8 +183,21 @@ def save_source(link, browser):
                 elem_view_source_button.click()
 
                 succeed = True
-            except NoSuchElementException:
-                pass
+            except (NoSuchElementException, ElementClickInterceptedException):
+                trials += 1
+            except ElementNotInteractableException:
+                print('SKIPPING saving source of', page_name,
+                      'because it lacks interactable more-options or view-source button')
+                return
+            except Exception as e:
+                print('SKIPPING saving source of', page_name, 'due to unexpected exception:', e)
+                return
+    except ElementNotInteractableException:
+        print('SKIPPING saving source of', page_name, 'because it lacks interactable more-options or view-source button')
+        return
+    except Exception as e:
+        print('SKIPPING saving source of', page_name, 'due to unexpected exception:', e)
+        return
 
     try:
         text_page_source = browser.find_element_by_class_name('page-source').text
