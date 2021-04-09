@@ -28,8 +28,6 @@ class FloatingWindow(tk.Toplevel):
 
         self.label = tk.Label(self, text=TEXT, font=(FONT_NAME, FONT_SIZE), background=TRANSPARENT_COLOR,
                               foreground=TEXT_COLOR,)
-        self.label_border = tk.Label(self, text=TEXT, font=(FONT_NAME, FONT_SIZE+10), background=TRANSPARENT_COLOR,
-                              foreground=BORDER_COLOR,)
         # self.grip = tk.Label(self, bitmap="gray25")
         # self.grip.pack(side="left", fill="y")
 
