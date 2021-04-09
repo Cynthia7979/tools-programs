@@ -5,7 +5,6 @@ import tkinter as tk
 
 TEXT_COLOR = 'white'
 TRANSPARENT_COLOR = ('black', 'white')[TEXT_COLOR == 'black']
-BORDER_COLOR = 'red'
 ALPHA = 0.3
 
 FONT_NAME = 'Microsoft YaHei'
