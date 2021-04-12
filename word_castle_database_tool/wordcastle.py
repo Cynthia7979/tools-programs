@@ -105,7 +105,7 @@ def xml2db(path, conn:sqlite3.Connection, cur: sqlite3.Cursor):
             elif child.tag == 'trans':
                 text = child.text.replace('\n', '').replace('adj.', '<color=orange>adj.</color>').\
                     replace('n.', '<color=orange>n.</color> ').replace('v.', '<color=orange>v.</color> ').\
-                    replace('adv.', '<color=orange>adv.</color> ')
+                    replace('adv.', '<color=orange>adv.</color> ').replace('int.', '<color=orange>int.</color> ')
                 item_values['explaination'] = text
             elif child.tag == 'phonetic':
                 item_values['phoneticSymbol'] = child.text
