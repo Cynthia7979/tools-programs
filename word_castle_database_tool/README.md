@@ -5,6 +5,9 @@
 也支持手动/txt录入
 
 ## Usage
+```commandline
+python wordcastle.py -h
+```
 
 ## Q&A
 * 为什么我导出的单词本是`.bin`格式？
