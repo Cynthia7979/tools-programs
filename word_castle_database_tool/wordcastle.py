@@ -4,20 +4,25 @@ import sqlite3
 import xml.etree.ElementTree as ET
 
 DEBUG_ARGS = '--youdao test.xml'.split()
+
 COLUMNS = """(
-                wordId INT PRIMARY KEY, 
-                spell TEXT,
-                phoneticSymbol TEXT,
-                explaination TEXT,
-                sentenceEN TEXT,
-                sentenceCH TEXT,
-                pronouncationURL TEXT,
-                wordLength INT,
-                learnedTimes INT DEFAULT 0,
-                ungraspTimes INT DEFAULT 0,
-                isFamiliar INT DEFAULT 0,
-                backupPronounciationURL TEXT
-             )"""
+                wordId int IDENTITY(0,1) PRIMARY KEY, 
+                spell text,
+                phoneticSymbol text,
+                explaination text,
+                sentenceEN text,
+                sentenceCH text,
+                pronouncationURL text,
+                wordLength text,
+                learnedTimes int DEFAULT 0,
+                ungraspTimes int DEFAULT 0,
+                isFamiliar int DEFAULT 0,
+                backupPronounciationURL text
+             );"""
+
+VOICE_URL_1 = "http://dict.youdao.com/dictvoice?audio={word}&type=1"
+VOICE_URL_2 = "http://dict.youdao.com/dictvoice?audio={word}&type=2"
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -32,7 +37,7 @@ def main():
         type=str
     )
     parser.add_argument(
-        '-y', '--youdao',
+        '-y', '--youdao', '--xml',
         action='store',
         dest='yd_path',
         metavar='path',
@@ -76,21 +81,45 @@ def main():
 
     if args.yd_path:
         assert args.yd_path.endswith('.xml'), 'YouDao file must be in XML format.'
-        xml2db(args.yd_path)
+        conn, cur = xml2db(args.yd_path, *db_init(args.output))
+        conn.close()
     elif args.txt_path:
         assert args.yd_path.endswith('.xml'), 'TXT file must be in TXT format.'
-        # txt2db(args.txt_path)
+        # txt2db(args.txt_path, *db_init(args.output))
     elif args.words:
         pass
     elif args.init_file:
         db_init(args.init_file)
 
 
-def xml2db(path):
+def xml2db(path, conn:sqlite3.Connection, cur: sqlite3.Cursor):
     xmlf = ET.parse(path)
     root = xmlf.getroot()
+
     for item in root:
-        print(str(item))
+        item_values = {}
+        for child in item:
+            print(child)
+            if child.tag == 'word':
+                item_values['spell'] = child.text
+            elif child.tag == 'trans':
+                item_values['explaination'] = child.text
+            elif child.tag == 'phonetic':
+                item_values['phoneticSymbol'] = child.text
+        if not cur.execute('SELECT * from SIMPLE').fetchall():
+            next_id = 0
+        else:
+            next_id = cur.lastrowid
+        cur.execute(f"""
+            INSERT INTO SIMPLE (
+                wordId, spell, phoneticSymbol, explaination, pronouncationURL, wordLength, backupPronounciationURL
+            ) VALUES (
+                '{next_id}', '{item_values["spell"]}', '{item_values["phoneticSymbol"]}', '{item_values["explaination"]}', 
+                '{VOICE_URL_1.format(word=item_values['spell'])}', '{len(item_values['spell'])}', 
+                '{VOICE_URL_2.format(word=item_values['spell'])}'
+            );""")
+    conn.commit()
+    return conn, cur
 
 
 def db_init(path):
@@ -100,7 +129,7 @@ def db_init(path):
     :return: (Connection, Cursor)
     """
     if os.path.exists(path):
-        if input(f'WARNING: DB file {path} already exists. Proceed? (y/n)').lower == 'n':
+        if input(f'WARNING: DB file {path} already exists. Proceed? (Y/n)').lower() == 'n':
             sys.exit()
         else:
             print('Overwriting', path)
