@@ -25,49 +25,7 @@ VOICE_URL_2 = "http://dict.youdao.com/dictvoice?audio={word}&type=2"
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='Generate word castle .db files with YouDao XML or custom words.'
-    )
-    parser.add_argument(
-        '-t', '--txt',
-        action='store',
-        dest='txt_path',
-        metavar='path',
-        help='Path of txt file',
-        type=str
-    )
-    parser.add_argument(
-        '-y', '--youdao', '--xml',
-        action='store',
-        dest='yd_path',
-        metavar='path',
-        help='Path of YouDao wordbook file. This overwrites the txt file.',
-        type=str
-    )
-    parser.add_argument(
-        '-o', '--output',
-        action='store',
-        default='output.db',
-        dest='output',
-        help='Path of output db file. Defaults to "output.db".',
-        type=str
-    )
-    parser.add_argument(
-        '-w', '--add-word',
-        action='store',
-        nargs='+',
-        dest='words',
-        help='Adds words to an existing .db file',
-        type=list
-    )
-    parser.add_argument(
-        '-i', '--init',
-        action='store',
-        dest='init_file',
-        metavar='filename',
-        help='Creates an empty .db file in Word Castle format.',
-        type=str
-    )
+    parser = parser_init()
 
     if len(sys.argv) == 1:  # Debug
         print('WARNING: You did not pass any arguments. This will parse', DEBUG_ARGS)
@@ -123,6 +81,63 @@ def xml2db(path, conn:sqlite3.Connection, cur: sqlite3.Cursor):
             );""")
     conn.commit()
     return conn, cur
+
+
+def parser_init():
+    parser = argparse.ArgumentParser(
+        description='Generate word castle .db files with YouDao XML or custom words.',
+
+    )
+    parser.add_argument(
+        '-t', '--txt',
+        action='store',
+        dest='txt_path',
+        metavar='PATH',
+        help='Converts specified TXT file into WordCastle DB.',
+        type=str
+    )
+    parser.add_argument(
+        '-y', '--youdao', '--xml',
+        action='store',
+        dest='yd_path',
+        metavar='PATH',
+        help='Converts specified YouDao XML file into WordCastle DB. This overwrites the txt file.',
+        type=str
+    )
+    parser.add_argument(
+        '-o', '--output',
+        action='store',
+        default='output.db',
+        dest='output',
+        help='Path of output db file. Defaults to "output.db".',
+        type=str
+    )
+    parser.add_argument(
+        '-w', '--add-word',
+        action='store',
+        nargs='+',
+        dest='words',
+        help='Adds words to SIMPLE table of an existing .db file (specified with --db).',
+        type=list
+    )
+
+    parser.add_argument(
+        '--db', '--database',
+        action='store',
+        dest='exist_db',
+        metavar='FILENAME',
+        help='Path to the existing database. Create one with -i.',
+        type=str
+    )
+    parser.add_argument(
+        '-i', '--init',
+        action='store',
+        dest='init_file',
+        metavar='FILENAME',
+        help='Creates an empty .db file in Word Castle format.',
+        type=str
+    )
+    return parser
 
 
 def db_init(path):
