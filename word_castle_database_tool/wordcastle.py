@@ -8,16 +8,16 @@ DEBUG_ARGS = '--youdao test.xml'.split()
 COLUMNS = """(
                 wordId int IDENTITY(0,1) PRIMARY KEY, 
                 spell text,
-                phoneticSymbol text,
-                explaination text,
-                sentenceEN text,
-                sentenceCH text,
-                pronouncationURL text,
-                wordLength text,
+                phoneticSymbol text DEFAULT '[]',
+                explaination text DEFAULT '[]',
+                sentenceEN text DEFAULT '',
+                sentenceCH text DEFAULT '',
+                pronouncationURL text DEFAULT '',
+                wordLength text DEFAULT '',
                 learnedTimes int DEFAULT 0,
                 ungraspTimes int DEFAULT 0,
                 isFamiliar int DEFAULT 0,
-                backupPronounciationURL text
+                backupPronounciationURL text DEFAULT ''
              );"""
 
 VOICE_URL_1 = "http://dict.youdao.com/dictvoice?audio={word}&type=1"
@@ -103,7 +103,10 @@ def xml2db(path, conn:sqlite3.Connection, cur: sqlite3.Cursor):
             if child.tag == 'word':
                 item_values['spell'] = child.text
             elif child.tag == 'trans':
-                item_values['explaination'] = child.text
+                text = child.text.replace('\n', '').replace('adj.', '<color=orange>adj.</color>').\
+                    replace('n.', '<color=orange>n.</color> ').replace('v.', '<color=orange>v.</color> ').\
+                    replace('adv.', '<color=orange>adv.</color> ')
+                item_values['explaination'] = text
             elif child.tag == 'phonetic':
                 item_values['phoneticSymbol'] = child.text
         if not cur.execute('SELECT * from SIMPLE').fetchall():
@@ -114,7 +117,7 @@ def xml2db(path, conn:sqlite3.Connection, cur: sqlite3.Cursor):
             INSERT INTO SIMPLE (
                 wordId, spell, phoneticSymbol, explaination, pronouncationURL, wordLength, backupPronounciationURL
             ) VALUES (
-                '{next_id}', '{item_values["spell"]}', '{item_values["phoneticSymbol"]}', '{item_values["explaination"]}', 
+                '{next_id}', '{item_values["spell"]}', '{item_values["phoneticSymbol"]}', '[{item_values["explaination"]}]', 
                 '{VOICE_URL_1.format(word=item_values['spell'])}', '{len(item_values['spell'])}', 
                 '{VOICE_URL_2.format(word=item_values['spell'])}'
             );""")

@@ -3,7 +3,7 @@ import sqlite3
 
 # os.chdir('E:\QQFileRecv')
 
-conn = sqlite3.connect('./output.db')
+conn = sqlite3.connect('./MyGameDB.db')
 cur = conn.cursor()
 for table in cur.execute('SELECT name from sqlite_master where type= "table"'):
     print(table)
