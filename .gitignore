@@ -29,3 +29,5 @@ weather_forecast_downloader/download/
 
 word_castle_database_tool/*.xml
 word_castle_database_tool/*.db
+
+*.key
