@@ -21,6 +21,7 @@ eco_probem_solving/eco_total_cost.py
 
 hack_chat_related/chat_log_word_sources.txt
 hack_chat_related/logs/*.log
+hack_chat_related/searchbot/*.png
 
 on_duty_noticer/data.json
 on_duty_noticer/package/data.json
