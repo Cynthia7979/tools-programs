@@ -24,7 +24,7 @@ def estimate(func, init_cond: tuple, step=0.1, lower_x=-1, upper_x=1, prec=3):
         x.append(current_x)
     x = [round(i, prec) for i in x]
     y = [round(j, prec) for j in y]
-    print(x, y)
+    # print(x, y)
     return x, y
 
 
@@ -34,11 +34,59 @@ def show_estimate(x, y):
 
 
 def estimate_at(x_value, x: list, y: list):
-    return y[x.index(x_value)]
+    if x_value in x:
+        return y[x.index(x_value)]
+    else:  # Use slope to estimate y
+        p1_ind = tuple(idx for idx, value in enumerate(x) if value < x_value)[-1]  # Smallest x that is greater than 1.0
+        p2_ind = tuple(idx for idx, value in enumerate(x) if value > x_value)[0]   # Largest x that is less than 1.0
+        slope = (y[p2_ind] - y[p1_ind]) / (x[p2_ind] - x[p1_ind])
+        x_diff = 1.0 - x[p1_ind]
+        y_diff = x_diff * slope
+        return y[p1_ind] + y_diff
+
+
+def show_step_size_against_estimate(lower_step, upper_step, meta_step, predef_estimate, x_value, prec=4):
+    """
+    Displays a graph of step size against estimated y at given x.
+    :param lower_step: The lower boundary of step. Positive float.
+    :param upper_step: The upper boundary of step (inclusive). Positive float. Must be greater than `lower_step`
+    :param meta_step: The value to increase step size by. Positive float.
+    :param predef_estimate: A predefined estimate() function. Common usage: `lambda step: estimate(..., step=step)`
+    :param x_value: The given x value to estimate y value at.
+    :param prec: The precision (number of digits after the float point) at which step size is rounded to. Defaults to 4.
+    """
+    assert callable(predef_estimate), 'Predefined estimate() function must be callable'
+    assert 0 < lower_step < upper_step, \
+        'Boundaries of step must be positive, and upper step must be greater than lower step'
+    steps = []
+    estimations = []
+    current_step_size = lower_step
+    while current_step_size <= upper_step:
+        steps.append(current_step_size)
+        estimations.append(estimate_at(x_value, *predef_estimate(current_step_size)))
+        current_step_size += meta_step
+        current_step_size = round(current_step_size, prec)
+    plt.plot(steps, estimations)
+    plt.show()
 
 
 if __name__ == '__main__':
-    x_lst, y_lst = estimate(lambda y: y*(4-y), (0, 2), upper_x=2, prec=2)
-    print(estimate_at(1.0, x_lst, y_lst))
-
-    show_estimate(x_lst, y_lst)
+    show_step_size_against_estimate(
+        lower_step=0.025,
+        upper_step=1.0,
+        meta_step=0.025,
+        predef_estimate=lambda step: estimate(lambda y: y*(4-y), (0,2), step=step, upper_x=2, prec=3),
+        x_value=1.0)
+    # step_size = 0.01
+    # while step_size <= 1:
+    #     print(f'step size = {step_size}, P =',
+    #           estimate_at(1.0, *estimate(lambda y: y * (4 - y), (0, 2), step=step_size, upper_x=2, prec=3)))
+    #     if step_size == 0.01:
+    #         step_size = 0.025
+    #     else:
+    #         step_size += 0.025
+    #     step_size = round(step_size, 3)
+    # x_lst, y_lst = estimate(lambda y: y*(4-y), (0, 2), upper_x=2, prec=2)
+    # print(estimate_at(1.0, x_lst, y_lst))
+    #
+    # show_estimate(x_lst, y_lst)
