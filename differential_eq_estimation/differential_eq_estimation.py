@@ -19,8 +19,10 @@ def estimate(func, init_cond: tuple, step=0.1, lower_x=-1, upper_x=1, prec=3):
     current_x, current_y = init_cond
     while current_x < upper_x:
         current_y += func(current_y) * step
-        y.append(current_y)
         current_x += step
+        current_y = round(current_y, prec)
+        current_x = round(current_x, prec)
+        y.append(current_y)
         x.append(current_x)
     x = [round(i, prec) for i in x]
     y = [round(j, prec) for j in y]
@@ -71,22 +73,13 @@ def show_step_size_against_estimate(lower_step, upper_step, meta_step, predef_es
 
 
 if __name__ == '__main__':
-    show_step_size_against_estimate(
-        lower_step=0.025,
-        upper_step=1.0,
-        meta_step=0.025,
-        predef_estimate=lambda step: estimate(lambda y: y*(4-y), (0,2), step=step, upper_x=2, prec=3),
-        x_value=1.0)
-    # step_size = 0.01
-    # while step_size <= 1:
-    #     print(f'step size = {step_size}, P =',
-    #           estimate_at(1.0, *estimate(lambda y: y * (4 - y), (0, 2), step=step_size, upper_x=2, prec=3)))
-    #     if step_size == 0.01:
-    #         step_size = 0.025
-    #     else:
-    #         step_size += 0.025
-    #     step_size = round(step_size, 3)
-    # x_lst, y_lst = estimate(lambda y: y*(4-y), (0, 2), upper_x=2, prec=2)
+    # show_step_size_against_estimate(
+    #     lower_step=0.025,
+    #     upper_step=1.0,
+    #     meta_step=0.025,
+    #     predef_estimate=lambda step: estimate(lambda y: y*(4-y)*(y-6), (0,5), step=step, upper_x=2, prec=3),
+    #     x_value=1.0)
+    x_lst, y_lst = estimate(lambda y: y*(4-y)*(y-6), (0, 4), upper_x=2, prec=2, step=0.01)
     # print(estimate_at(1.0, x_lst, y_lst))
-    #
-    # show_estimate(x_lst, y_lst)
+
+    show_estimate(x_lst, y_lst)
