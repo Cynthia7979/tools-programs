@@ -6,9 +6,9 @@ def estimate(func, init_cond: tuple, step=0.1, lower_x=-1, upper_x=1, prec=3):
     """
 
     :param func: The differential equation in the form of f(x, y) => dy/dx
-    :param init_cond: The initial condition. Currently only accepts (0, y)
+    :param init_cond: The initial condition.
     :param step: The step size. Defaults to 0.1.
-    :param lower_x: The lower boundary of the range to be drawn. Currently does nothing and the range is [0, upper_x]
+    :param lower_x: The lower boundary of the range to be drawn.
     :param upper_x: The upper boundary of the range to be drawn.
     :param prec: Precision after the float point for x and y
     :return: Two lists `x` and `y`
@@ -18,15 +18,28 @@ def estimate(func, init_cond: tuple, step=0.1, lower_x=-1, upper_x=1, prec=3):
     assert upper_x > lower_x, 'The upper X coordinate must be greater than the lower X coordinate'
     assert callable(func), 'The function you passed is not callable.'
     current_x, current_y = init_cond
+    if current_x > lower_x:
+        # Back-estimating the values for the initial condition
+        while current_x > lower_x:
+            current_y -= func(current_x, current_y) * step
+            current_x -= step
+            y.append(current_y)
+            x.append(current_x)
+        current_x, current_y = init_cond
+        # Resume the normal estimation process
+
     while current_x < upper_x:
         current_y += func(current_x, current_y) * step
         current_x += step
-        current_y = round(current_y, prec)
-        current_x = round(current_x, prec)
-        y.append(current_y)
-        x.append(current_x)
-    x = [round(i, prec) for i in x]
-    y = [round(j, prec) for j in y]
+        if current_x >= lower_x:  # Don't display them if they're less than the lower boundary
+            y.append(current_y)
+            x.append(current_x)
+
+    # Make sure that the segments are connected correctly
+    support_dict = {y[i]: x[i] for i in range(len(x))}
+    support_dict_keys = sorted(support_dict)
+    x = [round(support_dict[k], prec) for k in support_dict_keys]
+    y = [round(k, prec) for k in support_dict_keys]
     # print(x, y)
     return x, y
 
@@ -82,7 +95,7 @@ if __name__ == '__main__':
     #     x_value=1.0)
     # x_lst, y_lst = estimate(lambda y: y*(4-y)*(y-6), (0, 4), upper_x=2, prec=2, step=0.01)
 
-    x_lst, y_lst = estimate_two_args(lambda x, y: x**2 + y**2, (0, 1), upper_x=1, prec=2, step=0.1)
+    x_lst, y_lst = estimate(lambda x, y: 2 - math.e**(4*x) - 2*y, (0.5, -0.02), upper_x=1, prec=2, step=0.1)
     print(estimate_at(0.4, x_lst, y_lst))
 
     show_estimate(x_lst, y_lst)
