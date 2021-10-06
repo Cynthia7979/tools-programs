@@ -36,10 +36,10 @@ def estimate(func, init_cond: tuple, step=0.1, lower_x=-1, upper_x=1, prec=3):
             x.append(current_x)
 
     # Make sure that the segments are connected correctly
-    support_dict = {y[i]: x[i] for i in range(len(x))}
+    support_dict = {x[i]: y[i] for i in range(len(x))}
     support_dict_keys = sorted(support_dict)
-    x = [round(support_dict[k], prec) for k in support_dict_keys]
-    y = [round(k, prec) for k in support_dict_keys]
+    x = [round(k, prec) for k in support_dict_keys]
+    y = [round(support_dict[k], prec) for k in support_dict_keys]
     # print(x, y)
     return x, y
 
@@ -95,7 +95,7 @@ if __name__ == '__main__':
     #     x_value=1.0)
     # x_lst, y_lst = estimate(lambda y: y*(4-y)*(y-6), (0, 4), upper_x=2, prec=2, step=0.01)
 
-    x_lst, y_lst = estimate(lambda x, y: 2 - math.e**(4*x) - 2*y, (0.5, -0.02), upper_x=1, prec=2, step=0.1)
-    print(estimate_at(0.4, x_lst, y_lst))
+    x_lst, y_lst = estimate(lambda x, y: 2*x * (1 + x**2 - y), (1, 2), upper_x=3, prec=2, step=0.1)
+    print(estimate_at(1.3, x_lst, y_lst))
 
     show_estimate(x_lst, y_lst)
