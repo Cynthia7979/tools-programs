@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
+import math
 
 
 def estimate(func, init_cond: tuple, step=0.1, lower_x=-1, upper_x=1, prec=3):
     """
 
-    :param func: The differential equation in the form of f(y) => y'
+    :param func: The differential equation in the form of f(x, y) => dy/dx
     :param init_cond: The initial condition. Currently only accepts (0, y)
     :param step: The step size. Defaults to 0.1.
     :param lower_x: The lower boundary of the range to be drawn. Currently does nothing and the range is [0, upper_x]
@@ -18,7 +19,7 @@ def estimate(func, init_cond: tuple, step=0.1, lower_x=-1, upper_x=1, prec=3):
     assert callable(func), 'The function you passed is not callable.'
     current_x, current_y = init_cond
     while current_x < upper_x:
-        current_y += func(current_y) * step
+        current_y += func(current_x, current_y) * step
         current_x += step
         current_y = round(current_y, prec)
         current_x = round(current_x, prec)
@@ -79,7 +80,9 @@ if __name__ == '__main__':
     #     meta_step=0.025,
     #     predef_estimate=lambda step: estimate(lambda y: y*(4-y)*(y-6), (0,5), step=step, upper_x=2, prec=3),
     #     x_value=1.0)
-    x_lst, y_lst = estimate(lambda y: y*(4-y)*(y-6), (0, 4), upper_x=2, prec=2, step=0.01)
-    # print(estimate_at(1.0, x_lst, y_lst))
+    # x_lst, y_lst = estimate(lambda y: y*(4-y)*(y-6), (0, 4), upper_x=2, prec=2, step=0.01)
+
+    x_lst, y_lst = estimate_two_args(lambda x, y: x**2 + y**2, (0, 1), upper_x=1, prec=2, step=0.1)
+    print(estimate_at(0.4, x_lst, y_lst))
 
     show_estimate(x_lst, y_lst)
