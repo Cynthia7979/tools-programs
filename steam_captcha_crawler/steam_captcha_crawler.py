@@ -42,7 +42,7 @@ def brute_force_gid(n):
             ).content)
 
 
-def get_a_bunch_of_steams(n):
+def hey_what_about_we_get_a_bunch_of_default_ones(n):
     for i in range(n):
         with open(f'./downloaded/default_{time()}.png', 'wb') as f:
             f.write(requests.get(
@@ -53,4 +53,4 @@ def get_a_bunch_of_steams(n):
 
 
 if __name__ == '__main__':
-    get_a_bunch_of_steams(50)
+    hey_what_about_we_get_a_bunch_of_default_ones(50)
