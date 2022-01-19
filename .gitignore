@@ -31,7 +31,7 @@ weather_forecast_downloader/download/
 word_castle_database_tool/*.xml
 word_castle_database_tool/*.db
 
-steam_captcha_crawler/downloaded/*.png
+!unfinished/steam_captcha_crawler/downloaded/*
 
 glados_voice_fetcher/downloads/*
 
