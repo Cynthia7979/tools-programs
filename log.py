@@ -3,10 +3,7 @@ import os
 from time import strftime
 
 
-if os.path.exists('./log.debug'):
-    LOG_LEVEL = open('./log.debug')
-else:
-    LOG_LEVEL = logging.DEBUG
+LOG_LEVEL = logging.DEBUG
 
 
 def log_init(fname):
@@ -29,14 +26,18 @@ def log_init(fname):
     public_logger = logging.getLogger('Tool-Program.{}'.format(fname))
     public_logger.addHandler(file_handler)
     public_logger.addHandler(stream_handler)
+    public_logger.setLevel(LOG_LEVEL)
     self_logger = logging.getLogger('Tool-Program.log')
     self_logger.addHandler(file_handler)
     self_logger.addHandler(stream_handler)
+    self_logger.setLevel(LOG_LEVEL)
+
     return public_logger
 
 
 # Logged decorator
 def logged(cls, fname):
+    self_logger.debug(f'Creating class-level logger for {cls.__name__}')
     class_name = cls.__name__
     logger = logging.getLogger('Tool-Program.{}.{}'.format(fname, class_name))
     logger.setLevel(LOG_LEVEL)
