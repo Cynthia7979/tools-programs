@@ -33,5 +33,7 @@ word_castle_database_tool/*.db
 
 steam_captcha_crawler/downloaded/*.png
 
+glados_voice_fetcher/downloads/*
+
 *.key
 *.hide
