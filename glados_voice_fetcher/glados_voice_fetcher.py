@@ -9,14 +9,16 @@ api_link = "https://glados.c-net.org/generate?text={text}"
 def main():
     if not os.path.exists('./downloads'):
         os.mkdir('./downloads/')
-    logger = log.log_init(__name__)
+    logger = log.log_init(os.path.basename(__file__))
+    logger.info('Starting...')
 
     with open('script.txt', 'r') as f1:
         lines = f1.readlines()
         logger.info(f'Retrieved script from script.txt. {len(lines)} lines total.')
         for n, line in enumerate(lines):
-            logger.info(f'Processing line {n} of {len(lines)}, '
-                        f'{len(lines)-n} ({((len(lines)-n)/len(lines)) * 100}%) left.')
+            line = line.strip('/n')
+            logger.info(f'Processing line {n+1} of {len(lines)}, '
+                        f'{len(lines)-n+1} ({((len(lines)-n+1)/len(lines)) * 100:.0f}%) left.')
             safe_filename = get_safe_filename(f'{line}.wav', logger)
             if os.path.exists(f'./downloads/{safe_filename}'):
                 logger.warning(f'Skipping due to existing file.')

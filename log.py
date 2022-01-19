@@ -3,11 +3,18 @@ import os
 from time import strftime
 
 
-LOG_LEVEL = logging.DEBUG
+if os.path.exists('log.debug'):  # Read logging level from file
+    LOG_LEVEL = {'notset': logging.NOTSET, 'debug': logging.DEBUG, 'info': logging.INFO, 'warning': logging.WARNING,
+                 'warn': logging.WARN, 'error': logging.ERROR, 'fatal': logging.FATAL, 'critical': logging.CRITICAL}\
+        [open('log.debug').read()]
+else:
+    LOG_LEVEL = logging.INFO
 
 
 def log_init(fname):
     global file_handler, stream_handler, self_logger
+
+    fname = fname.strip('.py')
 
     log_directory = os.path.join(os.getcwd(), 'logs/')
     if not fname:
@@ -31,6 +38,8 @@ def log_init(fname):
     self_logger.addHandler(file_handler)
     self_logger.addHandler(stream_handler)
     self_logger.setLevel(LOG_LEVEL)
+
+    self_logger.debug(f'Logging level: {LOG_LEVEL}')
 
     return public_logger
 
