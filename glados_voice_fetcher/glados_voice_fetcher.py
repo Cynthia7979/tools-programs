@@ -11,27 +11,31 @@ def main():
         os.mkdir('./downloads/')
     logger = log.log_init(os.path.basename(__file__))
     logger.info('Starting...')
-    simplified_save = lambda text: fetch_and_save(text, get_safe_filename(f'{text}.wav', logger), logger)
 
-    with open('script.txt', 'r') as f1:
-        lines = f1.readlines()
-        logger.info(f'Retrieved script from script.txt. {len(lines)} lines total.')
+    try:
+        simplified_save = lambda text: fetch_and_save(text, get_safe_filename(f'{text}.wav', logger), logger)
 
-        for n, line in enumerate(lines):
-            line = line.replace('/n', '').replace('/r', '')
-            n = n+1
+        with open('script.txt', 'r') as f1:
+            lines = f1.readlines()
+            logger.info(f'Retrieved script from script.txt. {len(lines)} lines total.')
 
-            logger.info(f'Processing line {n} of {len(lines)} ({(n/len(lines)) * 100:.0f}%), '
-                        f'{len(lines)-n} left.')
+            for n, line in enumerate(lines):
+                line = line.replace('/n', '').replace('/r', '')
+                n = n + 1
 
-            if len(line) > 257:
-                logger.warning('Line is longer than 256 characters. Processing as two parts.')
-                simplified_save(line[:257])
-                simplified_save(line[257:])
-            else:
-                simplified_save(line)
+                logger.info(f'Processing line {n} of {len(lines)} ({(n / len(lines)) * 100:.0f}%), '
+                            f'{len(lines) - n} left.')
 
-    logger.info('Work complete.')
+                if len(line) > 257:
+                    logger.warning('Line is longer than 256 characters. Processing as two parts.')
+                    simplified_save(line[:257])
+                    simplified_save(line[257:])
+                else:
+                    simplified_save(line)
+
+        logger.info('Work complete.')
+    except Exception as e:
+        logger.fatal(e)
 
 
 def fetch(text, logger):
@@ -44,6 +48,7 @@ def fetch(text, logger):
     logger.debug('Text fetched.')
     return response
 
+
 def fetch_and_save(text, filename, logger):
     if os.path.exists(f'./downloads/{filename}'):
         logger.warning('Skipping due to existing file.')
@@ -55,7 +60,7 @@ def fetch_and_save(text, filename, logger):
 
 
 def get_safe_filename(s, logger):
-    keep = (' ','.','_')
+    keep = (' ', '.', '_')
     safe_fn = "".join(c for c in s if c.isalnum() or c in keep).rstrip()
     logger.debug(f'Safe filename: {safe_fn}')
     return safe_fn

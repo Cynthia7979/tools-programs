@@ -1,0 +1,1 @@
+def hail_friend(): print(f"Hail, friend!")

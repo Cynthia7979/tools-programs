@@ -1,4 +1,5 @@
 .idea/
+__pycache__/
 */.vscode/settings.json
 *.log
 ~*.xlsx
@@ -31,9 +32,10 @@ weather_forecast_downloader/download/
 word_castle_database_tool/*.xml
 word_castle_database_tool/*.db
 
-!unfinished/steam_captcha_crawler/downloaded/*
+!unfinished/steam_captcha_crawler/downloaded/
 
-glados_voice_fetcher/downloads/*
+glados_voice_fetcher/downloads/
 
 *.key
 *.hide
+
