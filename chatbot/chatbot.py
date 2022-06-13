@@ -57,5 +57,5 @@ def generate():
 if __name__ == "__main__":
     if os.path.basename(os.getcwd()) != 'chatbot':
         os.chdir('chatbot/')
-    load("scp_new.txt")
+    load("stanleyud.txt")
     print(generate())
