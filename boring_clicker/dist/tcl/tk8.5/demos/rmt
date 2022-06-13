@@ -26,7 +26,7 @@ set app "local"
 set executing 0
 
 # The global variable below keeps track of the last command executed,
-# so it can be re-executed in response to !! commands.
+# so it can be re-executed in respond to !! commands.
 
 set lastCommand ""
 

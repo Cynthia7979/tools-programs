@@ -42,8 +42,8 @@ def fetch(text, logger):
     logger.debug(f'Fetching text "{text}"...')
     response = requests.get(api_link.format(text=text)).content
     if response == b'Your sample is queued for processing.\n':
-        logger.debug('Waiting for response.')
-        # Wait for response
+        logger.debug('Waiting for respond.')
+        # Wait for respond
         response = requests.get(api_link.format(text=text)).content
     logger.debug('Text fetched.')
     return response

@@ -1,0 +1,6 @@
+text2emotion
+snownlp
+nltk
+igraph
+hackchat
+emoji
