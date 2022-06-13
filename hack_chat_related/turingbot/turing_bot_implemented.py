@@ -24,7 +24,15 @@ class EnglishTuringBot(turing_bot_base.ABCTuringBot):
             'hello': 'greeting',
             'hey': 'greeting',
             'sup': 'greeting',
-            'what\'s up': 'greeting'
+            'what\'s up': 'greeting',
+            'bye': 'farewells',
+            'goodbye': 'farewells',
+            'gn': 'farewells',
+            'gb': 'farewells',
+            'cu': 'farewells',
+            'see you': 'farewells',
+            'b2b': 'neutral',
+            'g2g': 'neutral'
         }
 
     def process_message(self, _chat, message, _sender):
@@ -47,7 +55,7 @@ class EnglishTuringBot(turing_bot_base.ABCTuringBot):
             self.respond(random.choice(selected_emotions).lower())
 
     def _generate_emotion_graph(self):
-        emotion_names = ('positive', 'happy', 'funny', 'surprise', 'negative', 'sad', 'angry', 'fear', 'confused', 'neutral', 'greeting')
+        emotion_names = ('positive', 'happy', 'funny', 'surprise', 'negative', 'sad', 'angry', 'fear', 'confused', 'neutral', 'greeting', 'farewells')
         graph = igraph.Graph()
         graph.add_vertices(len(emotion_names), {'name': emotion_names})
         graph.add_edges([(0, 1), (0, 2), (0, 3), (4, 5), (4, 6), (4, 7)])
