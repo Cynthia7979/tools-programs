@@ -3,7 +3,7 @@ nltk.set_proxy('127.0.0.1:7890')
 
 import turing_bot_implemented
 
-new_bot = turing_bot_implemented.EnglishTuringBot('Cynthia', 'turingbot', {
+new_bot = turing_bot_implemented.EnglishTuringBot('Artemis', 'programming', {
     'funny': ['lmao', 'lmaoo', 'hahaha', 'lol', 'LOL', 'XD', 'xD', 'hhhhhhh', 'hahahaha', 'hhhh', 'hhh', 'LMAO', 'loll'],
     'positive': ['sounds great!', 'wow', 'wow!', 'that\'s p nice', 'perfect!', 'cool', 'niiiceee',
                  'that\'s so coool!!', 'fabulous!', 'actually that\'s rly nice', 'great!', 'pog', 'pog!', 'POG',

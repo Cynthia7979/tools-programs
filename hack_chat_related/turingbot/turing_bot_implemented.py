@@ -1,7 +1,18 @@
+"""
+Preimplemented TuringBot classes
+
+TODO:
+- Implement built-in logging (class logger, show emotion scores, message content etc)
+- Finish ChineseTuringBot
+- Make it so that check_triggers only matches standalone or space-surrounded phrases (regex?)
+- Make it so that it only starts a conversation with anyone who @'s it first
+"""
+
 import turing_bot_base
 import text2emotion as te
 import igraph
 import random
+from snownlp import SnowNLP
 
 
 class EnglishTuringBot(turing_bot_base.ABCTuringBot):
@@ -12,7 +23,7 @@ class EnglishTuringBot(turing_bot_base.ABCTuringBot):
     def __init__(self, screen_name: str, channel: str, responses: dict, triggers=None):
         super().__init__(screen_name, channel, responses)
         self.triggers = triggers if triggers else {
-            '??': 'confused',
+            '?': 'confused',
             'lmao': 'funny',
             'lol': 'funny',
             'haha': 'funny',
@@ -25,6 +36,7 @@ class EnglishTuringBot(turing_bot_base.ABCTuringBot):
             'hey': 'greeting',
             'sup': 'greeting',
             'what\'s up': 'greeting',
+            screen_name: 'greeting',
             'bye': 'farewells',
             'goodbye': 'farewells',
             'gn': 'farewells',
@@ -39,7 +51,7 @@ class EnglishTuringBot(turing_bot_base.ABCTuringBot):
         if self._check_triggers(_chat, message, _sender): return
         emotion_weights = te.get_emotion(message)
         if sum(emotion_weights.values()) == 0:  # Not English or neutral message
-            self.respond('neutral')
+            if random.randint(0, 1): self.respond('neutral')  # Sometimes it's better to remain silence
             return
         else:
             current_max = 0
@@ -60,3 +72,17 @@ class EnglishTuringBot(turing_bot_base.ABCTuringBot):
         graph.add_vertices(len(emotion_names), {'name': emotion_names})
         graph.add_edges([(0, 1), (0, 2), (0, 3), (4, 5), (4, 6), (4, 7)])
         return graph
+
+
+class ChineseTuringBot(turing_bot_base.ABCTuringBot):
+    """
+    TuringBot that talks in Chinese. Uses SnowNLP for emotion recognition. Also has a few default triggers.
+    """
+    def __init__(self, screen_name: str, channel: str, responses: dict, triggers=None):
+        super().__init__(screen_name, channel, responses)
+        self.triggers = triggers if triggers else {
+
+        }
+
+    def process_message(self, _chat, message, _sender):
+        pass  # Gotta go showerin
