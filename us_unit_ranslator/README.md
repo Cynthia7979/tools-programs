@@ -1,9 +1,9 @@
 # U.S. System Tranlator
 
-A context-aware translator for all the U.S. customary units
-nonsense. Copy-paste numerical data with U.S. units in it,
+A context-aware translator for all the unit system havoc.
+Copy-paste numerical data with U.S. units in it,
 separate data with one of `(';', '\n', '\\n', ',', '|')`,
-and press enter.
+and press enter to get your data in metric.
 
 ## Requirements
 ```requirements.txt
