@@ -1,38 +1,56 @@
 import pint.errors
-from pint import UnitRegistry, Unit
-
+from pint import UnitRegistry
 
 TO_METRIC_UNIT = {
-    # Lengths
+    # Length
     'inch': 'centimeter',
     'hand': 'centimeter',
     'foot': 'meter',
     'yard': 'meter',
     'mile': 'kilometer',
     'nautical_mile': 'kilometer',
-    # Areas
+    # Area
     'inch ** 2': 'centimeter ** 2',
     'foot ** 2': 'meter ** 2',
     'acre': 'meter ** 2',
     'yard ** 2': 'meter ** 2',
     'mile ** 2': 'kilometer ** 2',
-    # Weights
+    # Weight
     'grain': 'milligram',
     'ounce': 'gram',
     'pound': 'kilogram',
     'quarter': 'kilogram',
     'ton': 'metric_ton',
-    # Volumes
+    # Volume
     'fluid_ounce': 'milliliter',
     'cup': 'milliliter',
     'pint': 'liter',
     'quart': 'liter',
     'gallon': 'liter',
-    # Temperatures
+    # Temperature
     'degree_Fahrenheit': 'degree_Celsius'
 }
 # Based on https://en.wikipedia.org/wiki/Imperial_units#Units
 # and https://www.splashlearn.com/math-vocabulary/measurements/customary-units
+
+UNIT_ALIAS = {
+    # Length
+    'inch': ('inch', 'inches', 'in', 'in.', "''"),
+    'foot': ('foot', 'feet', 'ft', 'ft.', "'"),
+    'yard': ('yard', 'yards', 'yd', 'yd.'),
+    'mile': ('mile', 'miles', 'mi', 'mi.'),
+    # Weight
+    'ounce': ('ounce', 'ounces', 'oz', 'oz.'),
+    'pound': ('pound', 'pounds', 'pd', 'pd.'),
+    'ton': ('ton', 'tons', 't'),
+    # Volume
+    'fluid_ounce': ('fluid ounce', 'fluid_ounce', 'fluid ounces', 'fl ounce', 'fl ounces', 'fl. ounce', 'fl. ounces', 'floz', 'floz.', 'fl oz', 'fl. oz', 'fl.oz', 'fl oz.', 'fl. oz.', 'fl', 'fl.'),
+    'pint': ('pint', 'pints', 'pt', 'pt.'),
+    'quart': ('quart', 'quarts', 'qt', 'qt.'),
+    'gallon': ('gallon', 'gallons', 'gal', 'gal.'),
+    # Temperature
+    'degree_Fahrenheit': ('degree Fahrenheit', 'degree_Fahrenheit', 'degree Fahrenheits', 'Fahrenheit', 'Fahrenheits', '°F', 'oF', '^F', '.F', 'F')
+}
 
 
 class NumberSegment:
@@ -133,7 +151,6 @@ def get_unit_from(s: str, ureg: UnitRegistry):
 
 
 def translate_string(number_segments: list, original_string: str, end_of_numbers: int, unit_from: str, unit_to: str, ureg: UnitRegistry):
-    Q_ = ureg.Quantity
     unit_ = ureg.__getattr__  # Alias for getting appropriate Unit instance from string
     translated_string = ''
     last_segment_end = 0
@@ -148,7 +165,25 @@ def translate_string(number_segments: list, original_string: str, end_of_numbers
         translated_string += str(converted_segment)
         last_segment_end = index + len(segment)
     translated_string += original_string[end_of_numbers:]
-    return f'{translated_string} {unit_to}'
+    return f'{string_without_unit(translated_string, unit_from, ureg).rstrip(" ")} {unit_to}'
+
+
+def string_without_unit(s: str, unit_standard_name: str, ureg: UnitRegistry):
+    try:
+        ureg.__getattr__(unit_standard_name)
+    except pint.errors.UndefinedUnitError:
+        raise ValueError(f'{unit_standard_name} is not a unit.')
+
+    if unit_standard_name not in UNIT_ALIAS.keys():
+        alias_to_look_for = (unit_standard_name,)
+    else:
+        alias_to_look_for = UNIT_ALIAS[unit_standard_name]
+
+    for alias in alias_to_look_for:
+        s_stripped = s.rstrip(alias)
+        if s_stripped != s:
+            return s_stripped
+    return s
 
 
 def skeleton_main():
