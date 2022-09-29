@@ -1,4 +1,5 @@
 import pint.errors
+from colorama import Fore, Style
 from pint import UnitRegistry
 
 ROUND_TO_DIGITS = 3
@@ -36,22 +37,28 @@ TO_METRIC_UNIT = {
 # and https://www.splashlearn.com/math-vocabulary/measurements/customary-units
 
 UNIT_ALIAS = {
+    # Order tuple items from the longest to the shortest
     # Length
-    'inch': ('inch', 'inches', 'in', 'in.', "''"),
-    'foot': ('foot', 'feet', 'ft', 'ft.', "'"),
-    'yard': ('yard', 'yards', 'yd', 'yd.'),
-    'mile': ('mile', 'miles', 'mi', 'mi.'),
+    'inch': ('inches', 'inch', 'in.', 'in', "''"),
+    'foot': ('foot', 'feet', 'ft.', 'ft', "'"),
+    'yard': ('yards', 'yard', 'yd.', 'yd'),
+    'mile': ('miles', 'mile', 'mi.', 'mi'),
     # Weight
-    'ounce': ('ounce', 'ounces', 'oz', 'oz.'),
-    'pound': ('pound', 'pounds', 'pd', 'pd.'),
-    'ton': ('ton', 'tons', 't'),
+    'ounce': ('ounces', 'ounce', 'oz.', 'oz'),
+    'pound': ('pounds', 'pound', 'pd.', 'pd'),
+    'ton': ('tons', 'ton', 't'),
     # Volume
-    'fluid_ounce': ('fluid ounce', 'fluid_ounce', 'fluid ounces', 'fl ounce', 'fl ounces', 'fl. ounce', 'fl. ounces', 'floz', 'floz.', 'fl oz', 'fl. oz', 'fl.oz', 'fl oz.', 'fl. oz.', 'fl', 'fl.'),
-    'pint': ('pint', 'pints', 'pt', 'pt.'),
-    'quart': ('quart', 'quarts', 'qt', 'qt.'),
-    'gallon': ('gallon', 'gallons', 'gal', 'gal.'),
+    'fluid_ounce': (
+        'fluid ounces', 'fluid ounce', 'fluid_ounce', 'fl ounces', 'fl ounce', 'fl. ounces', 'fl. ounce', 'floz.', 'floz',
+        'fl. oz.', 'fl. oz', 'fl.oz', 'fl oz.', 'fl oz', 'fl.', 'fl'),
+    'pint': ('pints', 'pint', 'pt.', 'pt'),
+    'quart': ('quarts', 'quart', 'qt.', 'qt'),
+    'gallon': ('gallons', 'gallon', 'gal.', 'gal'),
     # Temperature
-    'degree_Fahrenheit': ('degree Fahrenheit', 'degree_Fahrenheit', 'degree Fahrenheits', 'Fahrenheit', 'Fahrenheits', '°F', 'oF', '^F', '.F', 'F')
+    'degree_Fahrenheit': (
+        'degree Fahrenheits', 'degree Fahrenheit', 'degree_Fahrenheit', 'deg Fahrenheits', 'deg Fahrenheit',
+        'degFahrenheits', 'degFahrenheit', 'Fahrenheits', 'Fahrenheit', 'degF', '°F', 'oF', '^F', '.F', 'F.', 'F'
+    )
 }
 
 
@@ -105,22 +112,47 @@ class NumberSegment:
 
 def main():
     ureg = UnitRegistry()
-    input_string = input('Enter string to be processed: ')
+    while True:
+        try:
+            input_string = input('Enter string to be processed, ctrl+C to exit: \n> ').lower()
 
-    unit_from = get_unit_from(input_string, ureg)
+            for sep in (';', '\n', '\\n', ',', '|'):
+                if sep in input_string and \
+                 input(f'You included "{sep}" in your input. '
+                       f'Do you want to enter the sections as separate inputs? (Y/n)') in ('Y', ''):
+                    for substring in input_string.split(sep):
+                        handle_string(substring, ureg)
+                    break
+                else:
+                    handle_string(input_string, ureg)
+                    break
+        except Exception as e:
+            print(Fore.RED, e, Style.RESET_ALL)
+        finally:
+            print('---------------------')
+
+
+def handle_string(s, ureg):
+    if s.startswith(' '):
+        s = s.lstrip(' ')
+    if s.endswith(' '):
+        s = s.rstrip(' ')
+
+    unit_from = get_unit_from(s, ureg)
     if unit_from is None:
         raise ValueError(f'Seriously? Your string {unit_from} doesn\'t even have a unit!')
 
-    number_segments, numbers_end_at = get_number_segments(input_string)
+    number_segments, numbers_end_at = get_number_segments(s)
     if number_segments is []:
-        raise ValueError(f'Seriously? You need to at least provide a number value. There\'s none in {input_string}.')
+        raise ValueError(f'Seriously? You need to at least provide a number value. There\'s none in {s}.')
 
     try:
         unit_to = TO_METRIC_UNIT[unit_from]
     except KeyError:
-        raise ValueError(f'No (US-customary) imperial units found in the string! Please check again, there is also a list of available units in the source.')
+        raise ValueError(
+            f'No (US-customary) imperial units found in the string! Please check again, there is also a list of available units in the source.')
 
-    print(translate_string(number_segments, input_string, numbers_end_at, unit_from, unit_to, ureg))
+    print(translate_string(number_segments, s, numbers_end_at, unit_from, unit_to, ureg))
 
 
 def get_number_segments(s: str):
@@ -142,10 +174,10 @@ def get_number_segments(s: str):
 
 
 def get_unit_from(s: str, ureg: UnitRegistry):
-    Q_ = ureg.Quantity
+    q_eval_ = ureg.Quantity
     for word in s.split():
         try:
-            value_with_unit = Q_(word)
+            value_with_unit = q_eval_(word)
             if value_with_unit.dimensionless:
                 continue
             unit_name = str(value_with_unit.units)
@@ -158,8 +190,9 @@ def get_unit_from(s: str, ureg: UnitRegistry):
     return None
 
 
-def translate_string(number_segments: list, original_string: str, end_of_numbers: int, unit_from: str, unit_to: str, ureg: UnitRegistry):
-    Q_ = ureg.Quantity
+def translate_string(number_segments: list, original_string: str, end_of_numbers: int, unit_from: str, unit_to: str,
+                     ureg: UnitRegistry):
+    q_eval_ = ureg.Quantity
     unit_ = ureg.__getattr__  # Alias for getting appropriate Unit instance from string
     translated_string = ''
     last_segment_end = 0
@@ -168,7 +201,7 @@ def translate_string(number_segments: list, original_string: str, end_of_numbers
         segment, segment_start = nseg
         segment_as_number = float(segment)
         translated_string += original_string[last_segment_end:segment_start]
-        segment_as_quantity = Q_(segment_as_number, unit_(unit_from))
+        segment_as_quantity = q_eval_(segment_as_number, unit_(unit_from))
         converted_segment = segment_as_quantity.to(unit_(unit_to)).magnitude
         if converted_segment == int(converted_segment):
             converted_segment = int(converted_segment)
@@ -194,7 +227,7 @@ def string_without_unit(s: str, unit_standard_name: str, ureg: UnitRegistry):
         alias_to_look_for = UNIT_ALIAS[unit_standard_name]
 
     for alias in alias_to_look_for:
-        s_stripped = s.rstrip(alias)
+        s_stripped = s.replace(alias, '')
         if s_stripped != s:
             return s_stripped
     return s
