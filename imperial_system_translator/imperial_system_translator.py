@@ -69,9 +69,14 @@ class NumberSegment:
     def __float__(self):
         return float(self.number_as_str)
 
+    def __eq__(self, other):
+        assert isinstance(other, int) or isinstance(other, float), \
+            f'You may only compare a number to the number in a NumberSegment instance. Got {type(other)}.'
+        return other == float(self)
+
     def __add__(self, other):
         assert isinstance(other, int) or isinstance(other, float), \
-            'You may not add a non-numerical value to the number in a NumberSegment instance.'
+            f'You may only add a number to the number in a NumberSegment instance. Got {type(other)}.'
         if isinstance(other, int) and self.is_int:
             return int(self) + other
         else:
@@ -154,23 +159,27 @@ def get_unit_from(s: str, ureg: UnitRegistry):
 
 
 def translate_string(number_segments: list, original_string: str, end_of_numbers: int, unit_from: str, unit_to: str, ureg: UnitRegistry):
+    Q_ = ureg.Quantity
     unit_ = ureg.__getattr__  # Alias for getting appropriate Unit instance from string
     translated_string = ''
     last_segment_end = 0
+    all_singular = True
     for nseg in number_segments:
-        segment, index = nseg
+        segment, segment_start = nseg
         segment_as_number = float(segment)
-        translated_string += original_string[last_segment_end:index]
-        segment_as_quantity = segment_as_number * unit_(unit_from)
+        translated_string += original_string[last_segment_end:segment_start]
+        segment_as_quantity = Q_(segment_as_number, unit_(unit_from))
         converted_segment = segment_as_quantity.to(unit_(unit_to)).magnitude
-        if nseg.is_int:
+        if converted_segment == int(converted_segment):
             converted_segment = int(converted_segment)
         else:
             converted_segment = round(converted_segment, ROUND_TO_DIGITS)
         translated_string += str(converted_segment)
-        last_segment_end = index + len(segment)
+        last_segment_end = segment_start + len(segment)
+        all_singular = (nseg == 1)
     translated_string += original_string[end_of_numbers:]
-    return f'{string_without_unit(translated_string, unit_from, ureg).rstrip(" ")} {unit_to}'  # TODO: Add s if none of the numbers are plural
+    translated_string = string_without_unit(translated_string, unit_from, ureg).rstrip(" ")
+    return f'{translated_string} {unit_to if all_singular else unit_to + "s"}'
 
 
 def string_without_unit(s: str, unit_standard_name: str, ureg: UnitRegistry):
