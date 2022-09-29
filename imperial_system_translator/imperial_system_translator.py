@@ -1,6 +1,8 @@
 import pint.errors
 from pint import UnitRegistry
 
+ROUND_TO_DIGITS = 3
+
 TO_METRIC_UNIT = {
     # Length
     'inch': 'centimeter',
@@ -68,9 +70,8 @@ class NumberSegment:
         return float(self.number_as_str)
 
     def __add__(self, other):
-        assert isinstance(other, int) or isinstance(other, float) or isinstance(other, str), f'You may not add an' \
-                                                                                             f'instance of {type(other)}' \
-                                                                                             f'to a NumberSegment instance.'
+        assert isinstance(other, int) or isinstance(other, float) or isinstance(other, str), \
+            f'You may not add an instance of {type(other)} to a NumberSegment instance.'
         return self.number_as_str + str(other)
 
     def __getitem__(self, item):
@@ -156,12 +157,14 @@ def translate_string(number_segments: list, original_string: str, end_of_numbers
     last_segment_end = 0
     for nseg in number_segments:
         segment, index = nseg
-        segment_as_number = int(segment) if nseg.is_int else float(segment)
+        segment_as_number = float(segment)
         translated_string += original_string[last_segment_end:index]
         segment_as_quantity = segment_as_number * unit_(unit_from)
         converted_segment = segment_as_quantity.to(unit_(unit_to)).magnitude
         if nseg.is_int:
             converted_segment = int(converted_segment)
+        else:
+            converted_segment = round(converted_segment, ROUND_TO_DIGITS)
         translated_string += str(converted_segment)
         last_segment_end = index + len(segment)
     translated_string += original_string[end_of_numbers:]
