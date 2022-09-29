@@ -1,4 +1,4 @@
-# U.S. System Tranlator
+# US Unit Translator
 
 A context-aware translator for all the unit system havoc.
 Copy-paste numerical data with U.S. units in it,
