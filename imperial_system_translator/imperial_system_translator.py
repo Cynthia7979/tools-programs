@@ -4,32 +4,32 @@ from pint import UnitRegistry, Unit
 
 TO_METRIC_UNIT = {
     # Lengths
-    Unit('inch'): Unit('centimeter'),
-    Unit('hand'): Unit('centimeter'),
-    Unit('foot'): Unit('meter'),
-    Unit('yard'): Unit('meter'),
-    Unit('mile'): Unit('kilometer'),
-    Unit('nautical_mile'): Unit('kilometer'),
+    'inch': 'centimeter',
+    'hand': 'centimeter',
+    'foot': 'meter',
+    'yard': 'meter',
+    'mile': 'kilometer',
+    'nautical_mile': 'kilometer',
     # Areas
-    Unit('inch ** 2'): Unit('centimeter ** 2'),
-    Unit('foot ** 2'): Unit('meter ** 2'),
-    Unit('acre'): Unit('meter ** 2'),
-    Unit('yard ** 2'): Unit('meter ** 2'),
-    Unit('mile ** 2'): Unit('kilometer ** 2'),
+    'inch ** 2': 'centimeter ** 2',
+    'foot ** 2': 'meter ** 2',
+    'acre': 'meter ** 2',
+    'yard ** 2': 'meter ** 2',
+    'mile ** 2': 'kilometer ** 2',
     # Weights
-    Unit('grain'): Unit('milligram'),
-    Unit('ounce'): Unit('gram'),
-    Unit('pound'): Unit('kilogram'),
-    Unit('quarter'): Unit('kilogram'),
-    Unit('ton'): Unit('metric_ton'),
+    'grain': 'milligram',
+    'ounce': 'gram',
+    'pound': 'kilogram',
+    'quarter': 'kilogram',
+    'ton': 'metric_ton',
     # Volumes
-    Unit('fluid_ounce'): Unit('milliliter'),
-    Unit('cup'): Unit('milliliter'),
-    Unit('pint'): Unit('liter'),
-    Unit('quart'): Unit('liter'),
-    Unit('gallon'): Unit('liter'),
+    'fluid_ounce': 'milliliter',
+    'cup': 'milliliter',
+    'pint': 'liter',
+    'quart': 'liter',
+    'gallon': 'liter',
     # Temperatures
-    Unit('degree_Fahrenheit'): Unit('degree_Celsius')
+    'degree_Fahrenheit': 'degree_Celsius'
 }
 # Based on https://en.wikipedia.org/wiki/Imperial_units#Units
 # and https://www.splashlearn.com/math-vocabulary/measurements/customary-units
@@ -56,10 +56,13 @@ class NumberSegment:
         return self.number_as_str + str(other)
 
     def __getitem__(self, item):
-        assert -3 < item < 2, IndexError(f'No more than 2 items are present in a NumberSegment instance. {item} required.')
+        if not -3 < item < 2:
+            raise IndexError(f'No more than 2 items are present in a NumberSegment instance. {item} required.')
         return (self.number_as_str, self.start_index)[item]
 
     def append(self, char):
+        # TODO: Check if char is digit or int or float or "." Typically just checking for str is okay, maybe need to
+        # change __add__
         self.number_as_str += char
 
     @property
@@ -68,7 +71,7 @@ class NumberSegment:
 
     @property
     def is_int(self):
-        return int(self.number_as_str) == float(self.number_as_str)
+        return int(float(self.number_as_str)) == float(self.number_as_str)
 
 
 def main():
@@ -103,7 +106,7 @@ def get_number_segments(s: str):
                 start_new_segment = False
             else:
                 # print('no start new segment,', char, i)
-                number_segments.append(char)
+                number_segments[-1].append(char)
         else:
             if not start_new_segment:
                 # print('end of segment', char, i)
@@ -113,29 +116,39 @@ def get_number_segments(s: str):
 
 
 def get_unit_from(s: str, ureg: UnitRegistry):
-    with ureg.Quantity as Q_:
-        for word in s.split():
-            try:
-                value_with_unit = Q_(word)
-                if value_with_unit.units == Unit('dimensionless'):
-                    continue
-                return value_with_unit.units
-            except (ValueError, pint.errors.UndefinedUnitError, AttributeError):
+    Q_ = ureg.Quantity
+    for word in s.split():
+        try:
+            value_with_unit = Q_(word)
+            if value_with_unit.dimensionless:
                 continue
-        return None
+            unit_name = str(value_with_unit.units)
+            if unit_name == 'femtoliter':
+                return 'fluid_ounce'
+            else:
+                return str(value_with_unit.units)
+        except (ValueError, pint.errors.UndefinedUnitError, AttributeError):
+            continue
+    return None
 
 
-def translate_string(number_segments: list, original_string: str, end_of_numbers: int, unit_from: Unit, unit_to: Unit, ureg: UnitRegistry):
-    with ureg.Quantity as Q_:
-        translated_string = ''
-        last_segment_end = 0
-        for segment, index in number_segments:
-            segment_as_number = int(segment) if segment.is_int else float(segment)
-            translated_string += original_string[last_segment_end:index]
-            translated_string += (Q_(segment_as_number) * Q_(unit_from)).to(unit_to)
-            last_segment_end = index + len(segment)
-        translated_string += original_string[end_of_numbers:]
-        return f'{translated_string} {unit_to}'
+def translate_string(number_segments: list, original_string: str, end_of_numbers: int, unit_from: str, unit_to: str, ureg: UnitRegistry):
+    Q_ = ureg.Quantity
+    unit_ = ureg.__getattr__  # Alias for getting appropriate Unit instance from string
+    translated_string = ''
+    last_segment_end = 0
+    for nseg in number_segments:
+        segment, index = nseg
+        segment_as_number = int(segment) if nseg.is_int else float(segment)
+        translated_string += original_string[last_segment_end:index]
+        segment_as_quantity = segment_as_number * unit_(unit_from)
+        converted_segment = segment_as_quantity.to(unit_(unit_to)).magnitude
+        if nseg.is_int:
+            converted_segment = int(converted_segment)
+        translated_string += str(converted_segment)
+        last_segment_end = index + len(segment)
+    translated_string += original_string[end_of_numbers:]
+    return f'{translated_string} {unit_to}'
 
 
 def skeleton_main():
@@ -178,4 +191,5 @@ def skeleton_main():
         print(translated_string, 'cm')
 
 
-skeleton_main()
+if __name__ == '__main__':
+    main()
