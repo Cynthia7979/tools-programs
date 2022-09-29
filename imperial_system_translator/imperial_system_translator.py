@@ -70,18 +70,23 @@ class NumberSegment:
         return float(self.number_as_str)
 
     def __add__(self, other):
-        assert isinstance(other, int) or isinstance(other, float) or isinstance(other, str), \
-            f'You may not add an instance of {type(other)} to a NumberSegment instance.'
-        return self.number_as_str + str(other)
+        assert isinstance(other, int) or isinstance(other, float), \
+            'You may not add a non-numerical value to the number in a NumberSegment instance.'
+        if isinstance(other, int) and self.is_int:
+            return int(self) + other
+        else:
+            return float(self) + other
 
     def __getitem__(self, item):
         if not -3 < item < 2:
             raise IndexError(f'No more than 2 items are present in a NumberSegment instance. {item} required.')
         return (self.number_as_str, self.start_index)[item]
 
-    def append(self, char):
-        # TODO: Check if char is digit or int or float or "." Typically just checking for str is okay, maybe need to
-        # change __add__
+    def append(self, char: str):
+        assert isinstance(char, str), \
+            f'You may not append an instance of {type(char)} to a NumberSegment instance.'
+        assert char.isdigit() or char == '.', \
+            'You may not append a non-numerical and non-period character to a NumberSegment instance.'
         self.number_as_str += char
 
     @property
