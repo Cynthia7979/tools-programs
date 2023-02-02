@@ -11,6 +11,8 @@ Features:
         "(<number>)"Example: "3. We are referencing step (2), the previous step"
       Note that this only works for past steps as it is unreasonable to reference future steps
     - Change all $\\LaTeX$ expressions into \\LaTeX\\text{ expressions}
+To implement:
+    - Load from generated LaTeX string (for sometimes you change something in LaTeX and want to feed it back)
 """
 import regex as re
 import pyperclip
@@ -129,11 +131,11 @@ def swap_latex_text(s: CutableString):
             inner_text = segment[1:-1]
             swapped_segments.append(inner_text)
         else:
-            if i == 0:  # We used a brute solution, but we need to account for texts at the start of strings.
-                swapped_segments.append("\\text{"+segment+"}")
-            else:
-                swapped_segments.append("\\text{ "+segment+" }")
-                
+            space_before = ' ' if i != 0 else ''
+            space_after = ' ' if i != len(s_segments) else ''
+            # Brute solution for missing space problem in non-latex segments
+            # Prevent extra spaces at the start and end of a line
+            swapped_segments.append("\\text{"+space_before+segment+space_after+"}")
     return CutableString(''.join(swapped_segments))
         
 if __name__ == "__main__":
