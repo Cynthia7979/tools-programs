@@ -4,6 +4,8 @@ Cynthia Wang 2023
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Features:
     - Generates align* environments from strings and dictionary
+        - Update: Loads strings from .txt files and dictionaries from .json
+        - Start lines with ` to comment it out
     - Automatically numbers right column
     - Cross-referencing: When right column inserts a number in this format:
         "@i-<n>@"   Example: "We are referencing step @i-1@, the previous step"
@@ -13,7 +15,16 @@ Features:
     - Change all $\\LaTeX$ expressions into \\LaTeX\\text{ expressions}
 To implement:
     - Load from generated LaTeX string (for sometimes you change something in LaTeX and want to feed it back)
+Known bugs:
+    - Spaces sometimes fail to be detected
+        - kind of fixed by workaround in `swap_latex_text()`
+    - Single-character latex segments at the end of string cause `Match.start(0)` and `Match.end(0)` to behave funny
+        - Also fixed by workaround
+    - Sometimes texts at the end of a string is omitted for some reason
+        - Not fixed (yet)
 """
+import os
+import json
 import regex as re
 import pyperclip
 
@@ -36,44 +47,51 @@ class CutableString(str):
     def after(self, marker):
         return self.cut(marker, -1)
     
+    def after_nth(self, marker, n):
+        s = self
+        for i in range(n):
+            s = s.cut(marker, -1)
+        return s
+    
     def before_and_after(self, marker):
         s_segments = self.split(marker)
         return CutableString(s_segments[0]), CutableString(marker.join(s_segments[1:]))
 
-# align_this = {
-#     "$x+y$ is even": "Given"
-# }
+DEFAULT_OUTPUT_DIR = './output_files/'
 
-# align_this_string = """
-# $x+y$ is even; Given
-# $x+y=2k$ for some integer $k$; Definition of even integers
-# $(x+y)(x-y) = 2k(x-y)$; Multiply both sides by $(x-y)$ in {i-1}
-# $y(x+y)(x-y) = 2ky(x-y)$; Multiply both sides by $y$ in {i-1}
-# $y(x^2-y^2) = 2ky(x-y)$; Difference of two squares law
-# $y(x^2-y^2)+2 = 2ky(x-y)+2$; Add 2 to both sides in {i-1}
-# $x^2y-y^2y+2 = 2ky(x-y+2)$; Distributive law of algebra
-# $x^2y-y^3+2 = 2ky(x-y+2)$; Product of powers law of algebra
-# $x^2y-y^3+2 = 2(ky(x-y)+1)$; Factor 2 from RHS of {i-1}
-# $ky(x-y)+1 = m$ for some integer $m$; Closure of addition and multiplication under integers
-# $x^2y-y^3+2 = 2m$; Substitution of {i-1} into {i-2}
-# $x^2y-y^3+2$ is even; Definition of even
-# """
+def load_file(input_path: str, output_path: str=None, force_save_json=False):
+    raw_file_content = None
+    input_file_name, input_file_ext = os.path.splitext(os.path.basename(input_path))
+    assert input_file_ext in ('.json', '.txt'), "Only txt and json files are supported."
 
-align_this_string = """
-$n$ is even; Given
-$n = 2k$ for some integer k; Definition of even integers
-$n^2 = (2k)^2$; Raise both sides in {i-1} to a power of 2
-$n^2+2n = (2k)^2+4k$; Add 2 times both sides in {i-2} to {i-1}
-$n^2+2n+10 = (2k)^2+4k+10$; Add 10 to both sides in {i-1}
-$n^2+2n+10 = 4k^2+4k+10$; Use distributive law of exponents on RHS in {i-1}
-$n^2+2n+10 = 2(2k^2+2k+5)$; Factor 2 from RHS of {i-1}
-$2k^2+2k+5=m$ for some integer $m$; Closure of addition and multiplication under integers
-$n^2+2n+10 = 2m$; Substitution of {i-1} into {i-2}
-$n^2+2n+10$ is even; Definition of even integers
-"""
+    if output_path is None:
+        output_path = os.path.join(DEFAULT_OUTPUT_DIR, input_file_name+'.txt')
+    if not os.path.exists(os.path.dirname(output_path)):
+        os.mkdir(os.path.dirname(output_path))
+
+    with open(input_path) as in_f:
+        raw_file_lines = []
+        for line in in_f.readlines():
+            if line:
+                if not line.startswith('`'):  # Comments
+                    raw_file_lines.append(line.strip())
+        raw_file_content = '\n'.join(raw_file_lines)
+
+    generated_align, parsed_source = generate_proof_align(raw_file_content) if input_path.endswith('.txt') else generate_proof_align(json.loads(raw_file_content))
+    pyperclip.copy(generated_align)
+
+    with open(output_path, 'w') as out_f:
+        out_f.write(generated_align)
+        print('Your align* environment has been generated and copied to clipobard. It is also written into', output_path)
+    
+    if force_save_json or input_file_ext == '.txt':
+        json_path = os.path.splitext(output_path)[0] + '.json'
+        with open(json_path, 'w') as out_json:
+            json.dump(parsed_source, out_json, indent=4)
+            print('The parsed file is saved in JSON format to', json_path)
 
 def generate_proof_align(src):
-    if isinstance(src, str):
+    if isinstance(src, str):  # Load string into structured dictionary
         # Parse string
         parsed_src = {}
         for line in src.split("\n"):
@@ -95,8 +113,7 @@ def generate_proof_align(src):
         aligned_str += f'\t& {left} && {right} \\\\\n'
     aligned_str += "\\end{align*}"
 
-    pyperclip.copy(aligned_str)
-    return aligned_str
+    return aligned_str, parsed_src
 
 def format_cross_references(s, current_enum):
     while "{i-" in s:
@@ -139,4 +156,4 @@ def swap_latex_text(s: CutableString):
     return CutableString(''.join(swapped_segments))
         
 if __name__ == "__main__":
-    print(generate_proof_align(align_this_string))
+    load_file('./input_files/contradiction.txt', './output_files/result.txt')

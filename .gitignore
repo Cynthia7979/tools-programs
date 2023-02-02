@@ -36,6 +36,9 @@ word_castle_database_tool/*.db
 
 glados_voice_fetcher/downloads/
 
+latex_align_generator/input_files/*
+latex_align_generator/output_files/*
+
 *.key
 *.hide
 
