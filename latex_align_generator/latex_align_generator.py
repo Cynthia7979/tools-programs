@@ -15,6 +15,7 @@ Features:
     - Change all $\\LaTeX$ expressions into \\LaTeX\\text{ expressions}
 To implement:
     - Load from generated LaTeX string (for sometimes you change something in LaTeX and want to feed it back)
+    - Command-Line Interface
 Known bugs:
     - Spaces sometimes fail to be detected
         - kind of fixed by workaround in `swap_latex_text()`
@@ -59,7 +60,7 @@ class CutableString(str):
 
 DEFAULT_OUTPUT_DIR = './output_files/'
 
-def load_file(input_path: str, output_path: str=None, force_save_json=False):
+def load_file(input_path: str, output_path: str=None, force_save_json=False, force_no_json=False):
     raw_file_content = None
     input_file_name, input_file_ext = os.path.splitext(os.path.basename(input_path))
     assert input_file_ext in ('.json', '.txt'), "Only txt and json files are supported."
@@ -84,11 +85,12 @@ def load_file(input_path: str, output_path: str=None, force_save_json=False):
         out_f.write(generated_align)
         print('Your align* environment has been generated and copied to clipobard. It is also written into', output_path)
     
-    if force_save_json or input_file_ext == '.txt':
-        json_path = os.path.splitext(output_path)[0] + '.json'
-        with open(json_path, 'w') as out_json:
-            json.dump(parsed_source, out_json, indent=4)
-            print('The parsed file is saved in JSON format to', json_path)
+    if not force_no_json:
+        if force_save_json or input_file_ext == '.txt':
+            json_path = os.path.splitext(output_path)[0] + '.json'
+            with open(json_path, 'w') as out_json:
+                json.dump(parsed_source, out_json, indent=4)
+                print('The parsed file is saved in JSON format to', json_path)
 
 def generate_proof_align(src):
     if isinstance(src, str):  # Load string into structured dictionary
@@ -156,4 +158,4 @@ def swap_latex_text(s: CutableString):
     return CutableString(''.join(swapped_segments))
         
 if __name__ == "__main__":
-    load_file('./input_files/contradiction.txt', './output_files/result.txt')
+    load_file('./input_files/in.txt', './output_files/result.txt')
