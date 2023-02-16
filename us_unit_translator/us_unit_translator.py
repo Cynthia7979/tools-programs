@@ -31,7 +31,11 @@ TO_METRIC_UNIT = {
     'quart': 'liter',
     'gallon': 'liter',
     # Temperature
-    'degree_Fahrenheit': 'degree_Celsius'
+    'degree_Fahrenheit': 'degree_Celsius',
+    # Speed
+    'mile_per_hour': 'meter / second',
+    'mile / hour': 'meter / second',
+    'mile / second': 'meter / second'
 }
 # Based on https://en.wikipedia.org/wiki/Imperial_units#Units
 # and https://www.splashlearn.com/math-vocabulary/measurements/customary-units
@@ -45,7 +49,7 @@ UNIT_ALIAS = {
     'mile': ('miles', 'mile', 'mi.', 'mi'),
     # Weight
     'ounce': ('ounces', 'ounce', 'oz.', 'oz'),
-    'pound': ('pounds', 'pound', 'pd.', 'pd'),
+    'pound': ('pounds', 'pound', 'pd.', 'pd', 'lb.s', 'lbs.', 'lbs', 'lb.', 'lb'),
     'ton': ('tons', 'ton', 't'),
     # Volume
     'fluid_ounce': (
@@ -58,7 +62,10 @@ UNIT_ALIAS = {
     'degree_Fahrenheit': (
         'degree Fahrenheits', 'degree Fahrenheit', 'degree_Fahrenheit', 'deg Fahrenheits', 'deg Fahrenheit',
         'degFahrenheits', 'degFahrenheit', 'Fahrenheits', 'Fahrenheit', 'degF', '°F', 'oF', '^F', '.F', 'F.', 'F'
-    )
+    ),
+    # Speed
+    'mile_per_hour': ('mile / hour', 'mph'),
+    'mile / hour': ('miles / hour', 'miles / h', 'mis/hour', 'mis/h', 'mi./hour', 'mi./h', 'mi/hour', 'mi/h', 'mi / h', 'mi/ h', 'mi /h')
 }
 
 
@@ -160,7 +167,7 @@ def get_number_segments(s: str):
     start_new_segment = True
     number_ends_at = -1
     for i, char in enumerate(s):
-        if char.isdigit() or char in '.':
+        if char.isdigit() or (char in '.' and s[i-1].isdigit()):  # Account for "." in unit abbreviations.
             if start_new_segment:
                 number_segments.append(NumberSegment(char, i))
                 start_new_segment = False
@@ -196,23 +203,29 @@ def translate_string(number_segments: list, original_string: str, end_of_numbers
     unit_ = ureg.__getattr__  # Alias for getting appropriate Unit instance from string
     translated_string = ''
     last_segment_end = 0
-    all_singular = True
+    has_plural = False
+
     for nseg in number_segments:
         segment, segment_start = nseg
-        segment_as_number = float(segment)
+        segment_as_float = float(segment)
         translated_string += original_string[last_segment_end:segment_start]
-        segment_as_quantity = q_eval_(segment_as_number, unit_(unit_from))
+        segment_as_quantity = q_eval_(segment_as_float, unit_(unit_from))
         converted_segment = segment_as_quantity.to(unit_(unit_to)).magnitude
-        if converted_segment == int(converted_segment):
+        if converted_segment == int(converted_segment):  # Check if it's a whole number
             converted_segment = int(converted_segment)
         else:
             converted_segment = round(converted_segment, ROUND_TO_DIGITS)
         translated_string += str(converted_segment)
         last_segment_end = segment_start + len(segment)
-        all_singular = (nseg == 1)
+        has_plural = (nseg != 1)
+    
     translated_string += original_string[end_of_numbers:]
     translated_string = string_without_unit(translated_string, unit_from, ureg).rstrip(" ")
-    return f'{translated_string} {unit_to if all_singular else unit_to + "s"}'
+
+    if has_plural and unit_to == 'meter / second':  # Special plural rule
+        return f'{translated_string} meters / second'
+    else:
+        return f'{translated_string} {unit_to + "s" if has_plural else unit_to}'   
 
 
 def string_without_unit(s: str, unit_standard_name: str, ureg: UnitRegistry):
@@ -226,11 +239,10 @@ def string_without_unit(s: str, unit_standard_name: str, ureg: UnitRegistry):
     else:
         alias_to_look_for = UNIT_ALIAS[unit_standard_name]
 
+    s_stripped = s
     for alias in alias_to_look_for:
-        s_stripped = s.replace(alias, '')
-        if s_stripped != s:
-            return s_stripped
-    return s
+        s_stripped = s_stripped.replace(alias, '')
+    return s_stripped
 
 
 if __name__ == '__main__':
