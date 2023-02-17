@@ -28,6 +28,8 @@ import os
 import json
 import regex as re
 import pyperclip
+import argparse
+from colorama import Fore, Style
 
 class CutableString(str):
     def cut(self, marker: str, to: int):
@@ -59,6 +61,43 @@ class CutableString(str):
         return CutableString(s_segments[0]), CutableString(marker.join(s_segments[1:]))
 
 DEFAULT_OUTPUT_DIR = './output_files/'
+
+def main(default_in_file='./input_files/in.txt', default_out_file='./output_files/result.txt'):
+    arg_parser = argparse.ArgumentParser(
+        prog="latex_align_generator.py",
+        description="LaTeX align environment generator for two-column proofs. Made in 2023 by Cynthia.",
+        epilog="See latex_align_generator.py for more info"
+    )
+    arg_parser.add_argument('--no-json',
+        help='Do not generate an intermediate JSON file in the output folder. By default, JSON is generated only when input file is a .txt file.',
+        action='store_true'
+    )
+    arg_parser.add_argument('--force-json',
+        help='Always generate an intermediate JSON file, even when the input file is already in JSON.',
+        action='store_true'
+    )
+    arg_parser.add_argument('--output-dir',
+        help=f'The output directory. If out-file is not specified, an output file will be automatically created in this directory. Default is {DEFAULT_OUTPUT_DIR}',
+        default=DEFAULT_OUTPUT_DIR,
+        metavar='DIR'
+    )
+    arg_parser.add_argument('in_file',
+        help=f'Input file to be converted. See latex_align_generator.py for syntax specification. Defaults to {default_in_file}',
+        default=default_in_file,
+        nargs='?'
+    )
+    arg_parser.add_argument('out_file',
+        help=f'Output file to write generated align environment to. Generated text will also be automatically copied to clipboard. By default, an output file with the same name as the input file is generated in output directory.',
+        default=default_out_file,
+        nargs='?'
+    )
+
+    args = arg_parser.parse_args()
+    output_dir = args.output_dir
+    in_file = args.in_file
+    out_file = args.out_file if args.out_file else os.path.join(output_dir, os.path.basename(in_file))
+
+    load_file(in_file, out_file, args.force_json, args.no_json)
 
 def load_file(input_path: str, output_path: str=None, force_save_json=False, force_no_json=False):
     raw_file_content = None
@@ -158,4 +197,5 @@ def swap_latex_text(s: CutableString):
     return CutableString(''.join(swapped_segments))
         
 if __name__ == "__main__":
-    load_file('./input_files/in.txt', './output_files/result.txt')
+    # load_file('./input_files/in.txt', './output_files/result.txt')
+    main()
