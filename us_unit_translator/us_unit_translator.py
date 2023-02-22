@@ -123,16 +123,16 @@ def main():
         try:
             input_string = input('Enter string to be processed, ctrl+C to exit: \n> ').lower()
 
-            for sep in (';', '\n', '\\n', ',', '|'):
-                if sep in input_string and \
-                 input(f'You included "{sep}" in your input. '
-                       f'Do you want to enter the sections as separate inputs? (Y/n)') in ('Y', ''):
-                    for substring in input_string.split(sep):
-                        handle_string(substring, ureg)
-                    break
-                else:
-                    handle_string(input_string, ureg)
-                    break
+            for deliminator in (';', '\n', '\\n', ',', '|'):
+                if deliminator in input_string:
+                    if input(f'You included "{deliminator}" in your input. '
+                        f'Do you want to enter the sections as separate inputs? (Y/n)') in ('Y', ''):
+                        for substring in input_string.split(deliminator):
+                            handle_string(substring, ureg)
+                        break
+                    else:
+                        break
+            handle_string(input_string, ureg)
         except Exception as e:
             print(Fore.RED, e, Style.RESET_ALL)
         finally:
