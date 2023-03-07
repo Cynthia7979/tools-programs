@@ -62,7 +62,7 @@ class CutableString(str):
 
 DEFAULT_OUTPUT_DIR = './output_files/'
 
-def main(default_in_file='./input_files/in.txt', default_out_file='./output_files/result.txt'):
+def main(default_out_file='./output_files/result.txt'):
     arg_parser = argparse.ArgumentParser(
         prog="latex_align_generator.py",
         description="LaTeX align environment generator for two-column proofs. Made in 2023 by Cynthia.",
@@ -82,9 +82,7 @@ def main(default_in_file='./input_files/in.txt', default_out_file='./output_file
         metavar='DIR'
     )
     arg_parser.add_argument('in_file',
-        help=f'Input file to be converted. See latex_align_generator.py for syntax specification. Defaults to {default_in_file}',
-        default=default_in_file,
-        nargs='?'
+        help=f'Input file to be converted. See latex_align_generator.py for syntax specification.'
     )
     arg_parser.add_argument('out_file',
         help=f'Output file to write generated align environment to. Generated text will also be automatically copied to clipboard. By default, an output file with the same name as the input file is generated in output directory.',
