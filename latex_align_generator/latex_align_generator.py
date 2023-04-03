@@ -8,9 +8,9 @@ Features:
         - Start lines with ` to comment it out
     - Automatically numbers right column
     - Cross-referencing: When right column inserts a number in this format:
-        "@i-<n>@"   Example: "We are referencing step @i-1@, the previous step"
+        "{i-<n>}"   Example: "We are referencing step {i-1}, the previous step"
       the parser inserts the appropriate number in this format
-        "(<number>)"Example: "3. We are referencing step (2), the previous step"
+        "(<number>) "Example: "3. We are referencing step (2), the previous step"
       Note that this only works for past steps as it is unreasonable to reference future steps
     - Change all $\\LaTeX$ expressions into \\LaTeX\\text{ expressions}
 To implement:
