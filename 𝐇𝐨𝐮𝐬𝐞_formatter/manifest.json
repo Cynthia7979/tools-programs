@@ -1,0 +1,17 @@
+{
+    "manifest_version": 3,
+    "name": "𝐇𝐨𝐮𝐬𝐞",
+    "description": "A lightweight 𝐇𝐨𝐮𝐬𝐞 formatter for Google Chrome and chromium browsers",
+    "version": "196.1.2763.14158",
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": ["scripts/𝐇𝐨𝐮𝐬𝐞.js"]
+        }
+    ],
+    "permissions": [
+        "activeTab"
+    ]
+}
