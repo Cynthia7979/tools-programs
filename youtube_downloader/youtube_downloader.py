@@ -86,7 +86,7 @@ def download_video(video: YouTube, save_dir: str, res='highest'):
     
     def on_progress(stream_, chunk, bytes_remaining, bytes_total):
         """Displays progress logs when needed"""
-        percent_completed = (bytes_remaining / bytes_total) * 100
+        percent_completed = (1 - bytes_remaining / bytes_total) * 100
         if int(percent_completed) % 10 in (0, 1, 2):
             logger_main.debug(f'Progress {int(percent_completed)}%')
 
