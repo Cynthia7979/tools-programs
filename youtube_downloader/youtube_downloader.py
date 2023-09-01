@@ -48,7 +48,7 @@ def main():
                 )
                 video_thread.start()
         
-        while threading.active_count() >= MAX_THREADS + 1:
+        while threading.active_count() > 1:
             time.sleep(10)  # Clog main thread to prevent from early termination
 
     except Exception as e:
