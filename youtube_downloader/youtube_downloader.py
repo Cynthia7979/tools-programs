@@ -13,6 +13,7 @@ SAVE_DIR = "./downloads" if len(sys.argv) <= 2 else sys.argv[2]
 ALWAYS_SKIP_ON_EXISTS = True
 CHECK_FILE_INTEGRITY = True
 MAX_THREADS = 5
+DOWNLOAD_BACK_TO_FRONT = True
 
 def main():
     global logger_main
@@ -33,7 +34,7 @@ def main():
         if not os.path.exists(SAVE_DIR):
             os.mkdir(SAVE_DIR)
         
-        videos = retrieve_videos(playlist)
+        videos = retrieve_videos(playlist, DOWNLOAD_BACK_TO_FRONT)
 
         for i, video in enumerate(videos):
             while threading.active_count() >= MAX_THREADS + 1:  # Main thread counts as one
