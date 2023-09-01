@@ -11,15 +11,6 @@ from pytube.cli import on_progress
 SAVE_DIR = "./downloads" if len(sys.argv) <= 2 else sys.argv[2]
 ALWAYS_SKIP_ON_EXISTS = True
 
-class DownloadThread(threading.Thread):
-    def __init__(self, thread_id: int, video: YouTube, save_path: str, res='highest'):
-        self.id = thread_id
-        self.video = video
-        self.save_path = save_path
-        self.res = res
-    
-
-
 def main():
     global logger_main
     logger_main = logging.getLogger('YoutubeDownloader')
