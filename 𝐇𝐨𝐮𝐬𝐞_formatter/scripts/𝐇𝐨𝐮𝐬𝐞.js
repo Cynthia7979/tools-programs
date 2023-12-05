@@ -11,7 +11,7 @@ const replace = () => {
             for (let node of ele.childNodes) {
                 if (node.nodeType === 3) {
                     let text = node.nodeValue
-                    let replacedText = text.replace('Houses', '𝐇𝐨𝐮𝐬𝐞𝐬').replace('House', '𝐇𝐨𝐮𝐬𝐞').replace('houses', '𝐡𝐨𝐮𝐬𝐞𝐬').replace('house', '𝐡𝐨𝐮𝐬𝐞')
+                    let replacedText = text.replace('House', '𝐇𝐨𝐮𝐬𝐞').replace('house', '𝐡𝐨𝐮𝐬𝐞')
                     if (replacedText !== text) {
                         ele.replaceChild(document.createTextNode(replacedText), node)
                     }
