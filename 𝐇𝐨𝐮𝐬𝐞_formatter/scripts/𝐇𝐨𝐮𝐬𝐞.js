@@ -24,7 +24,8 @@ const replace = () => {
 // Dynamically alter YouTube captions
 const observer = new MutationObserver(replace);
 const ytbCaptionWindowContainer = document.getElementById("ytp-caption-window-container");
-observer.observe(ytbCaptionWindowContainer, {
+if (ytbCaptionWindowContainer) observer.observe(
+    ytbCaptionWindowContainer, {
     childList: true,
     subtree: true,
 });
