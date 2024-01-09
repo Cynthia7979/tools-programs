@@ -4,8 +4,9 @@
     https://github.com/iamtravisw/replacer
 */
 
-const replace = () => {
-    elements = document.getElementsByTagName("*")
+const replace = (doc) => {
+    console.log(doc)
+    elements = doc.getElementsByTagName("*")
     for (let ele of elements) {
         if (!['SCRIPT', 'STYLE'].includes(ele.tagName)) {
             for (let node of ele.childNodes) {
@@ -13,7 +14,7 @@ const replace = () => {
                     let text = node.nodeValue
                     let replacedText = text.replace('House', '𝐇𝐨𝐮𝐬𝐞').replace('house', '𝐡𝐨𝐮𝐬𝐞')
                     if (replacedText !== text) {
-                        ele.replaceChild(document.createTextNode(replacedText), node)
+                        ele.replaceChild(doc.createTextNode(replacedText), node)
                     }
                 }
             }
@@ -21,14 +22,48 @@ const replace = () => {
     }
 }
 
-// Dynamically alter YouTube captions
-const observer = new MutationObserver(replace);
-const ytbCaptionWindowContainer = document.getElementById("ytp-caption-window-container");
-if (ytbCaptionWindowContainer) observer.observe(
-    ytbCaptionWindowContainer, {
-    childList: true,
-    subtree: true,
-});
+// Dynamically alter dynamic elements
+if (window.location) {
+    const url = window.location.origin;
+    if (url && url.includes("youtube.com")) {
+        // Captions
+        const ytElementIds = ["ytp-caption-window-container"]
+        for (let contentId of ytElementIds) {
+            let ytElement = document.getElementById(contentId);
+            if (ytElement) {
+                let observer = new MutationObserver(() => replace(ytElement));
+                observer.observe(
+                    ytElement, {
+                    childList: true,
+                    subtree: true,
+                });
+            }
+        }
+
+        // // YouTube live chat (not working)
+        // const chatiframe = document.getElementById("chatframe")
+        // if (chatiframe) {
+        //     const originaliFrameOnload = chatiframe.onload
+        //     chatiframe.onload = (e) => {
+        //         originaliFrameOnload(e)
+        //         const iFrame = document.querySelector("#chatframe")
+        //         const iContent = iFrame.contentDocument || iFrame.contentWindow.document;
+        //         if (iContent) {
+        //             const chat = iContent.getElementById("items")
+        //             if (chat) {
+        //                 const chatObserver = new MutationObserver(() => replace(chat));
+        //                 chatObserver.observe(
+        //                     chat, {
+        //                     childList: true,
+        //                     subtree: true
+        //                 })
+        //                 replace(chat)
+        //             }
+        //         }
+        //     }
+        // }
+    }
+}
 
 window.onload = replace;
 
