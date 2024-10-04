@@ -7,8 +7,11 @@ import zlib
 import gzip
 import time
 import math
+import struct
 from io import BytesIO
 from tqdm import tqdm
+import tags
+from bytes_conversion import *
 
 SECTOR_SIZE = 0x1000  # Size of a sector in bytes
 CHUNK_COMPRESSION_TYPES = {
@@ -27,8 +30,16 @@ class LocationEntry:
     def __repr__(self):
         return f'({self.offset}, {self.sector_count})'
 
-def bytes_to_int(n: bytes, byteorder='big'):
-    return int.from_bytes(n, byteorder)
+TAGS_LOOKUP = {cls_.get_TAG_id(): cls_ for cls_ in (
+    tags.TAG_Byte,
+    tags.TAG_Byte_Array,
+    tags.TAG_Double,
+    tags.TAG_End,
+    tags.TAG_Float,
+    tags.TAG_Int,
+    tags.TAG_Long,
+    tags.TAG_Short
+)}
 
 def main():
     file_path = 'D:/UserDocuments/temp/Drehmal v2.2.1 APOTHEOSIS 1.20/region/r.-1.3.mca'
@@ -79,9 +90,27 @@ def main():
                 chunk_bytes_stream = BytesIO(_decompressed_chunk_data)
                 chunk_bytes_length = len(_decompressed_chunk_data)
             # Parse chunk NBT data
-            tags = []
+            parsed_tags = []
             while chunk_bytes_stream.tell() <= chunk_bytes_length:
-                next_chunk_type = chunk_bytes_stream.read(1)
+                # A byte begins with 1 byte tag type ID
+                _next_tag_id = chunk_bytes_stream.read(1)
+                _next_tag_id = bytes_to_int(_next_tag_id)
+                next_tag_type = TAGS_LOOKUP[_next_tag_id]
+                # If it is TAG_End, then it won't have a name
+                # so we leave early
+                if next_tag_type == tags.TAG_End:
+                    next_tag = tags.TAG_End()
+                    parsed_tags.append(next_tag)
+                    continue
+                # Otherwise it is followed by 2 bytes big-endian name length
+                next_tag_name_length = chunk_bytes_stream.read(2)
+                next_tag_name_length = bytes_to_int(next_tag_name_length)
+                # Then a NON-null-terminated UTF-8 string containing the tag name
+                next_tag_name = chunk_bytes_stream.read(next_tag_name_length)
+                next_tag_name = str(next_tag_name, 'utf-8')
+                # Depending on the TAG type the payload will be different sizes
+
+                
                 
     print('I made it to the end!')
 
