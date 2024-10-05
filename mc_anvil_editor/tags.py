@@ -167,6 +167,11 @@ class TAG_List(TAG):
         self.list_type = list_type
         self.value = []
         
+        """Note to self:
+        Abandoned this path because I found that `length` bytes of the List TAG represents
+        the *number of elements in the list*, not number of bytes. This makes it impossible
+        to read ahead, so I'm delegating element parsing to the file loader.
+        """
         # Parse the payload
         # (Even though it'd be more elegant to dispatch this task to each TAG subclass,
         # it clutters code structure so I will not do that.)
