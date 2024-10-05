@@ -131,41 +131,93 @@ class TAG_String(TAG):
         self.value = str(payload, 'utf-8')
 
 class TAG_List(TAG):
-    '''A list of nameless values of the same type.'''
+    '''A list of nameless values of the same type.
+    
+    Attributes
+    ----------
+    list_type : int
+        TAG ID denoting the type of TAGs included in this List.
+    '''
     TAG_ID = 9
-    def __init__(self, name: bytes, payload: bytes, payload_type: int, TAG_End_count = -1):
+    def __init__(self, name: bytes, payload: bytes, list_type: int):
         '''
         Arguments
         ---------
-        payload_type : int
+        list_type : int
             TAG ID denoting the type of TAGs included in this List.
-        TAG_End_count : int = -1
-            should be used only if `payload_type` is 0, in which case the length of `payload` itself
-            is not indicative of the length of the List.
         
         Raises
         ------
         ValueError
-            if `payload_type` is less than 0 or greater than 12.
+            if `list_type` is less than 0 or greater than 12.
             Such ID does not correspond to a valid TAG type.
         AssertionError
             if `payload` contains an incorrect number of bytes considering the payload type.
             For example, if the payload has an odd number of bytes when the type is Short.
         '''
-        if payload_type < 0 or payload_type > 12 or payload_type is None:
-            raise ValueError(f'Invalid type for TAG_List: {payload_type}')
+        if list_type < 0 or list_type > 12 or list_type is None:
+            raise ValueError(f'Invalid type for TAG_List: {list_type}')
         super().__init__(name, payload)
+
+        self.list_type = list_type
         
         # Parse the payload
         # (Even though it'd be more elegant to dispatch this task to each TAG subclass,
         # it clutters code structure so I will not do that.)
         _value = []
-        if payload_type == TAG_End.TAG_ID:
-            assert TAG_End_count >= 0
-            for i in range(TAG_End_count):
-
-        elif payload_type == TAG_Byte.TAG_ID:
+        if list_type == TAG_End.TAG_ID:
+            pass
+        elif list_type == TAG_Byte.TAG_ID:
             for byte in payload:
                 _child_TAG_Byte = TAG_Byte(None, byte)
                 _value.append(_child_TAG_Byte)
-        elif payload_type == TAG_
+        elif list_type == TAG_Short.TAG_ID:
+            assert len(payload) % 2 == 0, f'Excessive or incomplete List payload: Expected a multiple of 2 bytes (short), found {len(payload)}.'
+            for i in range(0, len(payload), 2):
+                _child_TAG_Short = TAG_Short(None, payload[i:i+2])
+                _value.append(_child_TAG_Short)
+        elif list_type == TAG_Int.TAG_ID:
+            assert len(payload) % 4 == 0, f'Excessive or incomplete List payload: Expected a multiple of 4 bytes (int), found {len(payload)}.'
+            for i in range(0, len(payload), 4):
+                _child_TAG_Int = TAG_Int(None, payload[i:i+4])
+                _value.append(_child_TAG_Int)
+        elif list_type == TAG_Long.TAG_ID:
+            assert len(payload) % 8 == 0, f'Excessive or incomplete List payload: Expected a multiple of 8 bytes (long), found {len(payload)}.'
+            for i in range(0, len(payload), 8):
+                _child_TAG_Long = TAG_Long(None, payload[i:i+8])
+                _value.append(_child_TAG_Long)
+        elif list_type == TAG_Float.TAG_ID:
+            assert len(payload) % 4 == 0, f'Excessive or incomplete List payload: Expected a multiple of 4 bytes (float), found {len(payload)}.'
+            for i in range(0, len(payload), 4):
+                _child_TAG_Float = TAG_Float(None, payload[i:i+4])
+                _value.append(_child_TAG_Float)
+        elif list_type == TAG_Double.TAG_ID:
+            assert len(payload) % 8 == 0, f'Excessive or incomplete List payload: Expected a multiple of 8 bytes (double), found {len(payload)}.'
+            for i in range(0, len(payload), 8):
+                _child_TAG_Double = TAG_Double(None, payload[i:i+8])
+                _value.append(_child_TAG_Double)
+        elif list_type == TAG_Byte_Array.TAG_ID:
+            _list_payload_stream = BytesIO(payload)
+            while _list_payload_stream.tell() <= len(payload):
+                _byte_array_length = _list_payload_stream.read(4)
+                _byte_array_length = bytes_to_signed_int(_byte_array_length)
+                _byte_array_payload = _list_payload_stream.read(_byte_array_length)
+                _child_TAG_Byte_Array = TAG_Byte_Array(None, _byte_array_payload)
+                _value.append(_child_TAG_Byte_Array)
+        elif list_type == TAG_String.TAG_ID:
+            _list_payload_stream = BytesIO(payload)
+            while _list_payload_stream.tell() <= len(payload):
+                _string_length = _list_payload_stream.read(2)
+                _string_length = bytes_to_int(_string_length)
+                _string_payload = _list_payload_stream.read(_string_length)
+                _child_TAG_String = TAG_String(None, _string_payload)
+                _value.append(_child_TAG_String)
+        elif list_type == TAG_List.TAG_ID:  # oh god
+            _list_payload_stream = BytesIO(payload)
+            while _list_payload_stream.tell() <= len(payload):
+                _list_type = _list_payload_stream.read(1)
+                _list_type = bytes_to_int(_list_type)
+                _list_length = _list_payload_stream.read(4)
+                _list_length = bytes_to_signed_int(_list_length)
+                _list_payload = _list_payload_stream.read(_list_length)
+                _child_TAG_List = TAG_List(None, )
