@@ -2,6 +2,8 @@
 Defines classes for every TAG as listed in the NBT specifications.
 https://wiki.vg/NBT#Specification
 '''
+import struct
+from io import BytesIO
 from bytes_conversion import *
 
 class TAG:
@@ -27,6 +29,19 @@ class TAG:
     '''
     TAG_ID = None
     def __init__(self, name: bytes, payload: bytes):
+        f'''Initializes a new {self.__class__.__name__} instance using the given arguments.
+
+        Arguments
+        ---------
+        name : bytes
+            string identifier of the TAG.
+            Raw data should be prefixed by a 2 bytes unsigned integer denoting name length.
+            Value passed in for this argument must have these 2 bytes stripped.
+        payload : bytes
+            raw payload of the TAG.
+            If TAG has a variable payload length (e.g. List, String, Compound), then
+            the payload must have its length bytes stripped before being passed in for this argument.
+        '''
         self.name = name
         self.payload = payload
     
@@ -100,13 +115,19 @@ class TAG_Double(TAG):
         self.value = struct.unpack('f', payload)
 
 class TAG_Byte_Array(TAG):
-    '''A (signed) length-prefixed array of signed bytes.
-    Length is a 4-bytes signed integer.
-    '''
+    '''An array of signed bytes.'''
     TAG_ID = 7
     def __init__(self, name: bytes, payload: bytes):
-        _length, _array = payload[:4], payload[4:]
-        _length = bytes_to_signed_int(_length)
-        assert len(_array) == _length, f'Incomplete or excessive payload found for TAG_Byte_Array. Expected {_length}, found {len(_array)}.'
+        # _length, _array = payload[:4], payload[4:]
+        # _length = bytes_to_signed_int(_length)
+        # assert len(_array) == _length, f'Incomplete or excessive payload found for TAG_Byte_Array. Expected {_length}, found {len(_array)}.'
         super(TAG_Byte_Array, self).__init__(name, payload)
-        self.value = bytearray(_array)
+        self.value = bytearray(payload)
+
+class TAG_String(TAG):
+    '''A UTF-8, NON-null-terminated string.'''
+    TAG_ID = 8
+    def __init__(self, name: bytes, payload: bytes):
+        super().__init__(name, payload)
+        self.value = str(payload, 'utf-8')
+
