@@ -41,6 +41,8 @@ class TAG:
             raw payload of the TAG.
             If TAG has a variable payload length (e.g. List, String, Compound), then
             the payload must have its length bytes stripped before being passed in for this argument.
+            Other descriptors that must be stripped:
+            - Payload type byte (TAG_List)
         '''
         self.name = name
         self.payload = payload
@@ -56,7 +58,7 @@ class TAG_End:
     '''
     TAG_ID = 0
     def __init__(self):
-        super(TAG_End, self).__init__(None, None)
+        super().__init__(None, None)
 
 class TAG_Byte(TAG):
     '''A single raw byte of data.
@@ -65,7 +67,7 @@ class TAG_Byte(TAG):
     TAG_ID = 1
     def __init__(self, name: bytes, payload: bytes):
         assert len(payload) == 1, f'Incorrect number of bytes found in the payload of a TAG_Byte (expected 1): {len(payload)}.'
-        super(TAG_Byte, self).__init__(name, payload)
+        super().__init__(name, payload)
         self.value = bytes_to_signed_int(payload)
 
 class TAG_Short(TAG):
@@ -75,7 +77,7 @@ class TAG_Short(TAG):
     TAG_ID = 2
     def __init__(self, name: bytes, payload: bytes):
         assert len(payload) == 2, f'Incorrect number of bytes found in the payload of a TAG_Short (expected 2): {len(payload)}.'
-        super(TAG_Short, self).__init__(name, payload)
+        super().__init__(name, payload)
         self.value = bytes_to_signed_int(payload)
 
 class TAG_Int(TAG):
@@ -85,7 +87,7 @@ class TAG_Int(TAG):
     TAG_ID = 3
     def __init__(self, name: bytes, payload: bytes):
         assert len(payload) == 4, f'Incorrect number of bytes found in the payload of a TAG_Int (expected 4): {len(payload)}.'
-        super(TAG_Int, self).__init__(name, payload)
+        super().__init__(name, payload)
         self.value = bytes_to_signed_int(payload)
 
 class TAG_Long(TAG):
@@ -95,7 +97,7 @@ class TAG_Long(TAG):
     TAG_ID = 4
     def __init__(self, name: bytes, payload: bytes):
         assert len(payload) == 8, f'Incorrect number of bytes found in the payload of a TAG_Long (expected 8): {len(payload)}.'
-        super(TAG_Long, self).__init__(name, payload)
+        super().__init__(name, payload)
         self.value = bytes_to_signed_int(payload)
 
 class TAG_Float(TAG):
@@ -103,7 +105,7 @@ class TAG_Float(TAG):
     TAG_ID = 5
     def __init__(self, name: bytes, payload: bytes):
         assert len(payload) == 4, f'Incorrect number of bytes found in the payload of a TAG_Float (expected 4): {len(payload)}'
-        super(TAG_Float, self).__init__(name, payload)
+        super().__init__(name, payload)
         self.value = struct.unpack('f', payload)
 
 class TAG_Double(TAG):
@@ -111,17 +113,14 @@ class TAG_Double(TAG):
     TAG_ID = 6
     def __init__(self, name: bytes, payload: bytes):
         assert len(payload) == 8, f'Incorrect number of bytes found in the payload of a TAG_Double (expected 8): {len(payload)}'
-        super(TAG_Double, self).__init__(name, payload)
+        super().__init__(name, payload)
         self.value = struct.unpack('f', payload)
 
 class TAG_Byte_Array(TAG):
     '''An array of signed bytes.'''
     TAG_ID = 7
     def __init__(self, name: bytes, payload: bytes):
-        # _length, _array = payload[:4], payload[4:]
-        # _length = bytes_to_signed_int(_length)
-        # assert len(_array) == _length, f'Incomplete or excessive payload found for TAG_Byte_Array. Expected {_length}, found {len(_array)}.'
-        super(TAG_Byte_Array, self).__init__(name, payload)
+        super().__init__(name, payload)
         self.value = bytearray(payload)
 
 class TAG_String(TAG):
@@ -131,3 +130,42 @@ class TAG_String(TAG):
         super().__init__(name, payload)
         self.value = str(payload, 'utf-8')
 
+class TAG_List(TAG):
+    '''A list of nameless values of the same type.'''
+    TAG_ID = 9
+    def __init__(self, name: bytes, payload: bytes, payload_type: int, TAG_End_count = -1):
+        '''
+        Arguments
+        ---------
+        payload_type : int
+            TAG ID denoting the type of TAGs included in this List.
+        TAG_End_count : int = -1
+            should be used only if `payload_type` is 0, in which case the length of `payload` itself
+            is not indicative of the length of the List.
+        
+        Raises
+        ------
+        ValueError
+            if `payload_type` is less than 0 or greater than 12.
+            Such ID does not correspond to a valid TAG type.
+        AssertionError
+            if `payload` contains an incorrect number of bytes considering the payload type.
+            For example, if the payload has an odd number of bytes when the type is Short.
+        '''
+        if payload_type < 0 or payload_type > 12 or payload_type is None:
+            raise ValueError(f'Invalid type for TAG_List: {payload_type}')
+        super().__init__(name, payload)
+        
+        # Parse the payload
+        # (Even though it'd be more elegant to dispatch this task to each TAG subclass,
+        # it clutters code structure so I will not do that.)
+        _value = []
+        if payload_type == TAG_End.TAG_ID:
+            assert TAG_End_count >= 0
+            for i in range(TAG_End_count):
+
+        elif payload_type == TAG_Byte.TAG_ID:
+            for byte in payload:
+                _child_TAG_Byte = TAG_Byte(None, byte)
+                _value.append(_child_TAG_Byte)
+        elif payload_type == TAG_
