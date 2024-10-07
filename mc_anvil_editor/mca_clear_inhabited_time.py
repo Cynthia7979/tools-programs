@@ -79,6 +79,7 @@ def main():
         for i in range(0, 0x1000, 4):
             timestamps.append(bytes_to_int(_timestamps_header[i : i+4]))
         # The rest is chunks
+        # FIXME: Simply following stream doesn't seem to be working; need to change to location-based reading
         _chunks_count = 0
         while _chunks_count < len(locations) and _chunks_count < 1024:
             # Load the next chunk
@@ -125,6 +126,8 @@ def main():
                     # Stopped working on #963???
                     # Why are there 2 4096b paddings?????
                     # WHY ARE YOU DOING THIS MOJANG
+                    # now that I think of it it could be garbage data leftover from repeated writing
+                    # but still
                     out_data += f.read(4096)
                     print(_chunks_count, file=sys.stderr)
                 assert len(out_data) % 4096 == 0
