@@ -121,12 +121,12 @@ def main():
                 # Sometimes an additional 4096 bytes padding is added after some chunks???
                 # Will be an issue when reading. Not when writing. I'm having an issue here
                 # purely because I don't want to edit the locations table just yet.
-                if f.peek()[:2] != b'\x00\x00' or f.peek()[4] not in CHUNK_COMPRESSION_TYPES.keys():
+                while f.peek()[:2] != b'\x00\x00' or f.peek()[4] not in CHUNK_COMPRESSION_TYPES.keys():
                     # Stopped working on #963???
                     # Why are there 2 4096b paddings?????
-                    f.read(4096)
-                    print(_chunks_count)
-                    out_data += b'\x00' * 4096
+                    # WHY ARE YOU DOING THIS MOJANG
+                    out_data += f.read(4096)
+                    print(_chunks_count, file=sys.stderr)
                 assert len(out_data) % 4096 == 0
                 _chunks_count += 1
                 continue
