@@ -52,7 +52,7 @@ class TAG:
         if cls.TAG_ID is None:
             raise TypeError('Cannot retrieve TAG ID because base class is not a real TAG.')
 
-class TAG_End:
+class TAG_End(TAG):
     '''Closing TAG for `TAG_Compound`.
     Does not have a name or payload. `self.name` and `self.payload` are `None`.
     '''
