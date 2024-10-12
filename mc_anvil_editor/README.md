@@ -4,3 +4,6 @@ For programmically mass-editing Anvil files. *Not* intended to have any function
 This project will only support **1.20.1** formats.
 
 I'm making this because I need to mass-edit Minecraft save files but both Python libraries for this use case (`anvil` and `nbt`) are outdated and barely usable.
+
+## Is this done?
+No.

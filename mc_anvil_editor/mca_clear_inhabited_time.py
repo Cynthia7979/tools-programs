@@ -1,10 +1,12 @@
 '''
 Based on https://minecraft.wiki/w/Region_file_format
+## For testing use only not meant for production
 '''
 import os
 import sys
 import zlib
 import math
+import json
 from io import BytesIO
 from tqdm import tqdm
 import tags
@@ -34,6 +36,11 @@ class LocationEntry:
 
     def __repr__(self):
         return f'({self.offset}, {self.sector_count})'
+
+    def __eq__(s, o):
+        if isinstance(o, LocationEntry):
+            return s.offset == o.offset and s.sector_count == o.sector_count
+        return False
 
 class ChunkStorage:
     '''Primitive chunk data structure.
@@ -86,19 +93,19 @@ TAGS_LOOKUP = {cls_.get_TAG_id(): cls_ for cls_ in (
     tags.TAG_Short
 )}
 
-def main():
-    file_path = 'D:/UserDocuments/temp/Drehmal v2.2.1 APOTHEOSIS 1.20/region/r.-1.3.mca'
-    ## For testing use only not meant for production
-    # file_path = 'D:/UserDocuments/temp/r.-1.3.mca'
-    out_file = 'D:/UserDocuments/temp/r.-1.3.mca'
-    out_data = bytes()
-    initial_inti = {}
-    with open(file_path, 'rb') as f:
-        region_file_size = os.stat(file_path).st_size
+def parse_region(path: str):
+    chunk_to_inhabited_time = {}
+    locations = []
+    timestamps = []
+    chunks = []
+    with open(path, 'rb') as f:
+        region_file_size = os.stat(path).st_size
+        if region_file_size == 0:
+            # TODO: Custom error class
+            return None, None, None, None
         # Parse the header of region file
         # 0x1000 bytes of chunk locations (AKA offsets)
         _locations_header = f.read(0x1000)
-        locations = []
         for i in range(0, 0x1000, 4):
             # Each entry has 4 bytes: 3 bytes of offset and 1 byte sector count.
             # Offset is counted beginning at the very start of the file (right before the headers);
@@ -111,71 +118,71 @@ def main():
             locations.append(LocationEntry(offset, sector_count))
         # 0x1000 bytes of timestamps (time of last modification)
         _timestamps_header = f.read(0x1000)
-        timestamps = []
         for i in range(0, 0x1000, 4):
             timestamps.append(bytes_to_int(_timestamps_header[i : i+4]))
         # The rest is chunks
-        chunks = []
         for loc in locations:
             assert isinstance(loc, LocationEntry)  # So that linter could be more helpful
-            assert 1 < loc.offset < (region_file_size // SECTOR_SIZE), f'Invalid chunk offset {loc.offset}.'
+            if loc.offset == 0:  # Ungenerated chunk (I think)
+                chunks.append(None)
+                continue
+            assert 1 < loc.offset < math.ceil(region_file_size / SECTOR_SIZE), f'Invalid chunk offset {loc.offset}.'
             # Find the corresponding chunk
             f.seek(SECTOR_SIZE * loc.offset)
-            _current_chunk = ChunkStorage()
+            current_chunk = ChunkStorage()
             # First thing in chunk is 4 bytes of chunk length, in bytes
-            chunk_length = f.read(4)
-            chunk_length = bytes_to_signed_int(chunk_length)
-            _current_chunk.length = chunk_length
+            current_chunk.length = bytes_to_signed_int(f.read(4))
             # Next byte denotes compression type
-            _compression_type_index = f.read(1)
-            _compression_type_index = bytes_to_int(_compression_type_index)
-            compression_type = CHUNK_COMPRESSION_TYPES[_compression_type_index]
-            _current_chunk.compression_type_index = _compression_type_index
+            compression_type_index = f.read(1)
+            compression_type_index = bytes_to_int(compression_type_index)
+            compression_type = CHUNK_COMPRESSION_TYPES[compression_type_index]
+            current_chunk.compression_type_index = compression_type_index
             # `chunk_length-1` bytes of compressed chunk data follows
-            _compressed_chunk_data = f.read(chunk_length-1)
-            _current_chunk.compressed_data = _compressed_chunk_data
+            current_chunk.compressed_data = f.read(current_chunk.length-1)
             if compression_type == 'custom':
                 raise NotImplementedError('Custom chunk compression is not implemented.')
             elif compression_type == 'lz4':
                 raise NotImplementedError('LZ4 chunk compression is not implemented.')
             elif compression_type == 'uncompressed':
-                _decompressed_chunk_data = _compressed_chunk_data
+                decompressed_chunk_data = current_chunk.compressed_data
             elif compression_type == 'gzip':
                 raise NotImplementedError('GZip chunk compression is not implemented. It is unused in practice so there could be something wrong with the .mca file.')
             elif compression_type == 'zlib':
-                _decompressed_chunk_data = zlib.decompress(_compressed_chunk_data)
-            _working_chunk_data = bytearray(_decompressed_chunk_data)
+                decompressed_chunk_data = zlib.decompress(current_chunk.compressed_data)
+            working_chunk_data = bytearray(decompressed_chunk_data)
             # Find Xpos and Ypos for inhabitedtime storing
-            _xpos_name_position = _decompressed_chunk_data.find(b'\x03\x00\x04xPos')
+            _xpos_name_position = decompressed_chunk_data.find(b'\x03\x00\x04xPos')
             _xpos_value_position = _xpos_name_position + len(b'\x03\x00\x04xPos')
-            _current_xpos = _working_chunk_data[_xpos_value_position:_xpos_value_position+4]  # Int
-            _current_xpos = bytes_to_signed_int(_current_xpos)
-            _ypos_name_position = _decompressed_chunk_data.find(b'\x03\x00\x04yPos')
+            xpos = working_chunk_data[_xpos_value_position:_xpos_value_position+4]  # Int
+            xpos = bytes_to_signed_int(xpos)
+            _ypos_name_position = decompressed_chunk_data.find(b'\x03\x00\x04yPos')
             _ypos_value_position = _ypos_name_position + len(b'\x03\x00\x04yPos')
-            _current_ypos = _working_chunk_data[_ypos_value_position:_ypos_value_position+4]  # Int
-            _current_ypos = bytes_to_signed_int(_current_ypos)
+            ypos = working_chunk_data[_ypos_value_position:_ypos_value_position+4]  # Int
+            ypos = bytes_to_signed_int(ypos)
             # Find InhabitedTime
-            _inti_name_position = _decompressed_chunk_data.find(b'InhabitedTime')
+            _inti_name_position = decompressed_chunk_data.find(b'InhabitedTime')
             assert _inti_name_position != -1
             _inti_value_position = _inti_name_position + len(b'InhabitedTime')
-            _current_inti = _working_chunk_data[_inti_value_position:_inti_value_position+8]  # Long
-            _current_inti = bytes_to_signed_int(_current_inti)
-            print(_current_inti)
-            initial_inti[(_current_xpos, _current_ypos)] = _current_inti
+            inhabited_time = working_chunk_data[_inti_value_position:_inti_value_position+8]  # Long
+            inhabited_time = bytes_to_signed_int(inhabited_time)
+            print(inhabited_time)
+            chunk_to_inhabited_time[f'({xpos}, {ypos})'] = inhabited_time
             # Reset InhabitedTime
-            _working_chunk_data[_inti_value_position:_inti_value_position+8] = b'\x00' * 8
+            working_chunk_data[_inti_value_position:_inti_value_position+8] = b'\x00' * 8
             # Prepare data for write
-            _new_compressed_chunk = zlib.compress(bytes(_working_chunk_data))
-            _current_chunk.compressed_data = _new_compressed_chunk
-            _new_chunk_length = len(_new_compressed_chunk) + 1  # Our compressed data may be different in size
-            _current_chunk.length = _new_chunk_length
-            loc.sector_count = math.ceil(_new_chunk_length / SECTOR_SIZE)
-            chunks.append(_current_chunk)
-    
+            _new_compressed_chunk = zlib.compress(bytes(working_chunk_data))
+            current_chunk.compressed_data = _new_compressed_chunk
+            current_chunk.length = len(_new_compressed_chunk) + 1 # Our compressed data may be different in size due to more zeroes
+            loc.sector_count = math.ceil(current_chunk.length / SECTOR_SIZE)
+            chunks.append(current_chunk)
+    return chunk_to_inhabited_time, locations, timestamps, chunks
+
+def write_region(outputfile_path: str, basefile_path: str, locations, timestamps, chunks):
     # Write out file on the basis of the given file
+    # FIXME: Better code
     # TODO: Should be configurable
     working_file_bytes = bytearray()
-    with open(file_path, 'rb') as fi:
+    with open(basefile_path, 'rb') as fi:
         working_file_bytes = bytearray(fi.read())
     current_offset = 0  # Bookkeeping; use as seek()
     for loc in locations:
@@ -188,12 +195,40 @@ def main():
     assert current_offset == 2 * SECTOR_SIZE
     for i, loc in enumerate(locations):
         current_offset = loc.offset * SECTOR_SIZE
+        if current_offset == 0:  # Ungenerated chunk (I think)
+            continue
         chunk_bytes = chunks[i].to_bytes()
         working_file_bytes[current_offset:current_offset+len(chunk_bytes)] = chunk_bytes
         current_offset += len(chunk_bytes)
-    assert len(working_file_bytes) / SECTOR_SIZE == 0  # Should always be true given initial region file was valid
-    with open(out_file, 'wb') as fo:
+    assert len(working_file_bytes) % SECTOR_SIZE == 0.0, f'Invalid initial file? File size is {len(working_file_bytes)} which is {len(working_file_bytes) / SECTOR_SIZE}x the sector size.'  # Should always be true given initial region file was valid
+    with open(outputfile_path, 'wb') as fo:
         fo.write(bytes(working_file_bytes))
+
+def main():
+    regions_folder = 'D:/UserDocuments/temp/Drehmal v2.2.1 APOTHEOSIS 1.20/region/'
+    # file_path = 'D:/UserDocuments/temp/r.-1.3.mca'
+    out_folder = 'D:/UserDocuments/temp/out/region'
+    inhabited_time_file = 'D:/UserDocuments/temp/out/inti.dat'
+    stored_inhabited_time = {}
+    
+    for region_file in os.listdir(regions_folder):
+        if not region_file.endswith('.mca'):
+            continue
+        chunk_to_inhabited_time, locations, timestamps, chunks = \
+                parse_region(os.path.join(regions_folder, region_file))
+        if None in (chunk_to_inhabited_time, locals, timestamps, chunks):
+            print(f'WARNING: Skipping {region_file} because of empty file.')
+            continue
+        stored_inhabited_time[region_file] = chunk_to_inhabited_time
+        write_region(
+            os.path.join(out_folder, region_file),
+            os.path.join(regions_folder, region_file),
+            locations,
+            timestamps,
+            chunks
+        )
+    with open(inhabited_time_file, 'w') as intif:
+        json.dump(stored_inhabited_time, intif)
     print('I made it to the end!')
 
 if __name__ == '__main__':
