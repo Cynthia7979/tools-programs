@@ -8,9 +8,9 @@ import zlib
 import math
 import json
 from io import BytesIO
+from typing import Literal
 from tqdm import tqdm
 import tags
-from typing import Literal
 from bytes_conversion import *
 
 SECTOR_SIZE = 0x1000  # Size of a sector in bytes
@@ -252,7 +252,7 @@ def get_inhabited_time_from_region(path: str) -> dict:
     return chunk_to_inhabited_time
 
 
-def alter_inhabitedtime_for_region(
+def modify_inhabited_time_for_region(
     path: str, stored_inhabitedtime_for_region: dict
 ) -> tuple[list[LocationEntry], list[int], list[ChunkStorage]]:
     locations = []
@@ -360,43 +360,55 @@ def write_region(
         chunk_bytes = chunks[i].to_bytes()
         working_file_bytes[current_offset : current_offset + len(chunk_bytes)] = chunk_bytes
         current_offset += len(chunk_bytes)
-    assert len(working_file_bytes) % SECTOR_SIZE == 0.0, \
-        f"Invalid initial file? File size is {len(working_file_bytes)} which is {len(working_file_bytes) / SECTOR_SIZE}x the sector size."  # Should always be true given initial region file was valid
+    if len(working_file_bytes) % SECTOR_SIZE != 0.0:  # TODO: Should have never been the case given initial region file was valid?
+        return len(working_file_bytes)
     with open(output_file_path, "wb") as fo:
         fo.write(bytes(working_file_bytes))
 
 
-def _do_the_read_routine(region_folder_path: str, inhabitedtime_file_path: str) -> dict:
+def store_initial_inhabited_time(region_folder_path: str, inhabitedtime_file_path: str) -> dict:
+    inhabitedtime_file_name = os.path.basename(inhabitedtime_file_path)
     stored_inhabitedtime = {}
-    for region_file_name in tqdm(os.listdir(region_folder_path), desc='read'):
+    regions_tqdm = tqdm(
+        os.listdir(region_folder_path),
+        desc=f'store to {inhabitedtime_file_name}',
+        unit='mca'
+    )
+    for region_file_name in regions_tqdm:
         if not region_file_name.endswith(".mca"):
             continue
         region_file_path = os.path.join(region_folder_path, region_file_name)
         chunk_to_inhabited_time = get_inhabited_time_from_region(region_file_path)
         if chunk_to_inhabited_time is None:
-            print(f"WARNING: Skipping {region_file_name} because of empty file.")
+            regions_tqdm.write(f"WARNING: Skipping {region_file_name} because of empty file.")
             continue
         stored_inhabitedtime[region_file_name] = chunk_to_inhabited_time
 
-    with open(inhabitedtime_file_path, "w") as inhabitedtime_file:
+    with open(inhabitedtime_file_path, "w", encoding='utf-8') as inhabitedtime_file:
         json.dump(stored_inhabitedtime, inhabitedtime_file)
 
-    print("I just did the reading routine!")
+    print(f"I just stored inhabited time for {region_folder_path} to {inhabitedtime_file_name}!")
     return stored_inhabitedtime
 
 
-def _do_the_write_routine(
+def overwrite_inhabited_time(
     region_folder_path: str,
     stored_inhabitedtime_file_path: str,
     region_output_folder_path: str,
 ):
+    inhabitedtime_file_name = os.path.basename(stored_inhabitedtime_file_path)
     stored_inhabitedtime_json = {}
-    with open(stored_inhabitedtime_file_path, "r") as f:
+    with open(stored_inhabitedtime_file_path, "r", encoding='utf-8') as f:
         stored_inhabitedtime_json = json.load(f)
 
     assert stored_inhabitedtime_json is not {}, "Invalid stored InhabitedTime JSON file: No JSON found."
 
-    for region_file_name in tqdm(os.listdir(region_folder_path), desc='write'):
+    regions_tqdm = tqdm(
+        os.listdir(region_folder_path),
+        desc=f'overwrite using {inhabitedtime_file_name}',
+        unit='mca'
+    )
+    for region_file_name in regions_tqdm:
         if not region_file_name.endswith(".mca"):
             continue
         region_file_path = os.path.join(region_folder_path, region_file_name)
@@ -404,26 +416,80 @@ def _do_the_write_routine(
             stored_inhabitedtime_for_region = stored_inhabitedtime_json[region_file_name]
             assert isinstance(stored_inhabitedtime_for_region, dict), "Invalid stored InhabitedTime JSON file: One of the first-level values is not a dict."
         except KeyError:
-            print(f"WARNING: Skipping {region_file_name} because of empty file.")
+            regions_tqdm.write(f"WARNING: Skipping {region_file_name} because of empty file.")
             continue
-        locations, timestamps, chunks = alter_inhabitedtime_for_region(region_file_path, stored_inhabitedtime_for_region)
+        locations, timestamps, chunks = modify_inhabited_time_for_region(region_file_path, stored_inhabitedtime_for_region)
         output_file_path = os.path.join(region_output_folder_path, region_file_name)
-        write_region(output_file_path, region_file_path, locations, timestamps, chunks)
+        return_code = write_region(output_file_path, region_file_path, locations, timestamps, chunks)
+        if return_code is not None:
+            regions_tqdm.write(f"ERORR: Write cancelled for {region_file_name}. Invalid initial file? File size is {return_code} which is {return_code / SECTOR_SIZE}x the sector size.")
 
-    print('I just did the writing routine!')
+    print(f'I just did the overwriting routine to {region_output_folder_path} using {inhabitedtime_file_name}!')
 
 
-def main():
-    region_folder_path = "D:/UserDocuments/temp/Drehmal v2.2.1 APOTHEOSIS 1.20/region/"
-    # file_path = 'D:/UserDocuments/temp/r.-1.3.mca'
-    region_output_folder_path = "D:/UserDocuments/temp/out/region"
-    inhabitedtime_file_path = "D:/UserDocuments/temp/out/inti.json"
+def store_initial_inhabited_time_for_dimensions():
+    save_folder = "D:/UserDocuments/temp/Drehmal v2.2.1 APOTHEOSIS 1.20"
+    initial_inhabited_time_storage_folder = "D:/UserDocuments/temp/out"
 
-    _do_the_read_routine(region_folder_path, inhabitedtime_file_path)
-    _do_the_write_routine(region_folder_path, inhabitedtime_file_path, region_output_folder_path)
+    overworld_region_folder_path = os.path.join(save_folder, 'region')
+    overworld_inhabitedtime_file_path = os.path.join(initial_inhabited_time_storage_folder, 'inti_overworld.json')
+    store_initial_inhabited_time(overworld_region_folder_path, overworld_inhabitedtime_file_path)
 
-    print("I made it to the end!")
+    lodahr_region_folder_path = os.path.join(save_folder, 'dimensions/minecraft/lodahr/region')
+    lodahr_inhabitedtime_file_path = os.path.join(initial_inhabited_time_storage_folder, 'inti_lodahr.json')
+    store_initial_inhabited_time(lodahr_region_folder_path, lodahr_inhabitedtime_file_path)
+
+    space_region_folder_path = os.path.join(save_folder, 'dimensions/minecraft/space/region')
+    space_inhabitedtime_file_path = os.path.join(initial_inhabited_time_storage_folder, 'inti_space.json')
+    store_initial_inhabited_time(space_region_folder_path, space_inhabitedtime_file_path)
+
+    end_region_folder_path = os.path.join(save_folder, 'DIM1')
+    end_inhabitedtime_file_path = os.path.join(initial_inhabited_time_storage_folder, 'inti_end.json')
+    store_initial_inhabited_time(end_region_folder_path, end_inhabitedtime_file_path)
+
+    true_end_region_folder_path = os.path.join(save_folder, 'dimensions/minecraft/true_end/region')
+    true_end_inhabitedtime_file_path = os.path.join(initial_inhabited_time_storage_folder, 'inti_true_end.json')
+    store_initial_inhabited_time(true_end_region_folder_path, true_end_inhabitedtime_file_path)
+
+    print("I just stored inhabited times for all dimensions!")
+
+def overwrite_inhabited_time_for_dimensions():
+    save_folder = "D:/UserDocuments/temp/Drehmal v2.2.1 APOTHEOSIS 1.20"  # FIXME
+    initial_inhabited_time_storage_folder = "D:/UserDocuments/temp/out"  # FIXME
+    overwritten_save_folder = "D:/UserDocuments/temp/out"  # FIXME
+
+    overworld_region_folder_path = os.path.join(save_folder, 'region')
+    overworld_inhabitedtime_file_path = os.path.join(initial_inhabited_time_storage_folder, 'inti_overworld.json')
+    overworld_region_output_folder_path = os.path.join(overwritten_save_folder, 'region')
+    os.makedirs(overworld_region_output_folder_path, exist_ok=True)
+    overwrite_inhabited_time(overworld_region_folder_path, overworld_inhabitedtime_file_path, overworld_region_output_folder_path)
+
+    lodahr_region_folder_path = os.path.join(save_folder, 'dimensions/minecraft/lodahr/region')
+    lodahr_inhabitedtime_file_path = os.path.join(initial_inhabited_time_storage_folder, 'inti_lodahr.json')
+    lodahr_region_output_folder_path = os.path.join(overwritten_save_folder, 'dimensions/minecraft/lodahr/region')
+    overwrite_inhabited_time(lodahr_region_folder_path, lodahr_inhabitedtime_file_path, lodahr_region_output_folder_path)
+
+    space_region_folder_path = os.path.join(save_folder, 'dimensions/minecraft/space/region')
+    space_inhabitedtime_file_path = os.path.join(initial_inhabited_time_storage_folder, 'inti_space.json')
+    space_region_output_folder_path = os.path.join(overwritten_save_folder, 'dimensions/minecraft/space/region')
+    os.makedirs(space_region_output_folder_path, exist_ok=True)
+    overwrite_inhabited_time(space_region_folder_path, space_inhabitedtime_file_path, space_region_output_folder_path)
+
+    end_region_folder_path = os.path.join(save_folder, 'DIM1')
+    end_inhabitedtime_file_path = os.path.join(initial_inhabited_time_storage_folder, 'inti_end.json')
+    end_region_output_folder_path = os.path.join(overwritten_save_folder, 'DIM1')
+    os.makedirs(end_region_output_folder_path, exist_ok=True)
+    overwrite_inhabited_time(end_region_folder_path, end_inhabitedtime_file_path, end_region_output_folder_path)
+
+    true_end_region_folder_path = os.path.join(save_folder, 'dimensions/minecraft/true_end/region')
+    true_end_inhabitedtime_file_path = os.path.join(initial_inhabited_time_storage_folder, 'inti_true_end.json')
+    true_end_region_output_folder_path = os.path.join(overwritten_save_folder, 'dimensions/minecraft/true_end/region')
+    os.makedirs(true_end_region_output_folder_path, exist_ok=True)
+    overwrite_inhabited_time(true_end_region_folder_path, true_end_inhabitedtime_file_path, true_end_region_output_folder_path)
+
+    print("I just overwrote inhabited times for all dimensions!")
 
 
 if __name__ == "__main__":
-    main()
+    # store_initial_inhabited_time_for_dimensions()
+    overwrite_inhabited_time_for_dimensions()
