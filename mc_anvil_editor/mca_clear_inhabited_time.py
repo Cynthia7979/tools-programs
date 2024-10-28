@@ -309,7 +309,10 @@ def modify_inhabited_time_for_region(
             zpos, _ = naive_tag_search(decompressed_chunk_data, b"zPos", "Int")
             zpos = bytes_to_signed_int(zpos)
             # Find corresponding InhabitedTime in untouched save
-            stored_inhabitedtime_value = stored_inhabitedtime_for_region[f"({xpos},{zpos})"]
+            try:
+                stored_inhabitedtime_value = stored_inhabitedtime_for_region[f"({xpos},{zpos})"]
+            except KeyError:
+                stored_inhabitedtime_value = 0
             # Find InhabitedTime
             inhabitedtime_value, inhabitedtime_value_index = naive_tag_search(decompressed_chunk_data, b"InhabitedTime", "Long")
             inhabitedtime_value = bytes_to_int(inhabitedtime_value)
@@ -443,7 +446,7 @@ def store_initial_inhabited_time_for_dimensions():
     space_inhabitedtime_file_path = os.path.join(initial_inhabited_time_storage_folder, 'inti_space.json')
     store_initial_inhabited_time(space_region_folder_path, space_inhabitedtime_file_path)
 
-    end_region_folder_path = os.path.join(save_folder, 'DIM1')
+    end_region_folder_path = os.path.join(save_folder, 'DIM1/region')
     end_inhabitedtime_file_path = os.path.join(initial_inhabited_time_storage_folder, 'inti_end.json')
     store_initial_inhabited_time(end_region_folder_path, end_inhabitedtime_file_path)
 
@@ -454,9 +457,9 @@ def store_initial_inhabited_time_for_dimensions():
     print("I just stored inhabited times for all dimensions!")
 
 def overwrite_inhabited_time_for_dimensions():
-    save_folder = "D:/UserDocuments/temp/Drehmal v2.2.1 APOTHEOSIS 1.20"  # FIXME
+    save_folder = "D:/UserDocuments/regions_fromserver"  # FIXME
     initial_inhabited_time_storage_folder = "D:/UserDocuments/temp/out"  # FIXME
-    overwritten_save_folder = "D:/UserDocuments/temp/out"  # FIXME
+    overwritten_save_folder = "D:/UserDocuments/regions_out"  # FIXME
 
     overworld_region_folder_path = os.path.join(save_folder, 'region')
     overworld_inhabitedtime_file_path = os.path.join(initial_inhabited_time_storage_folder, 'inti_overworld.json')
@@ -467,6 +470,7 @@ def overwrite_inhabited_time_for_dimensions():
     lodahr_region_folder_path = os.path.join(save_folder, 'dimensions/minecraft/lodahr/region')
     lodahr_inhabitedtime_file_path = os.path.join(initial_inhabited_time_storage_folder, 'inti_lodahr.json')
     lodahr_region_output_folder_path = os.path.join(overwritten_save_folder, 'dimensions/minecraft/lodahr/region')
+    os.makedirs(lodahr_region_output_folder_path, exist_ok=True)
     overwrite_inhabited_time(lodahr_region_folder_path, lodahr_inhabitedtime_file_path, lodahr_region_output_folder_path)
 
     space_region_folder_path = os.path.join(save_folder, 'dimensions/minecraft/space/region')
@@ -475,9 +479,9 @@ def overwrite_inhabited_time_for_dimensions():
     os.makedirs(space_region_output_folder_path, exist_ok=True)
     overwrite_inhabited_time(space_region_folder_path, space_inhabitedtime_file_path, space_region_output_folder_path)
 
-    end_region_folder_path = os.path.join(save_folder, 'DIM1')
+    end_region_folder_path = os.path.join(save_folder, 'DIM1/region')
     end_inhabitedtime_file_path = os.path.join(initial_inhabited_time_storage_folder, 'inti_end.json')
-    end_region_output_folder_path = os.path.join(overwritten_save_folder, 'DIM1')
+    end_region_output_folder_path = os.path.join(overwritten_save_folder, 'DIM1/region')
     os.makedirs(end_region_output_folder_path, exist_ok=True)
     overwrite_inhabited_time(end_region_folder_path, end_inhabitedtime_file_path, end_region_output_folder_path)
 
