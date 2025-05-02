@@ -312,10 +312,10 @@ def modify_inhabited_time_for_region(
             try:
                 stored_inhabitedtime_value = stored_inhabitedtime_for_region[f"({xpos},{zpos})"]
             except KeyError:
-                stored_inhabitedtime_value = 0
+                continue  # Chunk is "new" - no need to change anything
             # Find InhabitedTime
             inhabitedtime_value, inhabitedtime_value_index = naive_tag_search(decompressed_chunk_data, b"InhabitedTime", "Long")
-            inhabitedtime_value = bytes_to_int(inhabitedtime_value)
+            inhabitedtime_value = bytes_to_signed_int(inhabitedtime_value)
             # Set InhabitedTime
             working_chunk_data[inhabitedtime_value_index : inhabitedtime_value_index + 8] = int.to_bytes(
                 inhabitedtime_value - stored_inhabitedtime_value,
@@ -496,4 +496,6 @@ def overwrite_inhabited_time_for_dimensions():
 
 if __name__ == "__main__":
     # store_initial_inhabited_time_for_dimensions()
-    overwrite_inhabited_time_for_dimensions()
+    # overwrite_inhabited_time_for_dimensions()
+    f1 = 'D:/UserDocuments/regions_out/region/r.2.-2.mca'
+    get_inhabited_time_from_region(f1)
